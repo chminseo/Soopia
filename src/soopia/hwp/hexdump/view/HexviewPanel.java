@@ -3,6 +3,7 @@ package soopia.hwp.hexdump.view;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import java.awt.Color;
 
@@ -15,12 +16,15 @@ import java.awt.Insets;
 import java.awt.Cursor;
 
 import javax.swing.JLabel;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
+import java.awt.BorderLayout;
 
 public class HexviewPanel extends JPanel {
 	
@@ -41,7 +45,6 @@ public class HexviewPanel extends JPanel {
 		this(16, 12);
 	}
 	
-	final private static String PATTERN_HEX = "0123456789ABCDEF";
 	final private static String PATTERN_LABEL = "         0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  ";
 	
 	public HexviewPanel(int numOfCols, int fontSize ){
@@ -51,9 +54,8 @@ public class HexviewPanel extends JPanel {
 		this.charArea = new FixedColumnTextArea(numOfCols);
 		this.northLabel = new JLabel();
 		defaultFont = new Font("Courier New", Font.PLAIN, fontSize);
-		
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBackground(new Color(255, 255, 255));
+		setLayout(new BorderLayout(0, 0));
 		
 		northLabel.setText(PATTERN_LABEL.substring(0, 
 				this.lineNumArea.getColumns() + numOfCols*3));
@@ -66,11 +68,53 @@ public class HexviewPanel extends JPanel {
 				this.northLabel.getPreferredSize().height+4));
 		
 		JScrollPane scrollPane = new JScrollPane(initCenterPanel());
+		scrollPane.setAlignmentY(0.0f);
 		scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
 		scrollPane.setColumnHeaderView(northLabel);
 		
-		add(scrollPane);
+		add(scrollPane, BorderLayout.CENTER);
 		
+		panel_1 = new JPanel();
+		panel_1.setAlignmentY(0.0f);
+		panel_1.setAlignmentX(Component.LEFT_ALIGNMENT);
+		add(panel_1, BorderLayout.SOUTH);
+		GridBagLayout gbl_panel_1 = new GridBagLayout();
+		gbl_panel_1.columnWidths = new int[]{0, 0, 0, 0, 0};
+		gbl_panel_1.rowHeights = new int[]{0, 0};
+		gbl_panel_1.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_1.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		panel_1.setLayout(gbl_panel_1);
+		
+		Font labelFont = new Font(defaultFont.getFontName(), Font.BOLD, defaultFont.getSize()+2);
+		lblOffset = new JLabel("OFFSET");
+		lblOffset.setFont(labelFont);
+		GridBagConstraints gbc_lblOffset = new GridBagConstraints();
+		gbc_lblOffset.insets = new Insets(0, 5, 0, 5);
+		gbc_lblOffset.gridx = 0;
+		gbc_lblOffset.gridy = 0;
+		panel_1.add(lblOffset, gbc_lblOffset);
+		
+		offsetLabel = new JLabel("0 bytes");
+		GridBagConstraints gbc_offsetLabel = new GridBagConstraints();
+		gbc_offsetLabel.insets = new Insets(0, 0, 0, 10);
+		gbc_offsetLabel.gridx = 1;
+		gbc_offsetLabel.gridy = 0;
+		panel_1.add(offsetLabel, gbc_offsetLabel);
+		
+		lblLength = new JLabel("LENGTH");
+		lblLength.setFont(labelFont);
+		GridBagConstraints gbc_lblLength = new GridBagConstraints();
+		gbc_lblLength.insets = new Insets(0, 0, 0, 5);
+		gbc_lblLength.gridx = 2;
+		gbc_lblLength.gridy = 0;
+		panel_1.add(lblLength, gbc_lblLength);
+		
+		lengthLabel = new JLabel("23 bytes");
+		GridBagConstraints gbc_lengthLabel = new GridBagConstraints();
+		gbc_lengthLabel.anchor = GridBagConstraints.WEST;
+		gbc_lengthLabel.gridx = 3;
+		gbc_lengthLabel.gridy = 0;
+		panel_1.add(lengthLabel, gbc_lengthLabel);
 
 		initComponent();
 	}
@@ -174,13 +218,33 @@ public class HexviewPanel extends JPanel {
 	final private static String PATTERN_LINENUM = "00000000";
 	final private static String NL = "\n"; // System.getProperty("line.separator");
 	final private static String BLK = " ";
+	private JPanel panel_1;
+	private JLabel lblOffset;
+	private JLabel offsetLabel;
+	private JLabel lblLength;
+	private JLabel lengthLabel;
 	public void print ( byte [] data, long offset ){
 		printLineNumber(offset + data.length, this.numOfCols );
 		printHexString(data, offset);
 		
+		hexArea.select(0, 0);
+		charArea.select(0, 0);
 		CaretHandler ch1 = new CaretHandler(hexArea);
 		charArea.getCaret().addChangeListener(ch1);
 		
+		hexArea.addCaretListener(new CaretListener() {
+			
+			@Override
+			public void caretUpdate(CaretEvent e) {
+				Caret c = ((JTextComponent)e.getSource()).getCaret();
+				int p0 = Math.min(c.getDot(), c.getMark());
+				int p1 = Math.max(c.getDot(), c.getMark());
+				
+				updateByteInfo((JTextArea)e.getSource(), p0, p1);
+//				System.out.println("[" + p0 + ", " + p1 + "]");
+				
+			}
+		});
 	}
 	
 	/**
@@ -198,6 +262,22 @@ public class HexviewPanel extends JPanel {
 	 */
 	public void selectByte(int start, int end){
 		// TODO 구현해야함.
+	}
+	
+	private void updateByteInfo (JTextArea comp , int p0, int p1){
+		int colSize = comp.getColumns();
+		int offset = p0 - p0 / (colSize+NL.length());
+		int end = p1 - p1/(colSize+NL.length());
+		
+		if ( offset % 3 == 1){offset -= 1;}
+		else if ( offset % 3 == 2){offset += 1;}
+		
+		if ( end % 3 > 0 ){ end += 1;}
+		
+		offset /= 3;
+		end /= 3;
+		offsetLabel.setText(offset + " bytes");
+		lengthLabel.setText( (end - offset) + " bytes");
 	}
 	private void printHexString (byte [] data, long offset){
 		StringBuffer buf = new StringBuffer();
