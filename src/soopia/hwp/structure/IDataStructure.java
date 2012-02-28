@@ -12,5 +12,7 @@ public interface IDataStructure {
 	 */
 	public long getLength();
 	
+	public int getOffset();
+	
 	public ByteBuffer getBytes();
 }

@@ -6,12 +6,27 @@ public class DefaultStructrue implements IDataStructure {
 
 	private String filePath;
 	private String structureName;
+	
+	private int offset ;
 	private ByteBuffer data;
 	
 	public DefaultStructrue(String filePath, String structureName, ByteBuffer data ){
 		this.filePath = filePath;
 		this.structureName = structureName;
+		this.offset = 0;
 		this.data = data;
+	}
+	
+	
+	public DefaultStructrue(String filePath, String structureName,
+			ByteBuffer data, int offset) {
+		this(filePath, structureName, data);
+		this.offset = offset;
+	}
+
+	@Override
+	public int getOffset(){
+		return this.offset;
 	}
 	@Override
 	public String getFilePath() {
@@ -38,6 +53,7 @@ public class DefaultStructrue implements IDataStructure {
 		result = prime * result + ((data == null) ? 0 : data.hashCode());
 		result = prime * result
 				+ ((filePath == null) ? 0 : filePath.hashCode());
+		result = prime * result + offset;
 		result = prime * result
 				+ ((structureName == null) ? 0 : structureName.hashCode());
 		return result;
@@ -61,6 +77,8 @@ public class DefaultStructrue implements IDataStructure {
 				return false;
 		} else if (!filePath.equals(other.filePath))
 			return false;
+		if (offset != other.offset)
+			return false;
 		if (structureName == null) {
 			if (other.structureName != null)
 				return false;
@@ -70,7 +88,7 @@ public class DefaultStructrue implements IDataStructure {
 	}
 	@Override
 	public String toString() {
-		return "DefaultStructrue [file=" + filePath + ", structureName="
-				+ structureName + ", length=" + getLength() + "]";
+		return "DefaultStructrue [filePath=" + filePath + ", structureName="
+				+ structureName + ", offset=" + offset + ", data-size=" + data.position() + "]";
 	}
 }
