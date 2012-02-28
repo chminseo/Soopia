@@ -132,7 +132,7 @@ public class HwpHexViewer extends JFrame {
 						true,
 						DataStructureTreeNode.TYPE_TOP_LEVEL);
 				DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
-				treeModel.insertNodeInto(parent, root, 0);
+				treeModel.insertNodeInto(parent, root, treeModel.getChildCount(root));
 				TreePath treePath = new TreePath(treeModel.getPathToRoot(parent));
 				HwpHexViewer.this.tree.setSelectionPath(treePath);
 				for (IDataStructure ds : dsList) {
@@ -180,15 +180,15 @@ public class HwpHexViewer extends JFrame {
 		internalFrame.setVisible(true);
 		
 		int width = hexviewPanel.getPreferredSize().width;
-		internalFrame.setBounds(new Rectangle(getNextIframePos(), new Dimension(width+20, 400) ));
+		internalFrame.setBounds(new Rectangle(getNextIframePos(), new Dimension(width+40, 400) ));
 		
 		hexviewPanel.print(ds.getBytes().array(), 0);
 	}
 	
 	private Point iframeOffset = new Point(10, 10);
 	private Point getNextIframePos() {
-		iframeOffset.x += 10;
-		iframeOffset.y += 10;
+		iframeOffset.x += 15;
+		iframeOffset.y += 15;
 		return new Point(iframeOffset);
 	}
 	class FileModelHandle extends DefaultTreeModel implements FileModelListener {
