@@ -15,6 +15,7 @@ public abstract class AbstractType<T> implements IDataStructure {
 	}
 	
 	abstract protected void checkValid ( );
+	abstract public T getValue();
 
 	@Override
 	public String getFilePath() {
@@ -36,5 +37,4 @@ public abstract class AbstractType<T> implements IDataStructure {
 		return this.src;
 	}
 	
-	public abstract T getValue();
 }

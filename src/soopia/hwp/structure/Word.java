@@ -18,7 +18,7 @@ public class Word extends AbstractType<Integer> {
 	@Override
 	protected void checkValid() {
 		int val = this.getValue();
-		if ( val < 0 || val >= 0xffff  ){
+		if ( val < 0 || val > 0xffff  ){
 			throw new IllegalArgumentException(" value should be between 0 and 65535, but " + val);
 		}
 	}

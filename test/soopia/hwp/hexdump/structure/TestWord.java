@@ -30,7 +30,6 @@ public class TestWord {
 		assertEquals (new Integer(0x1210), word.getValue());
 		assertEquals (2, word.getLength());
 		assertEquals (2, word.getOffset());
-		System.out.println(Integer.MAX_VALUE);
 	}
 
 }
