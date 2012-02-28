@@ -12,18 +12,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import soopia.hwp.structure.DataStructureFactory;
+import soopia.hwp.structure.StreamStructureFactory;
 import soopia.hwp.structure.IDataStructure;
 
-public class TestDataStructureFactory {
-	DataStructureFactory factory ;
+public class TestStreamStructureFactory {
+	StreamStructureFactory factory ;
 	static String fName = "sample.hwp";
 	static File hwpFile = null;
 //	InputStream in;
 	
 	@Before
 	public void setUp() throws Exception {
-		factory = new DataStructureFactory();
+		factory = new StreamStructureFactory();
 		URL url = this.getClass().getClassLoader().getResource(fName);
 		hwpFile = new File ( url.toURI() );
 	}

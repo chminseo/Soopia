@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import soopia.hwp.structure.DataStructureFactory;
+import soopia.hwp.structure.StreamStructureFactory;
 import soopia.hwp.structure.IDataStructure;
 
 public class FileModel {
@@ -35,7 +35,7 @@ public class FileModel {
 			throw new FileNotFoundException("no such file : " + file.getPath());
 		}
 		String fileMapKey = file.getAbsolutePath().toLowerCase();
-		DataStructureFactory dsf = new DataStructureFactory();
+		StreamStructureFactory dsf = new StreamStructureFactory();
 		List<IDataStructure> dsList = dsf.createDataStructure(file);
 		
 		fireEvent("add", new FileModelEvent(fileMapKey, dsList));

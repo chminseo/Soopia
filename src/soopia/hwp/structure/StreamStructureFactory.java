@@ -14,7 +14,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 import org.apache.poi.poifs.filesystem.DocumentInputStream;
 import org.apache.poi.util.IOUtils;
 
-public class DataStructureFactory {
+public class StreamStructureFactory {
 	
 	public List<IDataStructure> createDataStructure ( final File hwpFile) {
 		
@@ -50,7 +50,7 @@ public class DataStructureFactory {
 			String path = hwpFile.getAbsolutePath();
 			try {
 				buf = ByteBuffer.wrap(IOUtils.toByteArray(dis));
-				dsList.add(new DefaultStructrue(path, event.getName(), buf));
+				dsList.add(new StreamStructrue(path, event.getName(), buf));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

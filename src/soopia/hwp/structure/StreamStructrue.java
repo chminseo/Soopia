@@ -1,8 +1,16 @@
 package soopia.hwp.structure;
 
 import java.nio.ByteBuffer;
-
-public class DefaultStructrue implements IDataStructure {
+/**
+ * 한글 문서에서 Stream을 나타낸다. ( 표 2, p7)
+ * 
+ * FileHeader, DocInfo 와 같이 Window Compound File 구조에서 Stream 에 해당하는 영역.
+ * 한글 파일은 StreamSturucture 들로 표현된다.
+ * 
+ * @author yeori
+ *
+ */
+public class StreamStructrue implements IDataStructure {
 
 	private String filePath;
 	private String structureName;
@@ -10,7 +18,7 @@ public class DefaultStructrue implements IDataStructure {
 	private int offset ;
 	private ByteBuffer data;
 	
-	public DefaultStructrue(String filePath, String structureName, ByteBuffer data ){
+	public StreamStructrue(String filePath, String structureName, ByteBuffer data ){
 		this.filePath = filePath;
 		this.structureName = structureName;
 		this.offset = 0;
@@ -18,7 +26,7 @@ public class DefaultStructrue implements IDataStructure {
 	}
 	
 	
-	public DefaultStructrue(String filePath, String structureName,
+	public StreamStructrue(String filePath, String structureName,
 			ByteBuffer data, int offset) {
 		this(filePath, structureName, data);
 		this.offset = offset;
@@ -66,7 +74,7 @@ public class DefaultStructrue implements IDataStructure {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		DefaultStructrue other = (DefaultStructrue) obj;
+		StreamStructrue other = (StreamStructrue) obj;
 		if (data == null) {
 			if (other.data != null)
 				return false;
