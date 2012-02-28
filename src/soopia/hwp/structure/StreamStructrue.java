@@ -56,7 +56,7 @@ public class StreamStructrue implements IDataStructure {
 	
 	@Override
 	public byte[] getBytes() {
-		throw new RuntimeException("not implemented");
+		return this.data.array();
 	}
 	
 	@Override

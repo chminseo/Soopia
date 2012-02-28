@@ -182,7 +182,7 @@ public class HwpHexViewer extends JFrame {
 		int width = hexviewPanel.getPreferredSize().width;
 		internalFrame.setBounds(new Rectangle(getNextIframePos(), new Dimension(width+40, 400) ));
 		
-		hexviewPanel.print(ds.getBuffer().array(), 0);
+		hexviewPanel.print(ds.getBytes(), 0);
 	}
 	
 	private Point iframeOffset = new Point(10, 10);
