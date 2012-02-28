@@ -14,5 +14,7 @@ public interface IDataStructure {
 	
 	public int getOffset();
 	
-	public ByteBuffer getBytes();
+	public ByteBuffer getBuffer();
+	
+	public byte [] getBytes();
 }

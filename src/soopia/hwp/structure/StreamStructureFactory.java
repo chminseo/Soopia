@@ -49,7 +49,8 @@ public class StreamStructureFactory {
 			ByteBuffer buf = null;
 			String path = hwpFile.getAbsolutePath();
 			try {
-				buf = ByteBuffer.wrap(IOUtils.toByteArray(dis));
+				buf = ByteBuffer.wrap(IOUtils.toByteArray(dis))
+						.asReadOnlyBuffer();
 				dsList.add(new StreamStructrue(path, event.getName(), buf));
 			} catch (IOException e) {
 				e.printStackTrace();

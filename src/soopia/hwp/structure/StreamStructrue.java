@@ -25,7 +25,6 @@ public class StreamStructrue implements IDataStructure {
 		this.data = data;
 	}
 	
-	
 	public StreamStructrue(String filePath, String structureName,
 			ByteBuffer data, int offset) {
 		this(filePath, structureName, data);
@@ -47,13 +46,19 @@ public class StreamStructrue implements IDataStructure {
 	
 	@Override
 	public long getLength() {
-		return data.position();
+		return data.capacity();
 	}
 
 	@Override
-	public ByteBuffer getBytes() {
+	public ByteBuffer getBuffer() {
 		return this.data;
 	}
+	
+	@Override
+	public byte[] getBytes() {
+		throw new RuntimeException("not implemented");
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
