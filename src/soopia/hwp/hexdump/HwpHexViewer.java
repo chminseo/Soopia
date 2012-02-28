@@ -63,7 +63,7 @@ public class HwpHexViewer extends JFrame {
 		JMenuItem mntmOpen = new JMenuItem("Open");
 		mntmOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				final File hwpFile = showFileOpen2();
+				final File hwpFile = showFileOpenDialog();
 				if ( hwpFile == null) return ;
 				SwingUtilities.invokeLater(new Runnable(){
 					@Override
@@ -92,10 +92,11 @@ public class HwpHexViewer extends JFrame {
 		tree.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if ( e.getClickCount() >1 && e.getButton() == MouseEvent.BUTTON1){
+				if ( e.getClickCount() >1 && SwingUtilities.isLeftMouseButton(e)){
 					JTree tree = (JTree) e.getSource();
 					TreePath path = tree.getSelectionPath();
-					DataStructureTreeNode node = (DataStructureTreeNode) path.getLastPathComponent();
+					DataStructureTreeNode node = 
+							(DataStructureTreeNode) path.getLastPathComponent();
 					if ( node.getUserObject() instanceof IDataStructure )
 						createInternalFrame((IDataStructure)node.getUserObject());
 				}
@@ -135,7 +136,10 @@ public class HwpHexViewer extends JFrame {
 				TreePath treePath = new TreePath(treeModel.getPathToRoot(parent));
 				HwpHexViewer.this.tree.setSelectionPath(treePath);
 				for (IDataStructure ds : dsList) {
-					DataStructureTreeNode node = new DataStructureTreeNode(ds, false, DataStructureTreeNode.TYPE_TAG_ID);
+					DataStructureTreeNode node = new DataStructureTreeNode(
+							ds,
+							false,
+							DataStructureTreeNode.TYPE_TAG_ID);
 					treeModel.insertNodeInto(node, parent, 0);
 				}
 				tree.expandPath(treePath);
@@ -147,22 +151,20 @@ public class HwpHexViewer extends JFrame {
 	 * tree에서 선택한 structure 정보를 internal frame에 출력.
 	 */
 	private void createInternalFrame (IDataStructure ds){
-		
+		// 이미 열려있는지 확인
 		String path = ds.getFilePath();
 		Component [] coms = desktopPane.getComponents();
 		for(Component c : coms){
 			if ( c.getName().equals(ds.getStrucureName() + ":" + path ) ){
-//				((JInternalFrame)c).requestFocus();
 				try {
 					((JInternalFrame)c).setSelected(true);
 				} catch (PropertyVetoException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				return ;
 			}
-		}		
-		
+		}
+		// 없으므로 새창을 띄운다.
 		JInternalFrame internalFrame = new JInternalFrame(ds.getStrucureName() + " from " +
 				path.substring(path.lastIndexOf(File.separator)+1));
 		internalFrame.setIconifiable(true);
@@ -171,17 +173,9 @@ public class HwpHexViewer extends JFrame {
 		internalFrame.setDoubleBuffered(true);
 		internalFrame.setClosable(true);
 		internalFrame.setName(ds.getStrucureName() + ":" + path);
-		internalFrame.addInternalFrameListener(new InternalFrameAdapter() {
-			@Override
-			public void internalFrameClosed(InternalFrameEvent e) {
-				
-			}
-		});
 		desktopPane.add(internalFrame);
 		
 		HexviewPanel hexviewPanel = new HexviewPanel();
-		hexviewPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
 		internalFrame.getContentPane().add(hexviewPanel, BorderLayout.CENTER);
 		internalFrame.setVisible(true);
 		
@@ -198,7 +192,8 @@ public class HwpHexViewer extends JFrame {
 		return new Point(iframeOffset);
 	}
 	class FileModelHandle extends DefaultTreeModel implements FileModelListener {
-		
+		private static final long serialVersionUID = 1L;
+
 		public FileModelHandle() {
 			super(new DataStructureTreeNode("HWP Files", true, DataStructureTreeNode.TYPE_ROOT));
 		}
@@ -209,7 +204,7 @@ public class HwpHexViewer extends JFrame {
 		}
 	}
 	/**
-	 * 주어진 파일에 대해서 tree를 구축한다.
+	 * 주어진 파일에 대해서 tree 구조 생성.
 	 * @param hwpFile
 	 */
 	private void openStorage (File hwpFile ){
@@ -223,7 +218,7 @@ public class HwpHexViewer extends JFrame {
 	
 	JFileChooser fChooser = new JFileChooser();
 	private JTree tree;
-	private File showFileOpen2(){
+	private File showFileOpenDialog(){
 		
 		fChooser.setFileFilter (new FileFilter() {
 			

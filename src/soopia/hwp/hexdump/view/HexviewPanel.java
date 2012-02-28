@@ -3,10 +3,7 @@ package soopia.hwp.hexdump.view;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JViewport;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 
 import java.awt.Component;
@@ -16,15 +13,14 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Cursor;
-import java.awt.Point;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
 
 import javax.swing.JLabel;
-import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Caret;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.PlainDocument;
 
 public class HexviewPanel extends JPanel {
 	
@@ -98,6 +94,7 @@ public class HexviewPanel extends JPanel {
 		lineNumArea.setBackground(new Color(255, 255, 204));
 		panel.add(lineNumArea, bgc_lineNumArea);
 		hexArea.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		hexArea.setName("HexArea");
 		hexArea.setEditable(false);
 		GridBagConstraints gbc_hexArea = new GridBagConstraints();
 		gbc_hexArea.insets = new Insets(0, 0, 0, 4);
@@ -108,8 +105,8 @@ public class HexviewPanel extends JPanel {
 		gbc_hexArea.gridy = 0;
 		panel.add(hexArea, gbc_hexArea);
 		charArea.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-//		charArea.setEditable(false);
-		
+		charArea.setName("CharArea");
+		charArea.setEditable(false);		
 		charArea.setBackground(new Color(204, 255, 153));
 		charArea.setAlignmentX(Component.LEFT_ALIGNMENT);
 		GridBagConstraints gbc_charArea = new GridBagConstraints();
@@ -145,16 +142,63 @@ public class HexviewPanel extends JPanel {
 		charArea.setFont(defaultFont);
 	}
 	
+	
+	class CaretHandler implements ChangeListener {
+		private JTextComponent target ;
+		
+		public CaretHandler ( JTextComponent targetComp){
+			this.target = targetComp;
+		}
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			Caret caret = (Caret)e.getSource();
+			
+			int min = caret.getMark(), max = caret.getDot();
+			if ( min == max) return ;
+			if ( min > max ){
+				min ^= max;
+				max ^= min;
+				min ^= max;
+			}
+			int min2 = 3 * min;
+			int max2 = 3 * max;
+			// 줄바꿈 문자가 포함된 경우 위치 보정 필요함.
+			min2 -= (min / (HexviewPanel.this.numOfCols + NL.length())) * 2;
+			max2 -= (max / (HexviewPanel.this.numOfCols + NL.length())) * 2;
+			
+			target.select(min2, max2);
+			target.getCaret().setSelectionVisible(true);
+		}
+	}
+	
 	final private static String PATTERN_LINENUM = "00000000";
-	final private static String NL = System.getProperty("line.separator");
+	final private static String NL = "\n"; // System.getProperty("line.separator");
 	final private static String BLK = " ";
 	public void print ( byte [] data, long offset ){
 		printLineNumber(offset + data.length, this.numOfCols );
 		printHexString(data, offset);
-		this.hexArea.select(0, 20);
-		this.hexArea.getCaret().setSelectionVisible(true);
+		
+		CaretHandler ch1 = new CaretHandler(hexArea);
+		charArea.getCaret().addChangeListener(ch1);
+		
 	}
 	
+	/**
+	 * 주어진 범위의 텍스트를 선택한다.
+	 * @param start
+	 * @param end
+	 */
+	public void selectText(int start, int end){
+		// TODO 구현해야함.
+	}
+	/**
+	 *  주어진 범위의 hex 텍스트를 선택한다.
+	 * @param start
+	 * @param end
+	 */
+	public void selectByte(int start, int end){
+		// TODO 구현해야함.
+	}
 	private void printHexString (byte [] data, long offset){
 		StringBuffer buf = new StringBuffer();
 		StringBuffer charBuf = new StringBuffer();
@@ -168,7 +212,7 @@ public class HexviewPanel extends JPanel {
 		}
 		
 		for( int n = 0 ; n < data.length ; n++){
-			buf.append(BLK + toHexString(data[n]));
+			buf.append(toHexString(data[n]) + BLK);
 			ch = (char)data[n];
 			charBuf.append(Character.isWhitespace(ch) ? BLK : ch );
 			
