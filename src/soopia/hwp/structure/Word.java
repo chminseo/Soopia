@@ -11,13 +11,16 @@ import soopia.hwp.util.Converter;
  */
 public class Word extends AbstractType<Integer> {
 
-	public Word (int offset, ByteBuffer src ){
+	public Word (ByteBuffer src, int offset){
 		super(offset, 2, src);
 		
 	}
 	@Override
 	protected void checkValid() {
-		;
+		int val = this.getValue();
+		if ( val < 0 || val >= 0xffff  ){
+			throw new IllegalArgumentException(" value should be between 0 and 65535, but " + val);
+		}
 	}
 
 	@Override
@@ -33,8 +36,6 @@ public class Word extends AbstractType<Integer> {
 		return b;
 	}
 	
-
-
 	@Override
 	public Integer getValue() {
 		return Converter.getWord(this.getBytes(), 0);

@@ -25,7 +25,7 @@ public class TestHwpByte {
 
 	@Test
 	public void test() {
-		HwpByte hb = new HwpByte(4, src);
+		HwpByte hb = new HwpByte(src, 4);
 		assertArrayEquals(new byte[]{9}, hb.getBytes());
 		assertArrayEquals(new byte[]{9}, hb.getBytes());
 		assertEquals (1, hb.getLength());
@@ -34,9 +34,8 @@ public class TestHwpByte {
 	@Test
 	public void test_invalid_parameters() {
 		try {
-			new HwpByte(1, src);
+			new HwpByte(src, 1);
 			fail("RuntimeException expected, but no exception ocurred.");
 		} catch (RuntimeException e) {}
 	}
-
 }

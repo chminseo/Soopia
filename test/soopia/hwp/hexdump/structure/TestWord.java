@@ -17,7 +17,7 @@ public class TestWord {
 	@Before
 	public void setUp() throws Exception {
 		src = ByteBuffer.allocate(6);
-		src.put(new byte[]{0x40, 0x00, 0x10, 0x12, 0x30, 00});
+		src.put(new byte[]{0x40, 0x00, 0x10, 0x12, 0x20, (byte)0xFD});
 	}
 
 	@After
@@ -26,14 +26,11 @@ public class TestWord {
 
 	@Test
 	public void test() {
-		Word word = new Word(2, src);
+		Word word = new Word(src, 2);
 		assertEquals (new Integer(0x1210), word.getValue());
 		assertEquals (2, word.getLength());
 		assertEquals (2, word.getOffset());
-	}
-	@Test
-	public void test_invalid_parameter() {
-		
+		System.out.println(Integer.MAX_VALUE);
 	}
 
 }
