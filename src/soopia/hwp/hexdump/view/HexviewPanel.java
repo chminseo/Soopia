@@ -151,6 +151,8 @@ public class HexviewPanel extends JPanel {
 	public void print ( byte [] data, long offset ){
 		printLineNumber(offset + data.length, this.numOfCols );
 		printHexString(data, offset);
+		this.hexArea.select(0, 20);
+		this.hexArea.getCaret().setSelectionVisible(true);
 	}
 	
 	private void printHexString (byte [] data, long offset){
