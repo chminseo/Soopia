@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import soopia.hwp.util.Converter;
 
 /**
- * 16 bit 컴파일러에서  unsigned long 에 해당함. (0 ~ 4294967295L ) 
+ * 16 bit 컴파일러에서 unsigned long 에 해당. (0~ 4294967295L) 
  * @author chmin
  *
  */
