@@ -18,20 +18,10 @@ public class HwpByte extends AbstractType<Integer> {
 	public HwpByte(ByteBuffer src, int offset) {
 		super(offset, 1, src);
 	}
-
 	@Override
 	public String getStrucureName() {
 		return Constant.STRUCTNAME_HWP_BYTE;
-	}
-	
-	@Override
-	public byte [] getBytes(){
-		byte [] data = new byte[1];
-		this.src.rewind();
-		this.src.get(data);
-		return data;
-	}
-	
+	}	
 	@Override
 	protected void checkValid() {
 		src.rewind();

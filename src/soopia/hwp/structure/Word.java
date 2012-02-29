@@ -6,7 +6,7 @@ import soopia.hwp.util.Converter;
 /**
  *  16 비트 컴파일러에서 unsigned int 에 해당(0~65535, p6) 
  *  
- * @author yeori
+ * @author chmin
  *
  */
 public class Word extends AbstractType<Integer> {
@@ -26,14 +26,6 @@ public class Word extends AbstractType<Integer> {
 	@Override
 	public String getStrucureName() {
 		return Constant.STRUCTNAME_HWP_WORD;
-	}
-
-	@Override
-	public byte[] getBytes() {
-		byte [] b = new byte[2];
-		src.rewind();
-		src.get(b);
-		return b;
 	}
 	
 	@Override

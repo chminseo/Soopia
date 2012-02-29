@@ -4,7 +4,11 @@ import java.nio.ByteBuffer;
 
 import soopia.hwp.util.Converter;
 
-
+/**
+ * 16 bit 컴파일러에서 unsigned long (0 ~ 4294967295L ) 
+ * @author chmin
+ *
+ */
 public class Dword extends AbstractType<Long> {
 
 	public Dword(ByteBuffer src, int offset) {
@@ -14,14 +18,6 @@ public class Dword extends AbstractType<Long> {
 	@Override
 	public String getStrucureName() {
 		return Constant.STRUCTNAME_HWP_DWORD;
-	}
-
-	@Override
-	public byte[] getBytes() {
-		byte [] b = new byte[4];
-		src.rewind();
-		src.get(b);
-		return b;
 	}
 
 	@Override

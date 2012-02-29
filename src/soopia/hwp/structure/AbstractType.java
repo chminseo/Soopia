@@ -37,4 +37,12 @@ public abstract class AbstractType<T> implements IDataStructure {
 		return this.src;
 	}
 	
+	@Override
+	public byte[] getBytes() {
+		byte [] b = new byte[(int)getLength()];
+		src.rewind();
+		src.get(b);
+		return b;
+	}
+	
 }
