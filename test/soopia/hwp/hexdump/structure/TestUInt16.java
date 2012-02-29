@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import soopia.hwp.structure.UInt16;
 /**
- * unsigned __int16 에 해당 ( 0 ~ 65535 )
+ * unsigned __int16 에 해당  ( 0 ~ 65535 )
  * @author chmin
  *
  */
