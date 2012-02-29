@@ -29,4 +29,8 @@ public class Converter {
 	public static Integer getHwpByte(byte[] data, int offset) {
 		return LittleEndian.getInt(data, offset);
 	}
+	public static long getUInt32(byte[] data, int offset) {
+		byte [] b = checkBytes(data, 8);
+		return LittleEndian.getLong(b, offset);
+	}
 }
