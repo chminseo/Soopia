@@ -39,6 +39,8 @@ import soopia.hwp.hexdump.model.FileModelListener;
 import soopia.hwp.hexdump.view.DataStructureTreeNode;
 import soopia.hwp.hexdump.view.HexviewPanel;
 import soopia.hwp.structure.IDataStructure;
+import soopia.hwp.structure.IRecordStructure;
+import soopia.hwp.structure.RecordStructureFactory;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
@@ -125,23 +127,38 @@ public class HwpHexViewer extends JFrame {
 	private void createTreeNodes (final String hwpFilePath, final List<IDataStructure> dsList ){
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				DataStructureTreeNode root = 
-						(DataStructureTreeNode) tree.getModel().getRoot();
-				DataStructureTreeNode parent = new DataStructureTreeNode(
+				DataStructureTreeNode root, fNameNode, streamNode, recordNode ;
+				DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
+				root = (DataStructureTreeNode) treeModel.getRoot();
+				fNameNode = new DataStructureTreeNode(
 						hwpFilePath.substring(hwpFilePath.lastIndexOf(File.separator) + 1),
 						true,
 						DataStructureTreeNode.TYPE_TOP_LEVEL);
-				DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
-				treeModel.insertNodeInto(parent, root, treeModel.getChildCount(root));
-				TreePath treePath = new TreePath(treeModel.getPathToRoot(parent));
-				HwpHexViewer.this.tree.setSelectionPath(treePath);
+				// 1. add File Name node
+				treeModel.insertNodeInto(fNameNode, root, treeModel.getChildCount(root));
+				
+				TreePath treePath = new TreePath(treeModel.getPathToRoot(fNameNode));
+				RecordStructureFactory factory = new RecordStructureFactory();
+				List<IRecordStructure> recordDS;
 				for (IDataStructure ds : dsList) {
-					DataStructureTreeNode node = new DataStructureTreeNode(
+					streamNode = new DataStructureTreeNode(
 							ds,
-							false,
-							DataStructureTreeNode.TYPE_TAG_ID);
-					treeModel.insertNodeInto(node, parent, 0);
+							true,
+							DataStructureTreeNode.TYPE_STREAM); // docInfo, FileHader etc
+					// 2. add StreamStructure Node
+					treeModel.insertNodeInto(streamNode, fNameNode, 0);
+					recordDS = factory.createRecordStructures(ds);
+					for( IRecordStructure rs : recordDS){
+						recordNode = new DataStructureTreeNode( rs,false,
+								DataStructureTreeNode.TYPE_RECORD);
+						// 3. add RecordStructure Node
+						treeModel.insertNodeInto(
+							recordNode,
+							streamNode,
+							treeModel.getChildCount(streamNode));
+					}
 				}
+				HwpHexViewer.this.tree.setSelectionPath(treePath);
 				tree.expandPath(treePath);
 			}
 		});
@@ -153,9 +170,13 @@ public class HwpHexViewer extends JFrame {
 	private void createInternalFrame (IDataStructure ds){
 		// 이미 열려있는지 확인
 		String path = ds.getFilePath();
+		String name = ds.getStrucureName();
+		if ( ds instanceof IRecordStructure){
+			name += ((IRecordStructure)ds).getTagValue().toString();
+		}
 		Component [] coms = desktopPane.getComponents();
 		for(Component c : coms){
-			if ( c.getName().equals(ds.getStrucureName() + ":" + path ) ){
+			if ( c.getName().equals(name + ":" + path ) ){
 				try {
 					((JInternalFrame)c).setSelected(true);
 				} catch (PropertyVetoException e1) {
@@ -165,14 +186,14 @@ public class HwpHexViewer extends JFrame {
 			}
 		}
 		// 없으므로 새창을 띄운다.
-		JInternalFrame internalFrame = new JInternalFrame(ds.getStrucureName() + " from " +
+		JInternalFrame internalFrame = new JInternalFrame(ds.getStrucureName()  + " from " +
 				path.substring(path.lastIndexOf(File.separator)+1));
 		internalFrame.setIconifiable(true);
 		internalFrame.setMaximizable(true);
 		internalFrame.setResizable(true);
 		internalFrame.setDoubleBuffered(true);
 		internalFrame.setClosable(true);
-		internalFrame.setName(ds.getStrucureName() + ":" + path);
+		internalFrame.setName(name + ":" + path);
 		desktopPane.add(internalFrame);
 		
 		HexviewPanel hexviewPanel = new HexviewPanel();
@@ -182,7 +203,7 @@ public class HwpHexViewer extends JFrame {
 		int width = hexviewPanel.getPreferredSize().width;
 		internalFrame.setBounds(new Rectangle(getNextIframePos(), new Dimension(width+40, 400) ));
 		
-		hexviewPanel.print(ds.getBytes(), 0);
+		hexviewPanel.print(ds.getBytes(), ds.getOffset());
 	}
 	
 	private Point iframeOffset = new Point(10, 10);

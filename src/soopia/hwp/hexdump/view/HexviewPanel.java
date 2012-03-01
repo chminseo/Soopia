@@ -269,7 +269,7 @@ public class HexviewPanel extends JPanel {
 	private JLabel lblLength;
 	private JLabel lengthLabel;
 	public void print ( byte [] data, long offset ){
-		printLineNumber(offset + data.length, this.numOfCols );
+		printLineNumber(offset, offset + data.length, this.numOfCols );
 		printHexString(data, offset);
 		
 		hexArea.select(0, 0);
@@ -356,12 +356,13 @@ public class HexviewPanel extends JPanel {
 		return (val < 0x10 ? "0": "") + Integer.toHexString(val).toUpperCase(); 
 	}
 	
-	private void printLineNumber(long numOfBytes, int col ){
+	private void printLineNumber(long offset, long numOfBytes, int col ){
 		StringBuffer lineNum = new StringBuffer();
 		String val ;
+		int starting = (int) offset/col;
 		int row = (int)(numOfBytes / col);
 		
-		for ( int i = 0 ; i <= row ; i++){
+		for ( int i = starting ; i <= row ; i++){
 			val = Integer.toHexString(col* i).toUpperCase();
 			lineNum.append(PATTERN_LINENUM.substring(val.length()));
 			lineNum.append(val + NL);

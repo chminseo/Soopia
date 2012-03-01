@@ -124,8 +124,8 @@ public class RecordStructure implements IRecordStructure {
 	 */
 	@Override
 	public String getTagName() {
-		return Constant.TAGNAMES[this.getTagValue()- 0x10];
-//		return "HWPTAG_DOCUMENT_PROPERTIES";
+		int idx = this.getTagValue() - 0x10;
+		return Constant.TAGNAMES[idx];
 	}
 	/**
 	 * Tag value 반환 ( HWP 5.0 포맷 문서에서는 HWPTAG_BEGIN + n 으로 언급됨)
