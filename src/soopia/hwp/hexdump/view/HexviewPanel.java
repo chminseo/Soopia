@@ -1,9 +1,9 @@
 package soopia.hwp.hexdump.view;
 
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 import java.awt.Color;
 
@@ -23,11 +23,14 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.PlainDocument;
 import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class HexviewPanel extends JPanel {
 	
+	private static final long serialVersionUID = 4007798758322581210L;
+
 	private int numOfCols;
 	
 	private FixedColumnTextArea lineNumArea;
@@ -38,6 +41,7 @@ public class HexviewPanel extends JPanel {
 	
 	private Font defaultFont ;
 	
+	private PopupHandler popupHandler = new PopupHandler();
 	/**
 	 * Create the panel.
 	 */
@@ -184,9 +188,50 @@ public class HexviewPanel extends JPanel {
 		lineNumArea.setFont(defaultFont);
 		hexArea.setFont(defaultFont);
 		charArea.setFont(defaultFont);
+		
+		hexArea.addMouseListener(popupHandler);
 	}
 	
-	
+	void asByteArrayFormat(String text){
+		StringBuilder buf = new StringBuilder("new byte[]{");
+		String [] lines = text.split(NL);
+		int tmp;
+		for( int i = 0 ;i < lines.length ; i++){
+			String [] token = lines[i].split(" ");
+			for ( int k = 0 ; k < token.length ; k++){
+//				if ( "".equals(token[k].trim()) ) continue;
+				System.out.println("[" + k + ":"+ token[k] + "]");
+				tmp = Integer.parseInt(token[k], 16);
+				if ( tmp > 127 ) buf.append("(byte)");
+				buf.append("0x" + token[k] + ", ");
+			}
+			buf.append(NL);
+		}
+		buf.delete(buf.length()-3, buf.length()); // ", " + NL
+		buf.append("};");
+		System.out.println(buf.toString());
+	}
+	class PopupHandler extends MouseAdapter{
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if ( SwingUtilities.isLeftMouseButton(e)){
+				return ;
+			}
+			JTextComponent comp = (JTextComponent) e.getSource();
+			Caret caret = comp.getCaret();
+			int min = Math.min(caret.getDot(), caret.getMark());
+			int max = Math.max(caret.getDot(), caret.getMark());
+			
+			if ( min == max) return ;
+			try {
+				asByteArrayFormat ( comp.getText(min, max-min) );
+				
+			} catch (BadLocationException e1) {
+				e1.printStackTrace();
+			}
+			
+		}
+	}
 	class CaretHandler implements ChangeListener {
 		private JTextComponent target ;
 		
@@ -324,10 +369,5 @@ public class HexviewPanel extends JPanel {
 		
 		lineNumArea.setText("");
 		lineNumArea.append ( lineNum.toString() );
-	}
-
-	private String byteToChars(byte b) {
-		int val = 0xff & b;
-		return "" + (char)(0xff & b) ;
 	}
 }

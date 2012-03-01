@@ -8,9 +8,12 @@ public abstract class AbstractType<T> implements IDataStructure {
 	protected ByteBuffer src ;
 	protected AbstractType(int offset, int length, ByteBuffer src){
 		this.offset = offset;
-		this.src = ((ByteBuffer) src.position(offset).limit(offset+length))
-				.slice()
-				.asReadOnlyBuffer();
+		this.src = ((ByteBuffer) src
+				.limit(offset+length)
+				.position(offset)
+			)
+			.slice()
+			.asReadOnlyBuffer();
 		this.checkValid();
 	}
 	
