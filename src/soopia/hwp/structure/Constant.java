@@ -8,7 +8,7 @@ public class Constant {
 	public static final String STRUCTNAME_HWP_UINT32 = "HWP UINT32";
 	
 	public static final int HWPTAG_BEGIN = 0x10; // p.14
-	public static final String [] TAGNAMES = new String [100];
+	public static final String [] TAGNAMES = new String [150];
 	
 	static {
 		

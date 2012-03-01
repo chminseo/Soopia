@@ -147,15 +147,18 @@ public class HwpHexViewer extends JFrame {
 							DataStructureTreeNode.TYPE_STREAM); // docInfo, FileHader etc
 					// 2. add StreamStructure Node
 					treeModel.insertNodeInto(streamNode, fNameNode, 0);
-					recordDS = factory.createRecordStructures(ds);
-					for( IRecordStructure rs : recordDS){
-						recordNode = new DataStructureTreeNode( rs,false,
-								DataStructureTreeNode.TYPE_RECORD);
-						// 3. add RecordStructure Node
-						treeModel.insertNodeInto(
-							recordNode,
-							streamNode,
-							treeModel.getChildCount(streamNode));
+					
+					if ( "DocInfo".equals(ds.getStrucureName()) || ds.getStrucureName().startsWith("Section") ){						
+						recordDS = factory.createRecordStructures(ds);
+						for( IRecordStructure rs : recordDS){
+							recordNode = new DataStructureTreeNode( rs,false,
+									DataStructureTreeNode.TYPE_RECORD);
+							// 3. add RecordStructure Node
+							treeModel.insertNodeInto(
+									recordNode,
+									streamNode,
+									treeModel.getChildCount(streamNode));
+						}
 					}
 				}
 				HwpHexViewer.this.tree.setSelectionPath(treePath);
