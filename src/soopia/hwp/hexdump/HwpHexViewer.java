@@ -100,7 +100,7 @@ public class HwpHexViewer extends JFrame {
 					DataStructureTreeNode node = 
 							(DataStructureTreeNode) path.getLastPathComponent();
 					if ( node.getUserObject() instanceof IDataStructure )
-						createInternalFrame((IDataStructure)node.getUserObject());
+						createInternalFrame(path, (IDataStructure)node.getUserObject());
 				}
 			}
 		});
@@ -170,16 +170,12 @@ public class HwpHexViewer extends JFrame {
 	/*
 	 * tree에서 선택한 structure 정보를 internal frame에 출력.
 	 */
-	private void createInternalFrame (IDataStructure ds){
+	private void createInternalFrame (TreePath path, IDataStructure ds){
 		// 이미 열려있는지 확인
-		String path = ds.getFilePath();
-		String name = ds.getStrucureName();
-		if ( ds instanceof IRecordStructure){
-			name += ((IRecordStructure)ds).getTagValue().toString();
-		}
+		String key = path.toString();
 		Component [] coms = desktopPane.getComponents();
 		for(Component c : coms){
-			if ( c.getName().equals(name + ":" + path ) ){
+			if ( c.getName().equals(key)){
 				try {
 					((JInternalFrame)c).setSelected(true);
 				} catch (PropertyVetoException e1) {
@@ -189,14 +185,13 @@ public class HwpHexViewer extends JFrame {
 			}
 		}
 		// 없으므로 새창을 띄운다.
-		JInternalFrame internalFrame = new JInternalFrame(ds.getStrucureName()  + " from " +
-				path.substring(path.lastIndexOf(File.separator)+1));
+		JInternalFrame internalFrame = new JInternalFrame(ds.getStrucureName()); 
 		internalFrame.setIconifiable(true);
 		internalFrame.setMaximizable(true);
 		internalFrame.setResizable(true);
 		internalFrame.setDoubleBuffered(true);
 		internalFrame.setClosable(true);
-		internalFrame.setName(name + ":" + path);
+		internalFrame.setName(key);
 		desktopPane.add(internalFrame);
 		
 		HexviewPanel hexviewPanel = new HexviewPanel();

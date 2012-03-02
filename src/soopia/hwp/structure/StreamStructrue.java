@@ -102,6 +102,6 @@ public class StreamStructrue implements IDataStructure {
 	@Override
 	public String toString() {
 		return "DefaultStructrue [filePath=" + filePath + ", structureName="
-				+ structureName + ", offset=" + offset + ", data-size=" + data.position() + "]";
+				+ structureName + ", offset=" + offset + ", data-size=" + data.capacity() + "]";
 	}
 }
