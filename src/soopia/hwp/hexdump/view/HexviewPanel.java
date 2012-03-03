@@ -26,6 +26,9 @@ import javax.swing.text.JTextComponent;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class HexviewPanel extends JPanel {
 	
@@ -71,23 +74,23 @@ public class HexviewPanel extends JPanel {
 				+ this.charArea.getPreferredSize().width, 
 				this.northLabel.getPreferredSize().height+4));
 		
-		JScrollPane scrollPane = new JScrollPane(initCenterPanel());
+		scrollPane = new JScrollPane(initCenterPanel());
 		scrollPane.setAlignmentY(0.0f);
 		scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
 		scrollPane.setColumnHeaderView(northLabel);
 		
 		add(scrollPane, BorderLayout.CENTER);
 		
-		panel_1 = new JPanel();
-		panel_1.setAlignmentY(0.0f);
-		panel_1.setAlignmentX(Component.LEFT_ALIGNMENT);
-		add(panel_1, BorderLayout.SOUTH);
-		GridBagLayout gbl_panel_1 = new GridBagLayout();
-		gbl_panel_1.columnWidths = new int[]{0, 0, 0, 0, 0};
-		gbl_panel_1.rowHeights = new int[]{0, 0};
-		gbl_panel_1.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel_1.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-		panel_1.setLayout(gbl_panel_1);
+		infoPanel = new JPanel();
+		infoPanel.setAlignmentY(0.0f);
+		infoPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		add(infoPanel, BorderLayout.SOUTH);
+		GridBagLayout gbl_infoPanel = new GridBagLayout();
+		gbl_infoPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
+		gbl_infoPanel.rowHeights = new int[]{0, 0};
+		gbl_infoPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_infoPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		infoPanel.setLayout(gbl_infoPanel);
 		
 		Font labelFont = new Font(defaultFont.getFontName(), Font.BOLD, defaultFont.getSize()+2);
 		lblOffset = new JLabel("OFFSET");
@@ -96,14 +99,14 @@ public class HexviewPanel extends JPanel {
 		gbc_lblOffset.insets = new Insets(0, 5, 0, 5);
 		gbc_lblOffset.gridx = 0;
 		gbc_lblOffset.gridy = 0;
-		panel_1.add(lblOffset, gbc_lblOffset);
+		infoPanel.add(lblOffset, gbc_lblOffset);
 		
 		offsetLabel = new JLabel("0 bytes");
 		GridBagConstraints gbc_offsetLabel = new GridBagConstraints();
 		gbc_offsetLabel.insets = new Insets(0, 0, 0, 10);
 		gbc_offsetLabel.gridx = 1;
 		gbc_offsetLabel.gridy = 0;
-		panel_1.add(offsetLabel, gbc_offsetLabel);
+		infoPanel.add(offsetLabel, gbc_offsetLabel);
 		
 		lblLength = new JLabel("LENGTH");
 		lblLength.setFont(labelFont);
@@ -111,19 +114,36 @@ public class HexviewPanel extends JPanel {
 		gbc_lblLength.insets = new Insets(0, 0, 0, 5);
 		gbc_lblLength.gridx = 2;
 		gbc_lblLength.gridy = 0;
-		panel_1.add(lblLength, gbc_lblLength);
+		infoPanel.add(lblLength, gbc_lblLength);
 		
 		lengthLabel = new JLabel("23 bytes");
 		GridBagConstraints gbc_lengthLabel = new GridBagConstraints();
+		gbc_lengthLabel.insets = new Insets(0, 0, 0, 5);
 		gbc_lengthLabel.anchor = GridBagConstraints.WEST;
 		gbc_lengthLabel.gridx = 3;
 		gbc_lengthLabel.gridy = 0;
-		panel_1.add(lengthLabel, gbc_lengthLabel);
+		infoPanel.add(lengthLabel, gbc_lengthLabel);
+		
+		btnShow = new JButton("Show");
+		btnShow.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				fireShowEvent();
+			}
+		});
+		GridBagConstraints gbc_btnShow = new GridBagConstraints();
+		gbc_btnShow.weightx = 1.0;
+		gbc_btnShow.anchor = GridBagConstraints.EAST;
+		gbc_btnShow.gridx = 4;
+		gbc_btnShow.gridy = 0;
+		infoPanel.add(btnShow, gbc_btnShow);
 
 		initComponent();
 	}
 	
 	
+	protected void fireShowEvent (){
+		// TODO 구현해야함.
+	}
 	private JPanel initCenterPanel( ){
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(255, 255, 255));
@@ -182,6 +202,16 @@ public class HexviewPanel extends JPanel {
 	@Override
 	public Dimension getMinimumSize() {
 		 return this.getPreferredSize();
+	}
+	
+	@Override 
+	public Dimension getPreferredSize(){
+		Dimension dim1 = infoPanel.getPreferredSize();
+		System.out.println("info : " + dim1);
+		Dimension dim2 = scrollPane.getPreferredSize();
+		System.out.println("scroll : " + dim2);
+		return new Dimension(Math.max(dim1.width, dim2.width), 
+				dim1.height + dim2.height);
 	}
 	
 	private final void initComponent(){
@@ -263,11 +293,13 @@ public class HexviewPanel extends JPanel {
 	final private static String PATTERN_LINENUM = "00000000";
 	final private static String NL = "\n"; // System.getProperty("line.separator");
 	final private static String BLK = " ";
-	private JPanel panel_1;
+	private JPanel infoPanel;
 	private JLabel lblOffset;
 	private JLabel offsetLabel;
 	private JLabel lblLength;
 	private JLabel lengthLabel;
+	private JScrollPane scrollPane;
+	private JButton btnShow;
 	public void print ( byte [] data, long offset ){
 		printLineNumber(offset, offset + data.length, this.numOfCols );
 		printHexString(data, offset);

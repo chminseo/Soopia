@@ -197,11 +197,13 @@ public class HwpHexViewer extends JFrame {
 		HexviewPanel hexviewPanel = new HexviewPanel();
 		internalFrame.getContentPane().add(hexviewPanel, BorderLayout.CENTER);
 		internalFrame.setVisible(true);
-		
-		int width = hexviewPanel.getPreferredSize().width;
-		internalFrame.setBounds(new Rectangle(getNextIframePos(), new Dimension(width+40, 400) ));
-		
 		hexviewPanel.print(ds.getBytes(), ds.getOffset());
+		
+		Dimension dim = internalFrame.getPreferredSize();
+		Rectangle rtgl = new Rectangle(dim.width+25, Math.min(dim.height, 400) );
+		rtgl.setLocation(getNextIframePos());
+		internalFrame.pack();
+		internalFrame.setBounds(rtgl);
 	}
 	
 	private Point iframeOffset = new Point(10, 10);
