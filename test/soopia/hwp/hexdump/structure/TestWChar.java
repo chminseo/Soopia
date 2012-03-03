@@ -2,6 +2,7 @@ package soopia.hwp.hexdump.structure;
 
 import static org.junit.Assert.*;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import org.junit.After;
@@ -19,16 +20,15 @@ public class TestWChar {
 	}
 
 	@Test
-	public void test_encoding_info() {
+	public void test_encoding_info() throws UnsupportedEncodingException {
 		// BC 14 D0 D5 "πŸ≈¡"
-		
 		byte [] bs = new byte[]{0x14, (byte)0xbc, (byte)0xd5, (byte)0xd0};
 		String str = new String (bs, Charset.forName("utf-16LE"));
 		assertEquals("πŸ≈¡", str);
 		
-//		str = "πŸ≈¡";
-//		bs = str.getBytes(Charset.forName("utf-16"));
-//		printBytes(bs);
+		bs = new byte[]{0x1C, (byte)0xC8, 
+				(byte)0xA9, (byte)0xBA, 0x7C, (byte)0xB7, 0x78, (byte)0xC7};
+		assertEquals ("¡¶∏Ò∂Û¿Œ", new String(bs, "UTF-16LE"));
 	}
 	
 //	private void printBytes(byte [] bs){

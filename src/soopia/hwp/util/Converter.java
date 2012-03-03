@@ -31,21 +31,21 @@ public class Converter {
 		return target;
 	}
 	public static int getUInt16 ( byte [] data, int offset){
-		byte [] b = checkBytes(data, offset, SZ_UINT16, 4);
-		return LittleEndian.getInt(b, (b == data)? offset : 0 ); 
+		return LittleEndian.getUShort(data, offset); 
 	}
 	public static int getWord(byte [] data, int offset ){
-		byte [] b = checkBytes(data, offset, SZ_WORD, 4);
-		return  LittleEndian.getInt(b, (b == data)? offset : 0);
+		return  LittleEndian.getUShort(data, offset);
 	}
 	
 	public static long getDword (byte [] data, int offset){
-		byte [] b = checkBytes(data, offset, SZ_DWORD, 8);
-		return LittleEndian.getLong(b, (b == data)? offset : 0);
+		int val = LittleEndian.getInt(data, offset);
+		return 0x00FFFFFFFFL & val ;
+		// getUInt() 버그 있음
+		// return LittleEndian.getUInt(data, offset);
 	}
 
 	public static Integer getHwpByte(byte[] data, int offset) {
-		return LittleEndian.getInt(data, offset);
+		return LittleEndian.getUnsignedByte(data, offset);
 	}
 	public static long getUInt32(byte[] data, int offset) {
 		byte [] b = checkBytes(data, offset, SZ_UINT32, 8);

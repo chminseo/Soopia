@@ -14,7 +14,7 @@ public class TestDword {
 	ByteBuffer src;
 	@Before
 	public void setUp() throws Exception {
-		src = ByteBuffer.allocate(8);
+		src = ByteBuffer.allocate(7);
 		src.put(new byte[]{0x9, 0x32, (byte)0xa0, 0x10, (byte)0xbc, 0x21, 0x10});
 	}
 
@@ -24,6 +24,7 @@ public class TestDword {
 
 	@Test
 	public void test() {
+		src.clear();
 		Dword dw = new Dword(src, 1);
 		assertEquals(4, dw.getLength());
 		assertEquals(new Long(3155206194L), dw.getValue());
