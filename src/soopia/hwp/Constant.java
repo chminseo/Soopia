@@ -1,4 +1,4 @@
-package soopia.hwp.structure;
+package soopia.hwp;
 
 public class Constant {
 	final static public String STRUCTNAME_HWP_BYTE = "HWP BYTE";

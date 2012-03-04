@@ -8,7 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import soopia.hwp.structure.Dword;
+import soopia.hwp.type.Dword;
 
 public class TestDword {
 	ByteBuffer src;

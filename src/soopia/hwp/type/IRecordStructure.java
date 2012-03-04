@@ -1,4 +1,4 @@
-package soopia.hwp.structure;
+package soopia.hwp.type;
 
 import java.nio.ByteBuffer;
 
@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
  * @author chmin
  * @page p.14
  */
-public interface IRecordStructure extends IDataStructure {
+public interface IRecordStructure extends IDataType {
 	/**
 	 * 데이터 레코드에서 HEADER 길이
 	 * @return
@@ -23,6 +23,8 @@ public interface IRecordStructure extends IDataStructure {
 	public Integer getDataLength();
 	public ByteBuffer getDataBuffer();
 	public byte [] getDataBytes();
+	
+	public int getLevel();
 	/**
 	 * HWP 5.0 포맷 문서에서 Tag ID 로 언급되는 문자열을 반환.
 	 * 
@@ -32,4 +34,6 @@ public interface IRecordStructure extends IDataStructure {
 	 * HWP 5.0 포맷 문서에서 HWPTAG_BEGIN + n 으로 언급되는 정수값을 반환.
 	 */
 	public Integer getTagValue();
+	
+	public IStreamStruct getParentStream();
 }

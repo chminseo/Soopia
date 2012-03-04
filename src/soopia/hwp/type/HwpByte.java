@@ -1,14 +1,15 @@
-package soopia.hwp.structure;
+package soopia.hwp.type;
 
 import java.nio.ByteBuffer;
 
+import soopia.hwp.Constant;
 import soopia.hwp.util.Converter;
 /**
  * 부호없는 1 바이트 (0~255, p6 참고 )
  * @author yeori
  *
  */
-public class HwpByte extends AbstractType<Integer> {
+public class HwpByte extends PrimitiveType<Integer> {
 	/**
 	 * 주어진 버퍼 src 에서 offset 위치에서 HwpByte 인스턴스를 생성한다.( 0~255 )
 	 * (부호없는 1 바이트, 

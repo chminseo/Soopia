@@ -207,9 +207,7 @@ public class HexviewPanel extends JPanel {
 	@Override 
 	public Dimension getPreferredSize(){
 		Dimension dim1 = infoPanel.getPreferredSize();
-		System.out.println("info : " + dim1);
 		Dimension dim2 = scrollPane.getPreferredSize();
-		System.out.println("scroll : " + dim2);
 		return new Dimension(Math.max(dim1.width, dim2.width), 
 				dim1.height + dim2.height);
 	}
@@ -318,7 +316,6 @@ public class HexviewPanel extends JPanel {
 				int p1 = Math.max(c.getDot(), c.getMark());
 				
 				updateByteInfo((JTextArea)e.getSource(), p0, p1);
-//				System.out.println("[" + p0 + ", " + p1 + "]");
 				
 			}
 		});

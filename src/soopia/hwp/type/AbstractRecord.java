@@ -1,6 +1,8 @@
-package soopia.hwp.structure;
+package soopia.hwp.type;
 
 import java.nio.ByteBuffer;
+
+import soopia.hwp.Constant;
 
 /**
  * Record structure consists of HEADER and DATA
@@ -17,21 +19,21 @@ import java.nio.ByteBuffer;
  * @page p.14
  *
  */
-public class RecordStructure implements IRecordStructure {
-	protected static int BIT_MASK_10 = 0x3ff;
-	protected static int BIT_MASK_12 = 0xfff;
+public abstract class AbstractRecord implements IRecordStructure {
 
-	private IDataStructure baseStruct ;
-	private int offset ;
+	protected static final int BIT_MASK_10 = 0x3ff;
+	protected static final int BIT_MASK_12 = 0xfff;
+
+	private IStreamStruct baseStruct ;
+	protected int offset ;
 	
 	private Dword header ;
-	
-	public RecordStructure(IDataStructure ds, int offset){
+	public AbstractRecord(IStreamStruct ds, int offset){
 		this.baseStruct = ds;
 		this.offset = offset;
 	}
 	
-	RecordStructure init() {
+	AbstractRecord init() {
 		header = new Dword(baseStruct.getBuffer(), offset);
 		/*check if it's data length is bigger than 4095 */
 		if ( getDataLength() >= 0xfff){
@@ -40,13 +42,7 @@ public class RecordStructure implements IRecordStructure {
 		}
 		return this;
 	}
-	
-	
-	@Override
-	public String getFilePath() {
-		return baseStruct.getFilePath();
-	}
-
+		
 	@Override
 	public String getStrucureName() {
 		return this.getTagName();
@@ -118,13 +114,19 @@ public class RecordStructure implements IRecordStructure {
 		throw new RuntimeException("not implemented");
 	}
 	
+	@Override
+	public int getLevel() {
+		int val = (int) (header.getValue() >> 10);
+		return (int) ( val & BIT_MASK_10);
+	};
+	
 	/**
 	 * 문서에서 Tag ID 로 언급되는 문자열을 반환.
 	 * 
 	 */
 	@Override
 	public String getTagName() {
-		int idx = this.getTagValue() - 0x10;
+		int idx = this.getTagValue() - Constant.HWPTAG_BEGIN;
 		return Constant.TAGNAMES[idx];
 	}
 	/**
@@ -134,6 +136,13 @@ public class RecordStructure implements IRecordStructure {
 	public Integer getTagValue() {
 		return BIT_MASK_10 & header.getValue().intValue();
 	}
-	
-	
+
+	@Override
+	public HwpContext getHwpContext() {
+		return this.baseStruct.getHwpContext();
+	}
+	@Override
+	public IStreamStruct getParentStream() {
+		return this.baseStruct;
+	}
 }

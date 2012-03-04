@@ -7,8 +7,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
-import soopia.hwp.hexdump.view.DataStructureTreeNode;
-import soopia.hwp.structure.IDataStructure;
+import soopia.hwp.hexdump.view.DSTreeNode;
+import soopia.hwp.type.IDataType;
 
 public class HexviewTreeRenderer extends DefaultTreeCellRenderer {
 
@@ -17,10 +17,10 @@ public class HexviewTreeRenderer extends DefaultTreeCellRenderer {
 			boolean selected, boolean expanded, boolean leaf, int row,
 			boolean hasFocus) {
 		super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
-		DataStructureTreeNode node = (DataStructureTreeNode) value;
+		DSTreeNode node = (DSTreeNode) value;
 		
-		if ( node.getUserObject() instanceof IDataStructure){
-			IDataStructure ds = (IDataStructure) node.getUserObject();
+		if ( node.getUserObject() instanceof IDataType){
+			IDataType ds = (IDataType) node.getUserObject();
 			this.setText(ds.getStrucureName());
 		}
 		

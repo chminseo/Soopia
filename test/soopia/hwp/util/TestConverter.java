@@ -2,6 +2,8 @@ package soopia.hwp.util;
 
 import static org.junit.Assert.*;
 
+import java.nio.ByteBuffer;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,6 +44,14 @@ public class TestConverter {
 			Converter.getUInt32(new byte[]{0x10, 0x11}, 0);
 			fail ("exception expedted, but not thrown.");
 		} catch ( Exception e){}
+	}
+	@Test
+	public void test_read_int_from_bytebuffer() {
+		ByteBuffer buf = ByteBuffer.allocate(5);
+		buf.put(new byte[]{0x08, 0x10, 0x33, (byte)0xA0, 0x14});
+		
+		buf.clear().position(1);
+		assertEquals (346043152, Converter.getInt(buf));
 	}
 
 }

@@ -8,7 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import soopia.hwp.structure.UInt32;
+import soopia.hwp.type.UInt32;
 
 public class TestUInt32 {
 

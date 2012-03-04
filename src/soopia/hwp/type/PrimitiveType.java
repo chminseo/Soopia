@@ -1,12 +1,12 @@
-package soopia.hwp.structure;
+package soopia.hwp.type;
 
 import java.nio.ByteBuffer;
 
-public abstract class AbstractType<T> implements IDataStructure {
+public abstract class PrimitiveType<T> implements IDataType {
 	
 	protected int offset ;
 	protected ByteBuffer src ;
-	protected AbstractType(int offset, int length, ByteBuffer src){
+	protected PrimitiveType(int offset, int length, ByteBuffer src){
 		this.offset = offset;
 		this.src = ((ByteBuffer) src
 				.limit(offset+length)
@@ -19,11 +19,6 @@ public abstract class AbstractType<T> implements IDataStructure {
 	
 	abstract protected void checkValid ( );
 	abstract public T getValue();
-
-	@Override
-	public String getFilePath() {
-		throw new RuntimeException("not supported in primitive data type : " + this.getStrucureName() );
-	}
 	
 	@Override
 	public long getLength() {
@@ -46,6 +41,11 @@ public abstract class AbstractType<T> implements IDataStructure {
 		src.rewind();
 		src.get(b);
 		return b;
+	}
+	
+	@Override
+	public HwpContext getHwpContext() {
+		throw new UnsupportedOperationException("primitive data type implementation");
 	}
 	
 }

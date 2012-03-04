@@ -12,11 +12,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import soopia.hwp.structure.IDataStructure;
-import soopia.hwp.structure.IRecordStructure;
-import soopia.hwp.structure.RecordStructureFactory;
-import soopia.hwp.structure.StreamStructrue;
-import soopia.hwp.structure.StreamStructureFactory;
+import soopia.hwp.Constant;
+import soopia.hwp.type.AbstactStream;
+import soopia.hwp.type.IDataType;
+import soopia.hwp.type.IRecordStructure;
+import soopia.hwp.type.IStreamStruct;
+import soopia.hwp.type.RecordStructureFactory;
+import soopia.hwp.type.StreamStructureFactory;
 
 public class TestRecordStructure {
 	static RecordStructureFactory factory ;
@@ -33,8 +35,8 @@ public class TestRecordStructure {
 
 	@Test
 	public void test_record_structure_factory() {
-		IDataStructure mockDS = createMockStrcture();
-		List<IRecordStructure> structs = factory.createRecordStructures(mockDS);
+		IStreamStruct mockDS = createMockStrcture();
+		List<? extends IRecordStructure> structs = factory.createRecordStructures(mockDS);
 		assertEquals (2, structs.size());
 		
 		IRecordStructure rs = structs.get(0);
@@ -42,7 +44,7 @@ public class TestRecordStructure {
 		assertEquals(new Integer(26), rs.getDataLength());
 		assertEquals(new Integer(4), rs.getHeaderLength());
 		assertEquals(new Integer(0x010), rs.getTagValue());
-		assertEquals("HWPTAG_DOCUMENT_PROPERTIES", rs.getTagName());
+		assertEquals(Constant.DOCUMENT_PROPERTIES , rs.getTagName());
 		
 		ByteBuffer buf = rs.getBuffer();
 		assertEquals (0, buf.position());
@@ -58,6 +60,7 @@ public class TestRecordStructure {
 		assertEquals(new Integer(4), rs.getHeaderLength());
 		assertEquals(new Integer(0x011), rs.getTagValue());
 		assertEquals("HWPTAG_ID_MAPPINGS", rs.getTagName());
+		assertEquals("LEVEL", 0, rs.getLevel());
 		
 		buf = rs.getBuffer();
 		assertEquals (0, buf.position());
@@ -68,7 +71,7 @@ public class TestRecordStructure {
 		assertEquals((byte)0x02, data[8]);
 	}
 
-	private IDataStructure createMockStrcture() {
+	private IStreamStruct createMockStrcture() {
 		/* 두 개의 레코드 데이터
 		 * Tag ID : 0x10
 		 * Level  : 0x00
@@ -89,10 +92,10 @@ public class TestRecordStructure {
 		return new MockStreamStructue(data);
 	}
 	
-	static class MockStreamStructue extends StreamStructrue{
+	static class MockStreamStructue extends AbstactStream{
 
 		public MockStreamStructue(ByteBuffer data) {
-			super("C:" + File.separator + "mock.hwp", "Mock Structue", data);
+			super(null, "Mock Structue", data);
 			// TODO Auto-generated constructor stub
 		}
 		

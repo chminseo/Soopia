@@ -22,6 +22,7 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.filechooser.FileFilter;
 //import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
@@ -36,11 +37,13 @@ import java.util.List;
 import soopia.hwp.hexdump.model.FileModel;
 import soopia.hwp.hexdump.model.FileModelEvent;
 import soopia.hwp.hexdump.model.FileModelListener;
-import soopia.hwp.hexdump.view.DataStructureTreeNode;
+import soopia.hwp.hexdump.view.DSTreeNode;
 import soopia.hwp.hexdump.view.HexviewPanel;
-import soopia.hwp.structure.IDataStructure;
-import soopia.hwp.structure.IRecordStructure;
-import soopia.hwp.structure.RecordStructureFactory;
+import soopia.hwp.type.HwpContext;
+import soopia.hwp.type.IDataType;
+import soopia.hwp.type.IRecordStructure;
+import soopia.hwp.type.IStreamStruct;
+import soopia.hwp.type.RecordStructureFactory;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
@@ -97,10 +100,9 @@ public class HwpHexViewer extends JFrame {
 				if ( e.getClickCount() >1 && SwingUtilities.isLeftMouseButton(e)){
 					JTree tree = (JTree) e.getSource();
 					TreePath path = tree.getSelectionPath();
-					DataStructureTreeNode node = 
-							(DataStructureTreeNode) path.getLastPathComponent();
-					if ( node.getUserObject() instanceof IDataStructure )
-						createInternalFrame(path, (IDataStructure)node.getUserObject());
+					DSTreeNode node = (DSTreeNode) path.getLastPathComponent();
+					if ( node.getUserObject() instanceof IDataType )
+						createInternalFrame(path, (IDataType)node.getUserObject());
 				}
 			}
 		});
@@ -124,43 +126,64 @@ public class HwpHexViewer extends JFrame {
 	/*
 	 * 새로운 파일을 열었을때 tree 구조를 생성한다.
 	 */
-	private void createTreeNodes (final String hwpFilePath, final List<IDataStructure> dsList ){
+//	private void createTreeNodes (final String hwpFilePath, final List<IDataType> dsList ){
+	private void createTreeNodes (final String hwpFilePath, final HwpContext ctx ){
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				DataStructureTreeNode root, fNameNode, streamNode, recordNode ;
+				RecordStructureFactory factory = new RecordStructureFactory();
+				DSTreeNode rootNode, ctxNode, streamNode, recordNode ;
 				DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
-				root = (DataStructureTreeNode) treeModel.getRoot();
-				fNameNode = new DataStructureTreeNode(
+				rootNode = (DSTreeNode) treeModel.getRoot();
+				ctxNode = new DSTreeNode(
 						hwpFilePath.substring(hwpFilePath.lastIndexOf(File.separator) + 1),
 						true,
-						DataStructureTreeNode.TYPE_TOP_LEVEL);
-				// 1. add File Name node
-				treeModel.insertNodeInto(fNameNode, root, treeModel.getChildCount(root));
+						DSTreeNode.TYPE_TOP_LEVEL);
 				
-				TreePath treePath = new TreePath(treeModel.getPathToRoot(fNameNode));
-				RecordStructureFactory factory = new RecordStructureFactory();
-				List<IRecordStructure> recordDS;
-				for (IDataStructure ds : dsList) {
-					streamNode = new DataStructureTreeNode(
-							ds,
-							true,
-							DataStructureTreeNode.TYPE_STREAM); // docInfo, FileHader etc
-					// 2. add StreamStructure Node
-					treeModel.insertNodeInto(streamNode, fNameNode, 0);
-					
-					if ( "DocInfo".equals(ds.getStrucureName()) || ds.getStrucureName().startsWith("Section") ){						
-						recordDS = factory.createRecordStructures(ds);
-						for( IRecordStructure rs : recordDS){
-							recordNode = new DataStructureTreeNode( rs,false,
-									DataStructureTreeNode.TYPE_RECORD);
-							// 3. add RecordStructure Node
-							treeModel.insertNodeInto(
-									recordNode,
-									streamNode,
-									treeModel.getChildCount(streamNode));
-						}
+				/* Context Node */
+				treeModel.insertNodeInto(ctxNode, rootNode, treeModel.getChildCount(rootNode));
+				
+				/* File Header  */
+				streamNode = new DSTreeNode(ctx.getFileHeaderInfo(),false, DSTreeNode.TYPE_STREAM);
+				treeModel.insertNodeInto(streamNode, ctxNode, 0);
+				
+				/* Doc Info */
+				streamNode = new DSTreeNode(ctx.getDocInfo(), true, DSTreeNode.TYPE_STREAM); 
+				treeModel.insertNodeInto(streamNode, ctxNode, 1);
+				List<? extends IRecordStructure> recordStruct = 
+						factory.createRecordStructures((IStreamStruct)ctx.getDocInfo()) ;
+				for(IRecordStructure rs : recordStruct ){
+					recordNode = new DSTreeNode(rs, false, DSTreeNode.TYPE_RECORD);
+					treeModel.insertNodeInto(recordNode, streamNode, treeModel.getChildCount(streamNode));
+				}
+				
+				/* Summary Information */
+				streamNode = new DSTreeNode(ctx.getSummary(), true, DSTreeNode.TYPE_STREAM); 
+				treeModel.insertNodeInto(streamNode, ctxNode, 2);
+				
+				/* bodyText (SectionX) */
+				List<IStreamStruct> sections = ctx.getSections();
+				streamNode = new DSTreeNode(ctx.getSummary(), true, DSTreeNode.TYPE_STREAM); 
+				for( IDataType sct : sections ){
+					streamNode = new DSTreeNode(sct, true, DSTreeNode.TYPE_RECORD);
+					treeModel.insertNodeInto(streamNode, ctxNode, treeModel.getChildCount(ctxNode));
+					recordStruct = factory.createRecordStructures((IStreamStruct) sct);
+					for(IRecordStructure rs : recordStruct ){
+						recordNode = new DSTreeNode(rs, false, DSTreeNode.TYPE_RECORD);
+						treeModel.insertNodeInto(recordNode, streamNode, treeModel.getChildCount(streamNode));
 					}
 				}
+				/* prvImage, prvText */
+				streamNode = new DSTreeNode(ctx.getPreviewImage(), false, DSTreeNode.TYPE_STREAM); 
+				treeModel.insertNodeInto(streamNode, ctxNode, treeModel.getChildCount(ctxNode));
+				streamNode = new DSTreeNode(ctx.getPreviewText(), false, DSTreeNode.TYPE_STREAM); 
+				treeModel.insertNodeInto(streamNode, ctxNode, treeModel.getChildCount(ctxNode));
+				/* Binary Data */
+				List<IStreamStruct> bins = ctx.getBinaryData();
+				for( IDataType dt : bins){
+					streamNode = new DSTreeNode(dt, false, DSTreeNode.TYPE_STREAM); 
+					treeModel.insertNodeInto(streamNode, ctxNode, treeModel.getChildCount(ctxNode));
+				}
+				TreePath treePath = new TreePath(treeModel.getPathToRoot(ctxNode));
 				HwpHexViewer.this.tree.setSelectionPath(treePath);
 				tree.expandPath(treePath);
 			}
@@ -170,7 +193,7 @@ public class HwpHexViewer extends JFrame {
 	/*
 	 * tree에서 선택한 structure 정보를 internal frame에 출력.
 	 */
-	private void createInternalFrame (TreePath path, IDataStructure ds){
+	private void createInternalFrame (TreePath path, IDataType ds){
 		// 이미 열려있는지 확인
 		String key = path.toString();
 		Component [] coms = desktopPane.getComponents();
@@ -216,12 +239,12 @@ public class HwpHexViewer extends JFrame {
 		private static final long serialVersionUID = 1L;
 
 		public FileModelHandle() {
-			super(new DataStructureTreeNode("HWP Files", true, DataStructureTreeNode.TYPE_ROOT));
+			super(new DSTreeNode("HWP Files", true, DSTreeNode.TYPE_ROOT));
 		}
 
 		@Override
 		public void fileAdded(final FileModelEvent event) {
-			createTreeNodes(event.getFilePath(), event.getDataStructureList());
+			createTreeNodes(event.getFilePath(), (HwpContext)event.getObject());
 		}
 	}
 	/**

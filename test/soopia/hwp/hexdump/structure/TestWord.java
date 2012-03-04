@@ -9,7 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import soopia.hwp.structure.Word;
+import soopia.hwp.type.Word;
 
 public class TestWord {
 

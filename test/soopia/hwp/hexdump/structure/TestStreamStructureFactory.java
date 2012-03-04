@@ -3,43 +3,59 @@ package soopia.hwp.hexdump.structure;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import soopia.hwp.structure.StreamStructureFactory;
-import soopia.hwp.structure.IDataStructure;
+import soopia.hwp.Constant;
+import soopia.hwp.type.HwpContext;
+import soopia.hwp.type.IDataType;
+import soopia.hwp.type.IRecordStructure;
+import soopia.hwp.type.StreamStructureFactory;
+import soopia.hwp.type.record.DocPropertyRecord;
+import soopia.hwp.type.stream.DocInfoStream;
+import soopia.hwp.type.stream.FileHeaderInfo;
 
 public class TestStreamStructureFactory {
-	StreamStructureFactory factory ;
-	static String fName = "sample.hwp";
+	static StreamStructureFactory factory ;
+	static String fName ;
 	static File hwpFile = null;
-//	InputStream in;
-	
-	@Before
-	public void setUp() throws Exception {
+	static HwpContext ctx ;
+	@BeforeClass
+	public static void setUp() throws Exception {
+		fName = System.getProperty("sample.file");
 		factory = new StreamStructureFactory();
-		URL url = this.getClass().getClassLoader().getResource(fName);
-		hwpFile = new File ( url.toURI() );
+		hwpFile = new File (fName);
+		ctx = factory.createHwpContext(hwpFile);
 	}
 
-	@After
-	public void tearDown() throws Exception {
+	@AfterClass
+	public static void tearDown() throws Exception {
 	}
-
 	@Test
-	public void testCreateDataStructure() {
+	public void test_hwp_context_creation() throws IOException {
+		FileHeaderInfo fInfo = (FileHeaderInfo) ctx.getFileHeaderInfo();
+		assertEquals ("5.0.3.0", fInfo.getVersionString());
+		assertFalse (fInfo.isCompressed());
+		assertFalse (fInfo.isPassword());
+		assertFalse (fInfo.isDistribution());
 		
-		List<IDataStructure> list = factory.createDataStructure(hwpFile);
-		assertEquals (9, list.size());
-//		for( IDataStructure ds : list){
-//			System.out.println(ds.getStrucureName());
-//		}
+//		DocInfoStream docInfo = (DocInfoStream)ctx.getDocInfo();
+//		assertEquals (1, docInfo.getRecord(Constant.DOCUMENT_PROPERTIES).size());
+//		assertEquals (1, docInfo.getRecord(Constant.ID_MAPPINGS).size());
+	}
+	@Test
+	public void test_docInfo_creation() throws IOException {
+		DocInfoStream docInfo = (DocInfoStream) ctx.getDocInfo();
+//		IRecordStructure record = (DocPropertyRecord) docInfo.getRecord(Constant.DOCUMENT_PROPERTIES).get(0);
 	}
 
 }

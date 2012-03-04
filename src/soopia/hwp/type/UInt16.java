@@ -1,14 +1,15 @@
-package soopia.hwp.structure;
+package soopia.hwp.type;
 
 import java.nio.ByteBuffer;
 
+import soopia.hwp.Constant;
 import soopia.hwp.util.Converter;
 /**
  *  unsigned __int16 ( 0 to 65,535 )
  * @author chmin
  *
  */
-public class UInt16 extends AbstractType<Integer> {
+public class UInt16 extends PrimitiveType<Integer> {
 
 	public UInt16(ByteBuffer src, int offset) {
 		super(offset, 2, src);

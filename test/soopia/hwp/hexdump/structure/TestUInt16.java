@@ -8,7 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import soopia.hwp.structure.UInt16;
+import soopia.hwp.type.UInt16;
 /**
  * unsigned __int16 에 해당하는 자료형( 0 ~ 65535 )
  * @author chmin

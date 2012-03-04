@@ -1,7 +1,8 @@
-package soopia.hwp.structure;
+package soopia.hwp.type;
 
 import java.nio.ByteBuffer;
 
+import soopia.hwp.Constant;
 import soopia.hwp.util.Converter;
 /**
  * unsigned __int32 ( 0 ~ 4,294,967,295 )
@@ -9,7 +10,7 @@ import soopia.hwp.util.Converter;
  * @author chmin
  *
  */
-public class UInt32 extends AbstractType<Long> {
+public class UInt32 extends PrimitiveType<Long> {
 
 	public UInt32(ByteBuffer src, int offset) {
 		super(offset, 4, src);

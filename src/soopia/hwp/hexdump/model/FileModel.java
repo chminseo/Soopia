@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import soopia.hwp.structure.StreamStructureFactory;
-import soopia.hwp.structure.IDataStructure;
+import soopia.hwp.type.HwpContext;
+import soopia.hwp.type.IDataType;
+import soopia.hwp.type.StreamStructureFactory;
 
 public class FileModel {
 //	private WeakHashMap<String, String> fsMap ;
@@ -36,9 +37,10 @@ public class FileModel {
 		}
 		String fileMapKey = file.getAbsolutePath().toLowerCase();
 		StreamStructureFactory dsf = new StreamStructureFactory();
-		List<IDataStructure> dsList = dsf.createDataStructure(file);
+//		List<IDataType> dsList = dsf.createDataStructure(file);
+		HwpContext ctx = dsf.createHwpContext(file);
 		
-		fireEvent("add", new FileModelEvent(fileMapKey, dsList));
+		fireEvent("add", new FileModelEvent(fileMapKey, ctx));
 	}
 	protected void fireEvent(String eventType, FileModelEvent evt ){
 		if ( eventType.equals ("add")){

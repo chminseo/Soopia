@@ -1,10 +1,11 @@
-package soopia.hwp.structure;
+package soopia.hwp.type;
 
 import java.nio.ByteBuffer;
 
-public interface IDataStructure {
+public interface IDataType {
 	
-	public String getFilePath ();
+	public HwpContext getHwpContext();
+	
 	public String getStrucureName ();
 	/**
 	 * returns the number of bytes

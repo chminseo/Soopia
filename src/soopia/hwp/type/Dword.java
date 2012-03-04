@@ -1,7 +1,8 @@
-package soopia.hwp.structure;
+package soopia.hwp.type;
 
 import java.nio.ByteBuffer;
 
+import soopia.hwp.Constant;
 import soopia.hwp.util.Converter;
 
 /**
@@ -9,7 +10,7 @@ import soopia.hwp.util.Converter;
  * @author chmin
  *
  */
-public class Dword extends AbstractType<Long> {
+public class Dword extends PrimitiveType<Long> {
 
 	public Dword(ByteBuffer src, int offset) {
 		super(offset, 4, src);

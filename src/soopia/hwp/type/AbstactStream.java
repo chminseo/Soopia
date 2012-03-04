@@ -1,6 +1,9 @@
-package soopia.hwp.structure;
+package soopia.hwp.type;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 /**
  * 한글 문서에서 Stream을 나타낸다. ( 표 2, p7)
  * 
@@ -10,34 +13,27 @@ import java.nio.ByteBuffer;
  * @author yeori
  *
  */
-public class StreamStructrue implements IDataStructure {
+public class AbstactStream implements IStreamStruct {
 
-	private String filePath;
 	private String structureName;
 	
 	private int offset ;
 	private ByteBuffer data;
 	
-	public StreamStructrue(String filePath, String structureName, ByteBuffer data ){
-		this.filePath = filePath;
+	private HwpContext context ;
+
+	protected ArrayList<? extends IRecordStructure> records;
+	public AbstactStream(HwpContext context, String structureName, ByteBuffer data ){
+		this.context = context;
 		this.structureName = structureName;
 		this.offset = 0;
 		this.data = data;
+		this.records = new ArrayList<>();
 	}
 	
-	public StreamStructrue(String filePath, String structureName,
-			ByteBuffer data, int offset) {
-		this(filePath, structureName, data);
-		this.offset = offset;
-	}
-
 	@Override
 	public int getOffset(){
 		return this.offset;
-	}
-	@Override
-	public String getFilePath() {
-		return this.filePath;
 	}
 	@Override
 	public String getStrucureName() {
@@ -56,7 +52,10 @@ public class StreamStructrue implements IDataStructure {
 	
 	@Override
 	public byte[] getBytes() {
-		return this.data.array();
+		byte [] b = new byte[data.capacity()];
+		this.data.clear();
+		this.data.get(b);
+		return b;
 	}
 	
 	@Override
@@ -64,8 +63,6 @@ public class StreamStructrue implements IDataStructure {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((data == null) ? 0 : data.hashCode());
-		result = prime * result
-				+ ((filePath == null) ? 0 : filePath.hashCode());
 		result = prime * result + offset;
 		result = prime * result
 				+ ((structureName == null) ? 0 : structureName.hashCode());
@@ -79,16 +76,11 @@ public class StreamStructrue implements IDataStructure {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		StreamStructrue other = (StreamStructrue) obj;
+		AbstactStream other = (AbstactStream) obj;
 		if (data == null) {
 			if (other.data != null)
 				return false;
 		} else if (!data.equals(other.data))
-			return false;
-		if (filePath == null) {
-			if (other.filePath != null)
-				return false;
-		} else if (!filePath.equals(other.filePath))
 			return false;
 		if (offset != other.offset)
 			return false;
@@ -101,7 +93,24 @@ public class StreamStructrue implements IDataStructure {
 	}
 	@Override
 	public String toString() {
-		return "DefaultStructrue [filePath=" + filePath + ", structureName="
+		return "DefaultStructrue [ structureName="
 				+ structureName + ", offset=" + offset + ", data-size=" + data.capacity() + "]";
+	}
+
+	@Override
+	public HwpContext getHwpContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<? extends IRecordStructure> getRecord(String recordType){
+		List<IRecordStructure> list = new ArrayList<>();
+		for( IRecordStructure rs : records){
+			if ( rs.getTagName().equals(recordType) )
+				list.add(rs);
+		}
+		return list.size() == 0 ? Collections.EMPTY_LIST : list;
 	}
 }

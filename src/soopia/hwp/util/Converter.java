@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.poi.util.LittleEndian;
 
-import soopia.hwp.structure.Dword;
+import soopia.hwp.type.Dword;
 
 public class Converter {
 	static int SZ_UINT16 = 2;
@@ -66,5 +66,19 @@ public class Converter {
 	public static int mm2HU (int mm){
 		// TODO 구현해야함.
 		return 0;
+	}
+	public static char getChar(ByteBuffer data) {
+		byte [] b = new byte[2];
+		return 'c';
+	}
+	public static char getWChar(byte[] b) {
+		int val = LittleEndian.getShort(b);
+		return (char) val;
+		
+	}
+	public static int getInt(ByteBuffer data) {
+		byte [] b = new byte[4];
+		data.get(b, 0, b.length);
+		return LittleEndian.getInt(b);
 	}
 }

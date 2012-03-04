@@ -2,7 +2,7 @@ package soopia.hwp.hexdump.view;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class DataStructureTreeNode extends DefaultMutableTreeNode {
+public class DSTreeNode extends DefaultMutableTreeNode {
 	final public static int TYPE_ROOT = 0;
 	final public static int TYPE_TOP_LEVEL = 2 ; // "STROAGE TOP LEVEL";
 	final public static int TYPE_STREAM = 4 ; // "STROAGE TAGE ID";
@@ -10,7 +10,7 @@ public class DataStructureTreeNode extends DefaultMutableTreeNode {
 	
 	private int nodeType ;
 	
-	public DataStructureTreeNode(Object userObject, boolean allowsChildren, int type) {
+	public DSTreeNode(Object userObject, boolean allowsChildren, int type) {
 		super(userObject, allowsChildren);
 		this.nodeType = type;
 	}
