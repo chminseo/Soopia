@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import org.apache.poi.util.LittleEndian;
 
 import soopia.hwp.type.Dword;
+import soopia.hwp.type.UInt16;
 
 public class Converter {
 	static int SZ_UINT16 = 2;
