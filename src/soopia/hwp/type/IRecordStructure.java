@@ -9,6 +9,9 @@ import java.nio.ByteBuffer;
  * @page p.14
  */
 public interface IRecordStructure extends IDataType {
+	public static final int BIT_MASK_10 = 0x3ff;
+	public static final int BIT_MASK_12 = 0xfff;
+
 	/**
 	 * 데이터 레코드에서 HEADER 길이
 	 * @return

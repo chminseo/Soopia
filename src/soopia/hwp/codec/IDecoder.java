@@ -6,5 +6,6 @@ import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.IDataType;
 
 public interface IDecoder<T extends IDataType> {
-	public T decode (ByteBuffer data, HwpContext context);
+	public T decode (T target,  ByteBuffer data, HwpContext context) throws DecodingException ;
+	public boolean isAvailable(String versionString);
 }

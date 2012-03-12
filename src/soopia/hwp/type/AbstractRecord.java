@@ -3,6 +3,8 @@ package soopia.hwp.type;
 import java.nio.ByteBuffer;
 
 import soopia.hwp.Constant;
+import soopia.hwp.type.stream.RecordHeader;
+import soopia.hwp.util.Converter;
 
 /**
  * Record structure consists of HEADER and DATA
@@ -21,26 +23,23 @@ import soopia.hwp.Constant;
  */
 public abstract class AbstractRecord implements IRecordStructure {
 
-	protected static final int BIT_MASK_10 = 0x3ff;
-	protected static final int BIT_MASK_12 = 0xfff;
-
 	private IStreamStruct baseStruct ;
 	protected int offset ;
 	
-	private Dword header ;
-	public AbstractRecord(IStreamStruct ds, int offset){
+	private RecordHeader header ;
+	private ByteBuffer src;
+	protected AbstractRecord(RecordHeader header, IStreamStruct ds, int offset){
 		this.baseStruct = ds;
 		this.offset = offset;
+		this.header = header;
+		this.src = cloneBuffer(ds.getBuffer());
 	}
 	
-	AbstractRecord init() {
-		header = new Dword(baseStruct.getBuffer(), offset);
-		/*check if it's data length is bigger than 4095 */
-		if ( getDataLength() >= 0xfff){
-			// TODO 아직 어떤 형태로 DATA 길이가 구성되는지 알 수 없으므로 발견 시 구현하도록 함.
-			throw new RuntimeException ("데이터 길이가 4095보다 큰 레코드 발견. 구현해야함");
-		}
-		return this;
+	private ByteBuffer cloneBuffer( ByteBuffer buf ){
+		byte [] b = new byte [(int)header.getDataSize()];
+		buf.position(header.getHeaderSize());
+		buf.get(b);
+		return ByteBuffer.wrap(b);
 	}
 		
 	@Override
@@ -65,25 +64,24 @@ public abstract class AbstractRecord implements IRecordStructure {
 	 */
 	@Override
 	public ByteBuffer getBuffer() {
-		ByteBuffer buf = ((ByteBuffer) baseStruct
-				.getBuffer()
-				.limit(offset + (int)getLength())
-				.position(offset)
-			).slice().asReadOnlyBuffer();
-		return buf;
+		byte [] b = new byte [header.getHeaderSize() + this.src.capacity()];
+		int pos = header.get(b);
+		this.src.get(b, pos, b.length - pos);
+		return ByteBuffer.wrap(b);
 	}
 	@Override
 	public byte[] getBytes() {
 		byte [] data = new byte[(int)getLength()];
-		ByteBuffer buf = this.getBuffer();
-		buf.flip();
-		baseStruct.getBuffer().get(data, 0, data.length);
+		int offset = header.get(data);
+		this.src.clear();
+		this.src.get(data, offset, data.length-offset);
+		
 		return data;
 	}
 	/*----------- IRecordStructure ----------- */
 	@Override
 	public Integer getHeaderLength() {
-		return (int) header.getLength(); // 4 bytes
+		return (int) header.getHeaderSize(); // 4 or 8 bytes
 	}
 	@Override
 	public ByteBuffer getHeaderBuffer() {
@@ -99,8 +97,7 @@ public abstract class AbstractRecord implements IRecordStructure {
 
 	@Override
 	public Integer getDataLength() {
-		long val = header.getValue() >> 20 ;
-		return (int) (val & BIT_MASK_12);
+		return (int) header.getDataSize();
 	}
 	@Override
 	public ByteBuffer getDataBuffer() {
@@ -116,8 +113,7 @@ public abstract class AbstractRecord implements IRecordStructure {
 	
 	@Override
 	public int getLevel() {
-		int val = (int) (header.getValue() >> 10);
-		return (int) ( val & BIT_MASK_10);
+		return header.getLevel();
 	};
 	
 	/**
@@ -134,7 +130,8 @@ public abstract class AbstractRecord implements IRecordStructure {
 	 */
 	@Override
 	public Integer getTagValue() {
-		return BIT_MASK_10 & header.getValue().intValue();
+		return header.getTagValue();
+//		return IRecordStructure.BIT_MASK_10 & header.getValue().intValue();
 	}
 
 	@Override

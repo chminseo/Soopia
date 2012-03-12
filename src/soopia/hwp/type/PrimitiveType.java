@@ -8,13 +8,16 @@ public abstract class PrimitiveType<T> implements IDataType {
 	protected ByteBuffer src ;
 	protected PrimitiveType(int offset, int length, ByteBuffer src){
 		this.offset = offset;
-		this.src = ((ByteBuffer) src
-				.limit(offset+length)
-				.position(offset)
-			)
-			.slice()
-			.asReadOnlyBuffer();
+		this.src = cloneBuffer(src, offset, length);
+		this.src.clear();
 		this.checkValid();
+	}
+	
+	private ByteBuffer cloneBuffer(ByteBuffer src, int offset, int length){
+		byte [] b = new byte [length];
+		src.position(offset);
+		src.get(b);
+		return ByteBuffer.wrap(b);
 	}
 	
 	abstract protected void checkValid ( );
@@ -32,7 +35,7 @@ public abstract class PrimitiveType<T> implements IDataType {
 
 	@Override
 	public ByteBuffer getBuffer() {
-		return this.src;
+		return this.src.asReadOnlyBuffer();
 	}
 	
 	@Override
@@ -47,5 +50,13 @@ public abstract class PrimitiveType<T> implements IDataType {
 	public HwpContext getHwpContext() {
 		throw new UnsupportedOperationException("primitive data type implementation");
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + offset;
+		result = prime * result + ((src == null) ? 0 : src.hashCode());
+		return result;
+	}
 }

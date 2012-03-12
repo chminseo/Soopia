@@ -13,7 +13,7 @@ import java.util.List;
  * @author yeori
  *
  */
-public class AbstactStream implements IStreamStruct {
+public abstract class AbstactStream implements IStreamStruct {
 
 	private String structureName;
 	
@@ -22,13 +22,13 @@ public class AbstactStream implements IStreamStruct {
 	
 	private HwpContext context ;
 
-	protected ArrayList<? extends IRecordStructure> records;
-	public AbstactStream(HwpContext context, String structureName, ByteBuffer data ){
+	protected ArrayList<IRecordStructure> records;
+	protected AbstactStream(HwpContext context, String structureName, ByteBuffer data ){
 		this.context = context;
 		this.structureName = structureName;
 		this.offset = 0;
 		this.data = data;
-		this.records = new ArrayList<>();
+		this.records = new ArrayList<IRecordStructure>();
 	}
 	
 	@Override
@@ -108,7 +108,9 @@ public class AbstactStream implements IStreamStruct {
 	public List<? extends IRecordStructure> getRecord(String recordType){
 		List<IRecordStructure> list = new ArrayList<>();
 		for( IRecordStructure rs : records){
-			if ( rs.getTagName().equals(recordType) )
+			if ( recordType != null && rs.getTagName().equals(recordType) )
+				list.add(rs);
+			else if ( recordType == null)
 				list.add(rs);
 		}
 		return list.size() == 0 ? Collections.EMPTY_LIST : list;

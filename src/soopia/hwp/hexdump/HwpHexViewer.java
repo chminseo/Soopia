@@ -16,13 +16,10 @@ import javax.swing.JTree;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 
 import javax.swing.JSeparator;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
 import javax.swing.filechooser.FileFilter;
-//import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
@@ -43,7 +40,7 @@ import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.IDataType;
 import soopia.hwp.type.IRecordStructure;
 import soopia.hwp.type.IStreamStruct;
-import soopia.hwp.type.RecordStructureFactory;
+import soopia.hwp.type.stream.DocInfoStream;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
@@ -111,6 +108,7 @@ public class HwpHexViewer extends JFrame {
 		desktopPane = new JDesktopPane();
 		desktopPane.setOpaque(false);
 		splitPane.setRightComponent(desktopPane);
+		splitPane.setDividerLocation(300);
 		
 		installController();
 		
@@ -130,7 +128,6 @@ public class HwpHexViewer extends JFrame {
 	private void createTreeNodes (final String hwpFilePath, final HwpContext ctx ){
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				RecordStructureFactory factory = new RecordStructureFactory();
 				DSTreeNode rootNode, ctxNode, streamNode, recordNode ;
 				DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
 				rootNode = (DSTreeNode) treeModel.getRoot();
@@ -149,8 +146,8 @@ public class HwpHexViewer extends JFrame {
 				/* Doc Info */
 				streamNode = new DSTreeNode(ctx.getDocInfo(), true, DSTreeNode.TYPE_STREAM); 
 				treeModel.insertNodeInto(streamNode, ctxNode, 1);
-				List<? extends IRecordStructure> recordStruct = 
-						factory.createRecordStructures((IStreamStruct)ctx.getDocInfo()) ;
+				List<? extends IRecordStructure> recordStruct = ((DocInfoStream)ctx.getDocInfo()).getRecord(null); 
+//						factory.createRecordStructures((IStreamStruct)ctx.getDocInfo()) ;
 				for(IRecordStructure rs : recordStruct ){
 					recordNode = new DSTreeNode(rs, false, DSTreeNode.TYPE_RECORD);
 					treeModel.insertNodeInto(recordNode, streamNode, treeModel.getChildCount(streamNode));
@@ -161,17 +158,17 @@ public class HwpHexViewer extends JFrame {
 				treeModel.insertNodeInto(streamNode, ctxNode, 2);
 				
 				/* bodyText (SectionX) */
-				List<IStreamStruct> sections = ctx.getSections();
-				streamNode = new DSTreeNode(ctx.getSummary(), true, DSTreeNode.TYPE_STREAM); 
-				for( IDataType sct : sections ){
-					streamNode = new DSTreeNode(sct, true, DSTreeNode.TYPE_RECORD);
-					treeModel.insertNodeInto(streamNode, ctxNode, treeModel.getChildCount(ctxNode));
-					recordStruct = factory.createRecordStructures((IStreamStruct) sct);
-					for(IRecordStructure rs : recordStruct ){
-						recordNode = new DSTreeNode(rs, false, DSTreeNode.TYPE_RECORD);
-						treeModel.insertNodeInto(recordNode, streamNode, treeModel.getChildCount(streamNode));
-					}
-				}
+//				List<IStreamStruct> sections = ctx.getSections();
+//				streamNode = new DSTreeNode(ctx.getSummary(), true, DSTreeNode.TYPE_STREAM); 
+//				for( IDataType sct : sections ){
+//					streamNode = new DSTreeNode(sct, true, DSTreeNode.TYPE_RECORD);
+//					treeModel.insertNodeInto(streamNode, ctxNode, treeModel.getChildCount(ctxNode));
+//					recordStruct = factory.createRecordStructures((IStreamStruct) sct);
+//					for(IRecordStructure rs : recordStruct ){
+//						recordNode = new DSTreeNode(rs, false, DSTreeNode.TYPE_RECORD);
+//						treeModel.insertNodeInto(recordNode, streamNode, treeModel.getChildCount(streamNode));
+//					}
+//				}
 				/* prvImage, prvText */
 				streamNode = new DSTreeNode(ctx.getPreviewImage(), false, DSTreeNode.TYPE_STREAM); 
 				treeModel.insertNodeInto(streamNode, ctxNode, treeModel.getChildCount(ctxNode));
@@ -297,8 +294,10 @@ public class HwpHexViewer extends JFrame {
 				    }
 				
 				HwpHexViewer hv = new HwpHexViewer();
-				hv.setSize(new Dimension(800, 600));
+				Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 				
+				hv.setSize(new Dimension(dim.width-300, dim.height-300));
+				hv.setLocationRelativeTo(null);
 				hv.setVisible(true);
 				
 			}

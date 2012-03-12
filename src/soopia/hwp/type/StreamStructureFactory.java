@@ -15,6 +15,9 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 import org.apache.poi.poifs.filesystem.DocumentInputStream;
 import org.apache.poi.util.IOUtils;
 
+import soopia.hwp.codec.DecodingException;
+import soopia.hwp.codec.DocInfoDecoder;
+import soopia.hwp.codec.FileHeaderDecoder;
 import soopia.hwp.type.stream.BinaryData;
 import soopia.hwp.type.stream.DocInfoStream;
 import soopia.hwp.type.stream.FileHeaderInfo;
@@ -65,16 +68,15 @@ public class StreamStructureFactory {
 			String name = event.getName();
 			try {
 				buf = ByteBuffer.wrap(IOUtils.toByteArray(dis));
-				if ( name.toLowerCase().equals("fileheader") ){
-					FileHeaderInfo headerInfo = new FileHeaderInfo(ctx, buf);
-					ctx.setFileHeader(headerInfo);
+				if ( name.toLowerCase().equals("fileheader") ){ 
+					ctx.setFileHeader(new FileHeaderDecoder().decode(null, buf, ctx));
 				} else if ( name.toLowerCase().startsWith("section")){
-//					IDataType stream = new SectionStream(ctx, name, buf);
 					ctx.addSection(new SectionStream(ctx, name, buf));
 				} else if ( name.toLowerCase().startsWith("bin")){
 					ctx.addBinaryData(new BinaryData(ctx, name, buf));
 				} else if ( name.toLowerCase().equals("docinfo") ){
-					ctx.setDocInfo(new DocInfoStream(ctx, name, buf));
+					// FIXME 디코더 안에서 stream 인스턴스를 생성하고 context에 등록시키면 코드가 간결해진다.
+					ctx.setDocInfo(new DocInfoDecoder().decode(null, buf, ctx));
 				} else if ( name.toLowerCase().endsWith("summaryinformation") ){
 					ctx.setSummary(new SummaryInfo(ctx, name, buf));
 				} else if ( name.toLowerCase().equals("prvimage")){
@@ -88,55 +90,10 @@ public class StreamStructureFactory {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (DecodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-		
 	}
-	
-	
-	
-//	public List<IDataType> createDataStructure ( final File hwpFile) {
-//		
-//		FileInputStream fis = null;
-//		try {
-//			fis = new FileInputStream(hwpFile);
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//		POIFSReader poiReader = new POIFSReader();
-//		POIListener listener = new POIListener(hwpFile);
-//		poiReader.registerListener(listener);
-//		try {
-//			poiReader.read(fis);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		return listener.dsList;
-//	}
-	
-	
-//	public static class POIListener implements POIFSReaderListener{
-//		File hwpFile ;
-//		List<IDataType> dsList ;
-//		public POIListener(File hwpFile){
-//			this.hwpFile = hwpFile;
-//			this.dsList = new ArrayList<>();
-//		}
-//		@Override
-//		public void processPOIFSReaderEvent(POIFSReaderEvent event) {
-//			DocumentInputStream dis = event.getStream();
-//			ByteBuffer buf = null;
-//			String path = hwpFile.getAbsolutePath();
-//			try {
-//				buf = ByteBuffer.wrap(IOUtils.toByteArray(dis));
-////				System.out.println(event.getName());
-//				dsList.add(new StreamStructrue(event.getName(), buf));
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			
-//		}
-//		
-//	}
 }

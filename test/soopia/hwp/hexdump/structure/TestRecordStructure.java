@@ -13,63 +13,25 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import soopia.hwp.Constant;
+import soopia.hwp.codec.DocInfoDecoder;
 import soopia.hwp.type.AbstactStream;
 import soopia.hwp.type.IDataType;
 import soopia.hwp.type.IRecordStructure;
 import soopia.hwp.type.IStreamStruct;
-import soopia.hwp.type.RecordStructureFactory;
 import soopia.hwp.type.StreamStructureFactory;
 
 public class TestRecordStructure {
-	static RecordStructureFactory factory ;
 	
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		factory = new RecordStructureFactory();
 	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		factory = null ;
 	}
-
+	
 	@Test
-	public void test_record_structure_factory() {
-		IStreamStruct mockDS = createMockStrcture();
-		List<? extends IRecordStructure> structs = factory.createRecordStructures(mockDS);
-		assertEquals (2, structs.size());
-		
-		IRecordStructure rs = structs.get(0);
-		
-		assertEquals(new Integer(26), rs.getDataLength());
-		assertEquals(new Integer(4), rs.getHeaderLength());
-		assertEquals(new Integer(0x010), rs.getTagValue());
-		assertEquals(Constant.DOCUMENT_PROPERTIES , rs.getTagName());
-		
-		ByteBuffer buf = rs.getBuffer();
-		assertEquals (0, buf.position());
-		assertEquals(30, buf.capacity());
-		
-		byte [] data = rs.getBytes();
-		assertEquals(30, data.length);
-		assertEquals((byte)0xA0, data[2]);
-		
-		rs = structs.get(1);
-		
-		assertEquals(new Integer(64), rs.getDataLength());
-		assertEquals(new Integer(4), rs.getHeaderLength());
-		assertEquals(new Integer(0x011), rs.getTagValue());
-		assertEquals("HWPTAG_ID_MAPPINGS", rs.getTagName());
-		assertEquals("LEVEL", 0, rs.getLevel());
-		
-		buf = rs.getBuffer();
-		assertEquals (0, buf.position());
-		assertEquals(68, buf.capacity());
-		
-		data = rs.getBytes();
-		assertEquals(68, data.length);
-		assertEquals((byte)0x02, data[8]);
-	}
+	public void test_null(){}
 
 	private IStreamStruct createMockStrcture() {
 		/* 두 개의 레코드 데이터

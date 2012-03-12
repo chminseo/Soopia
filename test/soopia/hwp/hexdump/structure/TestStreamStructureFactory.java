@@ -41,21 +41,25 @@ public class TestStreamStructureFactory {
 	public static void tearDown() throws Exception {
 	}
 	@Test
-	public void test_hwp_context_creation() throws IOException {
+	public void test_hwp_fileInfo_creation() throws IOException {
 		FileHeaderInfo fInfo = (FileHeaderInfo) ctx.getFileHeaderInfo();
 		assertEquals ("5.0.3.0", fInfo.getVersionString());
 		assertFalse (fInfo.isCompressed());
 		assertFalse (fInfo.isPassword());
 		assertFalse (fInfo.isDistribution());
 		
-//		DocInfoStream docInfo = (DocInfoStream)ctx.getDocInfo();
-//		assertEquals (1, docInfo.getRecord(Constant.DOCUMENT_PROPERTIES).size());
-//		assertEquals (1, docInfo.getRecord(Constant.ID_MAPPINGS).size());
+		DocInfoStream docInfo = (DocInfoStream)ctx.getDocInfo();
+		assertEquals (1, 
+				docInfo.getRecord(Constant.DOCUMENT_PROPERTIES)
+				.size());
 	}
 	@Test
 	public void test_docInfo_creation() throws IOException {
 		DocInfoStream docInfo = (DocInfoStream) ctx.getDocInfo();
-//		IRecordStructure record = (DocPropertyRecord) docInfo.getRecord(Constant.DOCUMENT_PROPERTIES).get(0);
+		DocPropertyRecord record = (DocPropertyRecord) docInfo.getRecord(Constant.DOCUMENT_PROPERTIES).get(0);
+		assertEquals (new Integer(1), record.getStartOfPageNum().getValue());
+		assertEquals (new Integer(1), record.getStartNumOfFootNote().getValue());
+		
 	}
 
 }

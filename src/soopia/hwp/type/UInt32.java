@@ -34,5 +34,23 @@ public class UInt32 extends PrimitiveType<Long> {
 	public Long getValue() {
 		return Converter.getUInt32(this.getBytes(), 0);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if ( obj instanceof UInt32 ){
+			return this.getValue().equals(((UInt16)obj).getValue());
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString(){
+		return "UINT32[" + this.getValue() + "]";
+	}
+	
 
 }

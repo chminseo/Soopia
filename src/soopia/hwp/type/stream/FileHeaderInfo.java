@@ -11,6 +11,7 @@ public class FileHeaderInfo extends AbstactStream {
 	final public static int MASK_COMPRESS = 0x1;
 	final public static int MASK_PASSWORD = 0x1 << 1;
 	final public static int MASK_DISTRIBUTION = 0x1 << 2;
+	public static final int MASK_SCRIPT_EMBEDED = 0x1 << 3;
 	
 	private String version;
 	private boolean compressed ;
@@ -20,44 +21,49 @@ public class FileHeaderInfo extends AbstactStream {
 	
 	public FileHeaderInfo(HwpContext context, ByteBuffer data) {
 		super(context, "FileHeader", data);
-		
-		/* signature */
-		data.position(32);
-		/* version */
-		int val = Converter.getInt(data);
-		version = String.valueOf( (val >> 24) & 0xff);
-		version += "." + String.valueOf( (val >> 16) & 0xff);
-		version += "." + String.valueOf( (val >>  8) & 0xff );
-		version += "." + String.valueOf( (val >>  0) & 0xff );
-		
-		int prop = Converter.getInt(data);
-		compressed = (prop & MASK_COMPRESS) > 0 ? true : false;
-		password = (prop & MASK_PASSWORD ) > 0 ? true : false;
-		distribution = (prop & MASK_DISTRIBUTION ) > 1 ? true : false;
-		
 	}
 
 	public String getVersionString() {
 		
 		return this.version;
 	}
+	
+	public void setVersionString(String version) {
+		this.version = version;
+	}
 
 	public boolean isCompressed() {
 		return compressed;
 	}
+	
+	public void setCompressed(boolean compressed) {
+		this.compressed = compressed;
+	}
+
 
 	public boolean isPassword() {
 		return password;
 	}
 
+	public void setPassword(boolean password) {
+		this.password = password;
+	}
+	
 	public boolean isDistribution() {
 		return distribution;
 	}
 
+	public void setDistribution(boolean distribution) {
+		this.distribution = distribution;
+	}
+	
 	public boolean isScriptEmbedded() {
 		return scriptEmbedded;
 	}
 	
+	public void setScriptEmbedded(boolean scriptEmbedded) {
+		this.scriptEmbedded = scriptEmbedded;
+	}
 	
 
 }

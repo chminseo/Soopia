@@ -8,27 +8,16 @@ import java.util.List;
 import soopia.hwp.type.AbstactStream;
 import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.IRecordStructure;
-import soopia.hwp.type.RecordStructureFactory;
+import soopia.hwp.type.record.DocPropertyRecord;
+import soopia.hwp.type.record.IDMappingsRecord;
 
 public class DocInfoStream extends AbstactStream {
-//	private List<? extends IRecordStructure> records ;
 	
-	private static final RecordStructureFactory factory = new RecordStructureFactory();
-	
-	public DocInfoStream(HwpContext context, String structureName, ByteBuffer data) {
-		super(context, structureName, data);
-		
-		records = (ArrayList<? extends IRecordStructure>) factory.createRecordStructures(this);
+	public DocInfoStream(HwpContext context, ByteBuffer data) {
+		super(context, "DocInfo", data);
 	}
 	
-//	@Override
-//	@SuppressWarnings("unchecked")
-//	public List<? extends IRecordStructure> getRecord(String recordType){
-//		List<IRecordStructure> list = new ArrayList<>();
-//		for( IRecordStructure rs : records){
-//			if ( rs.getTagName().equals(recordType) )
-//				list.add(rs);
-//		}
-//		return list.size() == 0 ? Collections.EMPTY_LIST : list;
-//	}
+	public void addRecord(IRecordStructure record){
+		this.records.add(record);
+	}
 }
