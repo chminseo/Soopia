@@ -41,6 +41,7 @@ import soopia.hwp.type.IDataType;
 import soopia.hwp.type.IRecordStructure;
 import soopia.hwp.type.IStreamStruct;
 import soopia.hwp.type.stream.DocInfoStream;
+import soopia.hwp.type.stream.SectionStream;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
@@ -158,17 +159,17 @@ public class HwpHexViewer extends JFrame {
 				treeModel.insertNodeInto(streamNode, ctxNode, 2);
 				
 				/* bodyText (SectionX) */
-//				List<IStreamStruct> sections = ctx.getSections();
+				List<IStreamStruct> sections = ctx.getSections();
 //				streamNode = new DSTreeNode(ctx.getSummary(), true, DSTreeNode.TYPE_STREAM); 
-//				for( IDataType sct : sections ){
-//					streamNode = new DSTreeNode(sct, true, DSTreeNode.TYPE_RECORD);
-//					treeModel.insertNodeInto(streamNode, ctxNode, treeModel.getChildCount(ctxNode));
-//					recordStruct = factory.createRecordStructures((IStreamStruct) sct);
-//					for(IRecordStructure rs : recordStruct ){
-//						recordNode = new DSTreeNode(rs, false, DSTreeNode.TYPE_RECORD);
-//						treeModel.insertNodeInto(recordNode, streamNode, treeModel.getChildCount(streamNode));
-//					}
-//				}
+				for( IDataType sct : sections ){
+					streamNode = new DSTreeNode(sct, true, DSTreeNode.TYPE_RECORD);
+					treeModel.insertNodeInto(streamNode, ctxNode, treeModel.getChildCount(ctxNode));
+					recordStruct = ((SectionStream)sct).getRecord(null);
+					for(IRecordStructure rs : recordStruct ){
+						recordNode = new DSTreeNode(rs, false, DSTreeNode.TYPE_RECORD);
+						treeModel.insertNodeInto(recordNode, streamNode, treeModel.getChildCount(streamNode));
+					}
+				}
 				/* prvImage, prvText */
 				streamNode = new DSTreeNode(ctx.getPreviewImage(), false, DSTreeNode.TYPE_STREAM); 
 				treeModel.insertNodeInto(streamNode, ctxNode, treeModel.getChildCount(ctxNode));

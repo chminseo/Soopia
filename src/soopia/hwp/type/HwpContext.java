@@ -17,7 +17,7 @@ import soopia.hwp.type.stream.RecordHeader;
 import soopia.hwp.type.stream.SummaryInfo;
 
 public class HwpContext {
-	private IDataType docInfo ;
+	private DocInfoStream docInfo ;
 	private FileHeaderInfo fileHeader ;
 	private ArrayList<IStreamStruct> sections;
 	private SummaryInfo summary;
@@ -42,7 +42,7 @@ public class HwpContext {
 		return docInfo;
 	}
 
-	public void setDocInfo(IDataType docInfo) {
+	public void setDocInfo(DocInfoStream docInfo) {
 		this.docInfo = docInfo;
 	}
 
