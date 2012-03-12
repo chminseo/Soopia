@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
@@ -18,13 +18,11 @@ import org.apache.poi.util.IOUtils;
 import soopia.hwp.codec.DecodingException;
 import soopia.hwp.codec.DocInfoDecoder;
 import soopia.hwp.codec.FileHeaderDecoder;
+import soopia.hwp.codec.SectionInfoDecoder;
 import soopia.hwp.type.stream.BinaryData;
-import soopia.hwp.type.stream.DocInfoStream;
-import soopia.hwp.type.stream.FileHeaderInfo;
 import soopia.hwp.type.stream.LinkDocInfo;
 import soopia.hwp.type.stream.PreviewImageInfo;
 import soopia.hwp.type.stream.PreviewTextInfo;
-import soopia.hwp.type.stream.SectionStream;
 import soopia.hwp.type.stream.SummaryInfo;
 
 public class StreamStructureFactory {
@@ -48,30 +46,27 @@ public class StreamStructureFactory {
 		poiReader.registerListener(handler);
 		try {
 			poiReader.read(is);
+			initHwpContext(ctx, handler.bufferMap);
 			return ctx;
 		} catch (IOException e) {
 			throw e;
 		}
 	}
 	
-	public static class ContextHandler implements POIFSReaderListener {
-		InputStream is;
-		HwpContext ctx;
-		public ContextHandler(InputStream is, HwpContext ctx){
-			this.is = is;
-			this.ctx = ctx;
-		}
-		@Override
-		public void processPOIFSReaderEvent(POIFSReaderEvent event) {
-			DocumentInputStream dis = event.getStream();
-			ByteBuffer buf = null;
-			String name = event.getName();
-			try {
-				buf = ByteBuffer.wrap(IOUtils.toByteArray(dis));
-				if ( name.toLowerCase().equals("fileheader") ){ 
-					ctx.setFileHeader(new FileHeaderDecoder().decode(null, buf, ctx));
-				} else if ( name.toLowerCase().startsWith("section")){
-					ctx.addSection(new SectionStream(ctx, name, buf));
+	private void initHwpContext(HwpContext ctx, HashMap<String, ByteBuffer> map){
+		String name = "FileHeader";
+		ByteBuffer buf = null ;
+		
+		try {
+			/* FileHeader부터 먼저 처리한다. */
+			buf = map.get(name);
+			ctx.setFileHeader(new FileHeaderDecoder().decode(null, buf, ctx));
+			Iterator<String> keys = map.keySet().iterator();
+			while ( keys.hasNext()){
+				name = keys.next();
+				buf = map.get(name);
+				if ( name.toLowerCase().startsWith("section")){
+					ctx.addSection(new SectionInfoDecoder().decode(null, buf, ctx));
 				} else if ( name.toLowerCase().startsWith("bin")){
 					ctx.addBinaryData(new BinaryData(ctx, name, buf));
 				} else if ( name.toLowerCase().equals("docinfo") ){
@@ -88,10 +83,37 @@ public class StreamStructureFactory {
 				} else if ( name.toLowerCase().endsWith("prvtext")){
 					ctx.setPreviewText(new PreviewTextInfo(ctx, name, buf));
 				}
+			}
+		} catch (DecodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static class ContextHandler implements POIFSReaderListener {
+		InputStream is;
+		HwpContext ctx;
+		HashMap<String, ByteBuffer> bufferMap = new HashMap<>();
+		public ContextHandler(InputStream is, HwpContext ctx){
+			this.is = is;
+			this.ctx = ctx;
+		}
+		@Override
+		public void processPOIFSReaderEvent(POIFSReaderEvent event) {
+			DocumentInputStream dis = event.getStream();
+			ByteBuffer buf = null;
+			String name = event.getName(); /* stream name */
+			
+			try {
+				/*
+				 * 기존의 구현은 FileHeader가 가장 먼저 해석되는 것을 가정하고 있으나
+				 * 실제로 문서의 구조에 따라서 다른 스트림 데이터가 먼저 등장할 수 있다.
+				 * 이럴 경우 이후의 작업에서 FileHeader 정보를 참조하는 곳에서 NullPointerException이 발생한다.
+				 * 
+				 * 일단 스트림 이름으로 바이트 스트림을 저장한 후 FileHeader부터 처리해야 한다.
+				 */
+				buf = ByteBuffer.wrap(IOUtils.toByteArray(dis));
+				bufferMap.put(name, buf);
 			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (DecodingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
