@@ -11,14 +11,11 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import soopia.hwp.Constant;
 import soopia.hwp.type.HwpContext;
-import soopia.hwp.type.IDataType;
-import soopia.hwp.type.IRecordStructure;
 import soopia.hwp.type.StreamStructureFactory;
 import soopia.hwp.type.record.DocPropertyRecord;
 import soopia.hwp.type.stream.DocInfoStream;

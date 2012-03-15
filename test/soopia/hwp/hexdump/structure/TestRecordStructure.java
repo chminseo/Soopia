@@ -2,23 +2,14 @@ package soopia.hwp.hexdump.structure;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.nio.ByteBuffer;
-import java.util.List;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import soopia.hwp.Constant;
-import soopia.hwp.codec.DocInfoDecoder;
 import soopia.hwp.type.AbstactStream;
-import soopia.hwp.type.IDataType;
-import soopia.hwp.type.IRecordStructure;
 import soopia.hwp.type.IStreamStruct;
-import soopia.hwp.type.StreamStructureFactory;
 
 public class TestRecordStructure {
 	
