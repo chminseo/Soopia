@@ -66,6 +66,7 @@ public abstract class AbstractRecord implements IRecordStructure {
 	public ByteBuffer getBuffer() {
 		byte [] b = new byte [header.getHeaderSize() + this.src.capacity()];
 		int pos = header.get(b);
+		this.src.clear();
 		this.src.get(b, pos, b.length - pos);
 		return ByteBuffer.wrap(b);
 	}

@@ -90,7 +90,7 @@ public class HwpContext {
 		return this.binDatas;
 	}
 	
-	public IDecoder<?> getDecoder(Class<? extends IDataType> recordClass) {
+	public IDecoder<? extends IRecordStructure> getDecoder(Class<? extends IDataType> recordClass) {
 		String version = ((FileHeaderInfo)this.fileHeader).getVersionString();
 		Repository rep = Repository.getInstance();
 		IDecoder<? extends IRecordStructure> decoder = rep.getDecoder(recordClass);

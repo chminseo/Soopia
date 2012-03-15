@@ -5,7 +5,9 @@ import java.util.HashMap;
 import soopia.hwp.Constant;
 import soopia.hwp.codec.DocPropRecordDecoder;
 import soopia.hwp.codec.IDecoder;
+import soopia.hwp.codec.IdMappingRecordDecoder;
 import soopia.hwp.type.record.DocPropertyRecord;
+import soopia.hwp.type.record.IDMappingsRecord;
 
 public class Repository {
 	
@@ -45,11 +47,17 @@ public class Repository {
 		return rep;
 	}
 	
+	private void installDecoder(){
+		decoderMap.put(DocPropertyRecord.class, new DocPropRecordDecoder());
+		decoderMap.put(IDMappingsRecord.class, new IdMappingRecordDecoder());		
+	}
 	public void installDefault(){
 		String [] tagNames = Constant.TAGNAMES;
 		int idx = 0;
 		recordStructMap.put(Constant.HWPTAG_BEGIN + idx, DocPropertyRecord.class);
-		decoderMap.put(DocPropertyRecord.class, new DocPropRecordDecoder());
+		recordStructMap.put(Constant.HWPTAG_BEGIN + (++idx), IDMappingsRecord.class);
+		
+		installDecoder();
 		
 		for( ++idx ; idx < tagNames.length ; idx++){
 			recordStructMap.put(Constant.HWPTAG_BEGIN + idx, NotImplementedRecord.class);

@@ -20,10 +20,10 @@ public class TestIdMappingRecordDecoder {
 	ByteBuffer buf ;
 	@Before
 	public void setUp() throws Exception {
-		buf = ByteBuffer.allocate(data.length - 4);
-		buf.put(data, 4, data.length - 4);
+		buf = ByteBuffer.allocate(data.length);
+		buf.put(data);
 		
-		ds = new MockDocInfo(null, null);
+		ds = new MockDocInfo(null, buf);
 		RecordHeader header = new RecordHeader();
 		header.baseHeader = new Dword(buf, 0);
 		
@@ -38,6 +38,8 @@ public class TestIdMappingRecordDecoder {
 	@Test
 	public void test_decoding_IdMappingRecord() throws DecodingException {
 		record = decoder.decode(record, buf, null);
+		assertEquals(13, record.getNumOfParaShape().getValue().intValue());
+		assertEquals(14, record.getNumOfStyle().getValue().intValue());
 		
 	}
 	
@@ -50,16 +52,17 @@ public class TestIdMappingRecordDecoder {
 		
 		@Override
 		public ByteBuffer getBuffer() {
-			ByteBuffer buf = ByteBuffer.allocate(data.length - 4);
-			buf.put(data, 4, data.length - 4);
+			ByteBuffer buf = ByteBuffer.allocate(data.length);
+			buf.put(data, 0, data.length );
+			buf.clear();
 			return buf;
 		}
 	}
 	
 	static byte [] data = new byte[]{
-		0x01, 0x00, 0x00, 0x04, 
-		0x04, 0x00, 0x00, 0x00, 
-		0x02, 0x00, 0x00, 0x00, 
+		0x01, 0x00, 0x00, 0x04, // header
+		0x04, 0x00, 0x00, 0x00, // 바이너리 데이터
+		0x02, 0x00, 0x00, 0x00, // 한글 글꼴 개수
 		0x02, 0x00, 0x00, 0x00, 
 		0x02, 0x00,	0x00, 0x00, 
 		0x02, 0x00, 0x00, 0x00, 
