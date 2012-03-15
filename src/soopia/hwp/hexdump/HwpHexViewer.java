@@ -231,6 +231,10 @@ public class HwpHexViewer extends JFrame {
 	private Point getNextIframePos() {
 		iframeOffset.x += 15;
 		iframeOffset.y += 15;
+		if ( iframeOffset.x > 300){
+			iframeOffset.x = 10;
+			iframeOffset.y = 20;
+		}
 		return new Point(iframeOffset);
 	}
 	class FileModelHandle extends DefaultTreeModel implements FileModelListener {
