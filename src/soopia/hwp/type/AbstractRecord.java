@@ -37,7 +37,7 @@ public abstract class AbstractRecord implements IRecordStructure {
 	
 	private ByteBuffer cloneBuffer( ByteBuffer buf ){
 		byte [] b = new byte [(int)header.getDataSize()];
-		buf.position(header.getHeaderSize());
+		buf.position(this.offset + header.getHeaderSize());
 		buf.get(b);
 		return ByteBuffer.wrap(b);
 	}

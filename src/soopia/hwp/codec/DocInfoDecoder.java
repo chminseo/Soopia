@@ -44,7 +44,7 @@ public class DocInfoDecoder implements IDecoder<DocInfoStream> {
 				decoder = (IDecoder<IRecordStructure>) context.getDecoder(record.getClass());
 				
 				byte [] dataBuf = new byte[(int)header.getDataSize()];
-				data.get(dataBuf);
+//				data.get(dataBuf);
 				record = decoder.decode(record, ByteBuffer.wrap(dataBuf), context);				
 				stream.addRecord(record);
 				pos += record.getLength();
