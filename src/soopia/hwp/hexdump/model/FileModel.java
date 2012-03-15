@@ -1,23 +1,17 @@
 package soopia.hwp.hexdump.model;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.WeakHashMap;
 
 import soopia.hwp.type.HwpContext;
-import soopia.hwp.type.IDataType;
 import soopia.hwp.type.StreamStructureFactory;
 
 public class FileModel {
-//	private WeakHashMap<String, String> fsMap ;
+
 	private WeakHashMap<String, ByteBuffer> activeFileMap ;
 	
 	private ArrayList<FileModelListener> listener ;

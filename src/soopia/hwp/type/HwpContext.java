@@ -3,12 +3,9 @@ package soopia.hwp.type;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import soopia.hwp.codec.DocPropRecordDecoder;
 import soopia.hwp.codec.IDecoder;
-import soopia.hwp.type.record.DocPropertyRecord;
 import soopia.hwp.type.stream.DocInfoStream;
 import soopia.hwp.type.stream.FileHeaderInfo;
 import soopia.hwp.type.stream.PreviewImageInfo;

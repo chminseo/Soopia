@@ -3,9 +3,7 @@ package soopia.hwp.hexdump;
 import java.awt.Component;
 
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeCellRenderer;
 
 import soopia.hwp.hexdump.view.DSTreeNode;
 import soopia.hwp.type.IDataType;
