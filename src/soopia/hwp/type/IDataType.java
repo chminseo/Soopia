@@ -18,4 +18,5 @@ public interface IDataType {
 	public ByteBuffer getBuffer();
 	
 	public byte [] getBytes();
+	
 }
