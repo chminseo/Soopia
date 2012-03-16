@@ -23,11 +23,11 @@ import soopia.hwp.util.Converter;
  */
 public abstract class AbstractRecord implements IRecordStructure {
 
-	private IStreamStruct baseStruct ;
+	protected IStreamStruct baseStruct ;
 	protected int offset ;
 	
-	private RecordHeader header ;
-	private ByteBuffer src;
+	protected RecordHeader header ;
+	protected ByteBuffer src;
 	protected AbstractRecord(RecordHeader header, IStreamStruct ds, int offset){
 		this.baseStruct = ds;
 		this.offset = offset;
