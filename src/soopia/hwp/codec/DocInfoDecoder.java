@@ -7,7 +7,6 @@ import soopia.hwp.type.Dword;
 import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.IRecordStructure;
 import soopia.hwp.type.StructCreationException;
-import soopia.hwp.type.record.DocPropertyRecord;
 import soopia.hwp.type.stream.DocInfoStream;
 import soopia.hwp.type.stream.RecordHeader;
 
@@ -43,9 +42,9 @@ public class DocInfoDecoder implements IDecoder<DocInfoStream> {
 				record = context.createRecordStructure(header, stream, pos);
 				decoder = (IDecoder<IRecordStructure>) context.getDecoder(record.getClass());
 				
-				byte [] dataBuf = new byte[(int)header.getDataSize()];
+//				byte [] dataBuf = new byte[(int)header.getDataSize()];
 //				data.get(dataBuf);
-				record = decoder.decode(record, ByteBuffer.wrap(dataBuf), context);				
+				record = decoder.decode(record, record.getBuffer(), context);				
 				stream.addRecord(record);
 				pos += record.getLength();
 			} catch (StructCreationException e1) {
