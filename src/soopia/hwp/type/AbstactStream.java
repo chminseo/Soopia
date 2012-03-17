@@ -99,8 +99,7 @@ public abstract class AbstactStream implements IStreamStruct {
 
 	@Override
 	public HwpContext getHwpContext() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.context;
 	}
 
 	@Override
