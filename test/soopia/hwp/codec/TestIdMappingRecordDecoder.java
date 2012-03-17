@@ -8,30 +8,21 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import soopia.hwp.TestUtils;
 import soopia.hwp.codec.DecodingException;
 import soopia.hwp.codec.IdMappingRecordDecoder;
-import soopia.hwp.type.AbstactStream;
-import soopia.hwp.type.Dword;
-import soopia.hwp.type.HwpContext;
-import soopia.hwp.type.IStreamStruct;
 import soopia.hwp.type.record.IDMappingsRecord;
-import soopia.hwp.type.stream.RecordHeader;
 
 public class TestIdMappingRecordDecoder {
 	IDMappingsRecord record;
 	IdMappingRecordDecoder decoder ;
-	IStreamStruct ds;
+	MockDocInfo ds;
 	ByteBuffer buf ;
 	@Before
 	public void setUp() throws Exception {
-		buf = ByteBuffer.allocate(data.length);
-		buf.put(data);
-		
-		ds = new MockDocInfo(null, buf);
-		RecordHeader header = new RecordHeader();
-		header.baseHeader = new Dword(buf, 0);
-		
-		record = new IDMappingsRecord(header, ds, 0);
+		buf = ByteBuffer.wrap(data);
+		ds = TestUtils.newMockDocInfo(buf);
+		record = new IDMappingsRecord(TestUtils.newRecordHeader(buf, 0), ds, 0);
 		decoder = new IdMappingRecordDecoder();
 	}
 
@@ -45,22 +36,6 @@ public class TestIdMappingRecordDecoder {
 		assertEquals(13, record.getNumOfParaShape().getValue().intValue());
 		assertEquals(14, record.getNumOfStyle().getValue().intValue());
 		
-	}
-	
-	public static class MockDocInfo extends AbstactStream {
-
-		public MockDocInfo(HwpContext context, ByteBuffer data) {
-			super(context, "MockDocInfo", data);
-			// TODO Auto-generated constructor stub
-		}
-		
-		@Override
-		public ByteBuffer getBuffer() {
-			ByteBuffer buf = ByteBuffer.allocate(data.length);
-			buf.put(data, 0, data.length );
-			buf.clear();
-			return buf;
-		}
 	}
 	
 	static byte [] data = new byte[]{
