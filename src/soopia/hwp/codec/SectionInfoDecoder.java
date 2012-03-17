@@ -30,16 +30,16 @@ public class SectionInfoDecoder implements IDecoder<SectionStream> {
 			header = new RecordHeader();
 			header.baseHeader = new Dword(data, pos);
 			if ( header.getDataSize() >= 0xfff){/* 4095 바이트 초과 */
-				header.extHeader = new Dword(data, pos);
+				header.extHeader = new Dword(data, pos + header.getHeaderSize());
 			}
 			
 			try {
 				record = context.createRecordStructure(header, stream, pos);
 				decoder = (IDecoder<IRecordStructure>) context.getDecoder(record.getClass());
 				
-				byte [] dataBuf = new byte[(int)header.getDataSize()];
+//				byte [] dataBuf = new byte[(int)header.getDataSize()];
 //				data.get(dataBuf);
-				record = decoder.decode(record, ByteBuffer.wrap(dataBuf), context);				
+				record = decoder.decode(record, record.getBuffer(), context);
 				stream.addRecord(record);
 				pos += record.getLength();
 			} catch (StructCreationException e1) {
