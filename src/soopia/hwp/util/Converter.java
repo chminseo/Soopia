@@ -1,5 +1,6 @@
 package soopia.hwp.util;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 import org.apache.poi.util.LittleEndian;
@@ -81,5 +82,38 @@ public class Converter {
 		byte [] b = new byte[4];
 		data.get(b, 0, b.length);
 		return LittleEndian.getInt(b);
+	}
+	/**
+	 * retieves integer from partial bits indicated by [from, from + length]
+	 * <pre>
+	 *    from = 3, length = 6
+	 *     
+	 *            L     F
+	 *     01000111 01000111
+	 *            1 01000    => 40
+	 * </pre>
+	 * @param val
+	 * @param from
+	 * @param end
+	 * @return
+	 */
+	public static int getBits(int val, int from, int length){
+		int v = val << (32-from-length);
+		v = v >>> (32-length);
+		return v ;
+	}
+	/**
+	 * read characters from byte buffer with UTF16-LE 
+	 * @param data
+	 * @param i
+	 * @param value
+	 * @return
+	 * @throws UnsupportedEncodingException 
+	 */
+	public static String getString(ByteBuffer data, int offset, int length) throws UnsupportedEncodingException {
+		byte [] b = new byte[length];
+		data.position(offset);
+		data.get(b);
+		return new String(b, "UTF-16LE");
 	}
 }
