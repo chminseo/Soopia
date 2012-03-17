@@ -53,5 +53,10 @@ public class TestConverter {
 		buf.clear().position(1);
 		assertEquals (346043152, Converter.getInt(buf));
 	}
+	@Test
+	public void test_read_partial_bits(){
+		assertEquals (0x0A, Converter.getBits(0x21AC, 4, 4));
+		assertEquals (0x1A, Converter.getBits(0x21AC, 4, 8));
+	}
 
 }
