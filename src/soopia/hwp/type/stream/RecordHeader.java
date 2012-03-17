@@ -44,6 +44,6 @@ public class RecordHeader {
 			System.arraycopy(header, 0, data,
 				(int)baseHeader.getLength(), header.length);
 		}
-		return header.length;
+		return this.getHeaderSize();
 	}
 }
