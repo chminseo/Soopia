@@ -11,7 +11,7 @@ public class RecordHeader {
 		return IRecordStructure.BIT_MASK_10 & baseHeader.getValue().intValue();
 	}
 	/**
-	 *  header1에서 20~31 bit값과 확장 헤더가 존재할 경우 이를 더한 값
+	 *  헤더 부분을 제외한 레코드 데이터의 크기
 	 * @return
 	 */
 	public long getDataSize() {
