@@ -15,11 +15,9 @@ public class RecordHeader {
 	 * @return
 	 */
 	public long getDataSize() {
-		long length = IRecordStructure.BIT_MASK_12 & (baseHeader.getValue().intValue()>>20);
-		if ( extHeader != null ){
-			length += extHeader.getValue().longValue();
-		}
-		return length ; 
+		return (extHeader == null) ? 
+				IRecordStructure.BIT_MASK_12 & (baseHeader.getValue().intValue()>>20)
+				: extHeader.getValue().longValue();
 	}
 	public int getHeaderSize(){
 		return extHeader == null ? 4 : 8 ;
