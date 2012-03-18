@@ -35,7 +35,7 @@ public class DocInfoDecoder implements IDecoder<DocInfoStream> {
 			header = new RecordHeader();
 			header.baseHeader = new Dword(data, pos);
 			if ( header.getDataSize() >= 0xfff){/* 4095 바이트 초과 */
-				header.extHeader = new Dword(data, pos);
+				header.extHeader = new Dword(data, pos + header.getHeaderSize());
 			}
 			
 			try {
