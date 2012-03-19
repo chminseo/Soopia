@@ -17,9 +17,16 @@ public class BinDataRecordDecoder implements IDecoder<BinDataRecord> {
 		data = record.getBuffer();
 		int offset = record.getHeaderLength();
 		UInt16 property = new UInt16(data, offset);
-		
-		int bitType = Converter.getBits(property.getValue().intValue(), 0, 3);
+		/* 0~3 bits */
+		int bitType = Converter.getBits(property.getValue().intValue(), 0, 4);
+		/* 4~5 bits */
+		int compresionType = Converter.getBits(property.getValue(), 4, 2);
+		/* 6~7 bits */
+		int accessType = Converter.getBits(property.getValue(), 6, 2);
 		record.setDataType (bitType);
+		record.setCompressPolicy(compresionType);
+		record.setAccessState(accessType);
+		
 		try {
 			if ( bitType == BinDataRecord.TYPE_STORAGE){
 				UInt16 binId = new UInt16(data, offset+2);
@@ -53,8 +60,7 @@ public class BinDataRecordDecoder implements IDecoder<BinDataRecord> {
 	}
 	@Override
 	public boolean isAvailable(String versionString) {
-		// TODO Auto-generated method stub
-		return false;
+		// TEST not tested
+		return true;
 	}
-
 }

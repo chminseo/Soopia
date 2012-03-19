@@ -60,6 +60,9 @@ public class TestBinDataRecordDecoder {
 		int offset = oleData.length;
 		BinDataRecord linkRecord = new BinDataRecord(TestUtils.newRecordHeader(data, offset), docInfo, offset);
 		decoder.decode(linkRecord, data, docInfo.getHwpContext());
+		
+		assertEquals (BinDataRecord.COMPRESS_DEFAULT, linkRecord.getCompressPolicy());
+		assertEquals (BinDataRecord.ACCESS_NONE, linkRecord.getAccessState());
 		assertEquals (BinDataRecord.TYPE_LINK, linkRecord.getDataType());
 		assertEquals (LINK_DATA_FILEPATH, linkRecord.getAbsolutePath());
 		assertEquals ("", linkRecord.getRelativePath());
@@ -102,7 +105,7 @@ public class TestBinDataRecordDecoder {
 	};
 	static byte [] relPathData = new byte[]{
 		0x12, 0x04, 0x00, 0x0D, // header
-		0x00, 0x00, 			// ¼Ó¼º
+		0x00, 0x00, 			// property at Table 13 (p.16)
 	
 		/*  len(2) + WCHAR(2*len) */
 		0x49, 0x00, 
