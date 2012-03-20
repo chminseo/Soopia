@@ -5,10 +5,12 @@ import java.util.HashMap;
 import soopia.hwp.Constant;
 import soopia.hwp.codec.BinDataRecordDecoder;
 import soopia.hwp.codec.DocPropRecordDecoder;
+import soopia.hwp.codec.FaceNameDecoder;
 import soopia.hwp.codec.IDecoder;
 import soopia.hwp.codec.IdMappingRecordDecoder;
 import soopia.hwp.type.record.BinDataRecord;
 import soopia.hwp.type.record.DocPropertyRecord;
+import soopia.hwp.type.record.FaceNameRecord;
 import soopia.hwp.type.record.IDMappingsRecord;
 
 public class Repository {
@@ -52,7 +54,8 @@ public class Repository {
 	private void installDecoder(){
 		decoderMap.put(DocPropertyRecord.class, new DocPropRecordDecoder());
 		decoderMap.put(IDMappingsRecord.class, new IdMappingRecordDecoder());		
-		decoderMap.put(BinDataRecord.class, new BinDataRecordDecoder());		
+		decoderMap.put(BinDataRecord.class, new BinDataRecordDecoder());
+		decoderMap.put(FaceNameRecord.class, new FaceNameDecoder());
 	}
 	public void installDefault(){
 		String [] tagNames = Constant.TAGNAMES;
@@ -60,6 +63,8 @@ public class Repository {
 		recordStructMap.put(Constant.HWPTAG_BEGIN + idx, DocPropertyRecord.class);
 		recordStructMap.put(Constant.HWPTAG_BEGIN + (++idx), IDMappingsRecord.class);
 		recordStructMap.put(Constant.HWPTAG_BEGIN + (++idx), BinDataRecord.class);
+		recordStructMap.put(Constant.HWPTAG_BEGIN + (++idx), FaceNameRecord.class);
+		
 		
 		installDecoder();
 		

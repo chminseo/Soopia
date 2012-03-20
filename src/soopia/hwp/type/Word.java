@@ -34,5 +34,8 @@ public class Word extends PrimitiveType<Integer> {
 		return Converter.getWord(this.getBytes(), 0);
 	}
 	
-	
+	@Override
+	public String toString(){
+		return "WORD[val=" + this.getValue() + "]";
+	}
 }
