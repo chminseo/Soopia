@@ -49,6 +49,10 @@ public class Converter {
 	public static Integer getHwpByte(byte[] data, int offset) {
 		return LittleEndian.getUnsignedByte(data, offset);
 	}
+	public static Integer getUInt8(byte[] data, int offset) {
+		// TEST created and not tested method stub
+		return LittleEndian.getUnsignedByte(data, offset);
+	}
 	public static long getUInt32(byte[] data, int offset) {
 		byte [] b = checkBytes(data, offset, SZ_UINT32, 8);
 		return LittleEndian.getLong(b, (b == data)? offset : 0);
