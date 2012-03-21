@@ -12,7 +12,7 @@ import soopia.hwp.util.Converter;
  */
 public class Int32 extends PrimitiveType<Integer> {
 
-	protected Int32(ByteBuffer src, int offset) {
+	public Int32(ByteBuffer src, int offset) {
 		super(offset, 4, src);
 	}
 
