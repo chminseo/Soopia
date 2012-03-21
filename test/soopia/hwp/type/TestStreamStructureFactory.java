@@ -1,4 +1,4 @@
-package soopia.hwp.hexdump.structure;
+package soopia.hwp.type;
 
 import static org.junit.Assert.*;
 
