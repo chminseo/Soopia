@@ -13,6 +13,7 @@ public class Converter {
 	static int SZ_WORD = 2;
 	static int SZ_DWORD = 4;
 	static int SZ_UINT32 = 4;
+	static int SZ_INT32 = 4;
 	/*
 	 *  0 <= offset <= nRead <= capacity
 	 *  
@@ -52,6 +53,10 @@ public class Converter {
 	public static Integer getUInt8(byte[] data, int offset) {
 		// TEST created and not tested method stub
 		return LittleEndian.getUnsignedByte(data, offset);
+	}
+	public static int getInt32 (byte [] data, int offset ){
+		byte [] b = checkBytes(data, offset, SZ_INT32, 4);
+		return LittleEndian.getInt(b, offset);
 	}
 	public static long getUInt32(byte[] data, int offset) {
 		byte [] b = checkBytes(data, offset, SZ_UINT32, 8);

@@ -11,10 +11,12 @@ import org.junit.runners.Suite.SuiteClasses;
 	TestHwpByte.class,
 	TestRecordStructure.class,
 	TestStreamStructureFactory.class,
+	TestUInt8.class,
 	TestUInt16.class,
 	TestUInt32.class,
 	TestWChar.class,
-	TestWord.class
+	TestWord.class,
+	TestColorRef.class
 })
 public class AllStructureTestSuit {
 
