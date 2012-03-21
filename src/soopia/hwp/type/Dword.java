@@ -6,6 +6,8 @@ import soopia.hwp.Constant;
 import soopia.hwp.util.Converter;
 
 /**
+ * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
+ * 
  * 16 bit 컴파일러에서 unsigned long 에 해당. (0~ 4294967295L) 
  * @author chmin
  *

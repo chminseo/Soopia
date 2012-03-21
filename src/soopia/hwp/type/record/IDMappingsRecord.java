@@ -5,10 +5,13 @@ import soopia.hwp.type.IStreamStruct;
 import soopia.hwp.type.UInt32;
 import soopia.hwp.type.stream.RecordHeader;
 /**
+ * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
+ * 
  * 표 11에는 32바이트로 나오지만 실제 문서를 열어보면 64바이트로 되어있다.
  * (UInt16이 아니라 UInt32)
  * 
  * @author chmin
+ * @tagID HWPTAG_ID_MAPPINGS
  * @page p.16 표 11
  * @version 5.0.3.0 
  */

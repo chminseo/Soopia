@@ -29,7 +29,12 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
+/**
+ * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
+ * 
+ * @author chmin
+ *
+ */
 public class HexviewPanel extends JPanel {
 	
 	private static final long serialVersionUID = 4007798758322581210L;

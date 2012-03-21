@@ -7,10 +7,13 @@ import soopia.hwp.type.UInt32;
 import soopia.hwp.type.stream.RecordHeader;
 
 /**
+ * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
+ * 
  * 문서 정보의 HWPTAG_DOCUMENT_PROPERTIES 레코드 데이터
  * (표 9 참조)
  * 
  * @author chmin
+ * @tagID HWPTAG_DOCUMENT_PROPERITES
  * @page p.15
  */
 public class DocPropertyRecord extends AbstractRecord {

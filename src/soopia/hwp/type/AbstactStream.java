@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 /**
+ * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
+ * 
  * 한글 문서에서 Stream을 나타낸다. ( 표 2, p7)
  * 
  * FileHeader, DocInfo 와 같이 Window Compound File 구조에서 Stream 에 해당하는 영역.
