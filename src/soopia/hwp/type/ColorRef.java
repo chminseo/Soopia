@@ -13,7 +13,7 @@ import soopia.hwp.util.Converter;
  */
 public class ColorRef extends PrimitiveType<Integer> {
 
-	protected ColorRef(ByteBuffer src, int offset) {
+	public ColorRef(ByteBuffer src, int offset) {
 		super(offset, 4, src);
 	}
 
