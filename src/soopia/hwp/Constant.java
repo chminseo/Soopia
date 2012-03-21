@@ -11,7 +11,8 @@ public class Constant {
 	public static final String STRUCTNAME_HWP_DWORD = "HWP DWORD";
 	public static final String STRUCTNAME_HWP_UINT8 = "HWP UINT8";
 	public static final String STRUCTNAME_HWP_UINT16 = "HWP UINT16";
-	public static final String STRUCTNAME_HWP_UINT32 = "HWP UINT32";
+	public static final String STRUCTNAME_HWP_UINT32 = "HWP UINT32";	
+	public static final String STRUCTNAME_HWP_INT8 = "HWP INT8";
 	public static final String STRUCTNAME_HWP_INT32 = "HWP INT32";
 	public static final String STRUCTNAME_HWP_COLORREF = "HWP COLORREF";
 	
