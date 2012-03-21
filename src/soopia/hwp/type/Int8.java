@@ -25,7 +25,6 @@ public class Int8 extends PrimitiveType<Byte> {
 
 	@Override
 	public Byte getValue() {
-		// TEST created and not tested method stub
 		return new Byte(this.getBytes()[0]);
 	}
 
