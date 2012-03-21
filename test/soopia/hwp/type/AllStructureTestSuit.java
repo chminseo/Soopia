@@ -14,6 +14,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	TestUInt8.class,
 	TestUInt16.class,
 	TestUInt32.class,
+	TestInt32.class,
 	TestWChar.class,
 	TestWord.class,
 	TestColorRef.class
