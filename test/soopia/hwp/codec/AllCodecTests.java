@@ -8,6 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ TestBinDataRecordDecoder.class
 	,TestIdMappingRecordDecoder.class
 	,TestFontFaceNameDecoder.class
+	,TestBorderFillRecordDecoder.class
 	/*,TestParaTextDecoder.class*/ }
 )
 public class AllCodecTests {
