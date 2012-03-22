@@ -12,6 +12,7 @@ import org.junit.Test;
 import soopia.hwp.TestUtils;
 import soopia.hwp.type.record.BorderFillRecord;
 import soopia.hwp.type.record.BorderFillRecord.BackgroundColorRef;
+import soopia.hwp.type.record.BorderFillRecord.GradationRef;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -223,7 +224,7 @@ public class TestBorderFillRecordDecoder {
 		decoder.decode(record, record.getBuffer(), docInfo.getHwpContext());
 		BackgroundColorRef bg = record.getBackgroundColorRef();
 		
-		// (byte)0xEF, (byte)0xCC, (byte)0xFC, 0x00, //  
+		// (byte)0xEF, (byte)0xCC, (byte)0xFC, 0x00,
 		// (byte)0xEE, (byte)0xEE, (byte)0xEE, 0x00, 
 		// 0x01, 0x00, 0x00, 0x00,
 		assertEquals ("#EFCCFC", bg.getBgColor().toWebColorString());
@@ -232,6 +233,54 @@ public class TestBorderFillRecordDecoder {
 		assertEquals (new Long(0), record.getSizeInfo().getValue());
 		
 		assertEquals (1, record.getDummyBytes().length);
+	}
+	@Test
+	public void test_border_color_image () throws DecodingException {
+		int offset = 6 + BORDER.length + BORDER_COLOR.length;
+		BorderFillRecord record = new BorderFillRecord(
+				TestUtils.newRecordHeader(data, offset) ,
+				docInfo, offset);
+		decoder.decode(record, record.getBuffer(), docInfo.getHwpContext());
+		
+		//	0x00, imageFillType 
+		//	0x20, 0x0A, 0x00, 0x01, 0x00, (표-27 그림정보)
+		assertEquals (new Integer(0), record.getImageFillType().getValue());
+		assertEquals (0x20 , record.getBackgroundImageRef().getBrightness().intValue());
+		assertEquals (0x0A , record.getBackgroundImageRef().getContrast().intValue());
+		assertEquals (0x1 , record.getBackgroundImageRef().getImageId().intValue());
+		assertEquals (2, record.getDummyBytes().length);
+	}
+	@Test
+	public void test_border_gradation_image() throws DecodingException{
+		int offset = 6 + BORDER.length + BORDER_COLOR.length + BORDER_COLOR_BGIMG.length;
+		BorderFillRecord record = new BorderFillRecord(
+				TestUtils.newRecordHeader(data, offset) ,
+				docInfo, offset);
+		decoder.decode(record, record.getBuffer(), docInfo.getHwpContext());
+		
+		/* 그라데이션 정보 */
+//		0x04, // 그라데이션 유형 (표 25)
+//		0x23, 0x00, 0x00, 0x00, // 기울임 35
+//		0x50, 0x00, 0x00, 0x00, // 가로중심 80%
+//		0x14, 0x00, 0x00, 0x00, // 세로중심 20%
+//		(byte)0xFF, 0x00, 0x00, 0x00, // 번짐정도 255
+//		0x02, 0x00, 0x00, 0x00, // 그라데이션에 사용되는 색의 수 
+//		(byte)0xFF, (byte)0xFF, (byte)0xE1, 0x00, // 시작색
+//		(byte)0x95, 0x5B, 0x15, 0x00, // 끝 색
+		assertEquals ( true, record.isGradationFilled());
+		GradationRef gr = record.getGradationRef();
+		assertEquals(35, gr.getGradationTilt().getValue().intValue());
+		assertEquals(0x50, gr.getGradationXPos().getValue().intValue());
+		assertEquals(0x14, gr.getGradationYPos().getValue().intValue());
+		assertEquals(0xFF, gr.getGradationBlur().getValue().intValue());
+		assertEquals (2, gr.getColors().length);
+		assertEquals ("#955B15", gr.getColors()[1].toWebColorString());
+		assertEquals (1, record.getSizeInfo().getValue().intValue());
+		assertEquals (0x32, 
+				record.getGradationRef()
+				.getGradationCenterBlur()
+					.getValue().byteValue());
+		assertEquals (2, record.getDummyBytes().length);
 	}
 
 }

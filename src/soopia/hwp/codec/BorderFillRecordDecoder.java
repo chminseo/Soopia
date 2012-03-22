@@ -4,19 +4,25 @@ import java.nio.ByteBuffer;
 
 import soopia.hwp.type.ColorRef;
 import soopia.hwp.type.Dword;
+import soopia.hwp.type.HwpByte;
 import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.Int32;
+import soopia.hwp.type.Int8;
 import soopia.hwp.type.UInt16;
 import soopia.hwp.type.UInt32;
 import soopia.hwp.type.UInt8;
 import soopia.hwp.type.record.BorderFillRecord;
 import soopia.hwp.type.record.BorderFillRecord.BackgroundColorRef;
+import soopia.hwp.type.record.BorderFillRecord.BackgroundImageRef;
+import soopia.hwp.type.record.BorderFillRecord.GradationRef;
 import soopia.hwp.type.record.BorderFillRecord.HwpBorder;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
+ * 4.1.5 테두리/배경
+ * 
  * @author chmin
- *
+ * @page p.18 (표-18)
  */
 public class BorderFillRecordDecoder implements IDecoder<BorderFillRecord> {
 
@@ -36,13 +42,13 @@ public class BorderFillRecordDecoder implements IDecoder<BorderFillRecord> {
 		offset += type.getLength();
 		
 		if ( record.isColorFilled() ){			
-			offset += decodeColorFill(record, data, context, offset);
-		}
-		if ( record.isImageFilled() ){
-			// TODO 구현해야함.
+			offset += decodeColorFill(record, data,offset);
 		}
 		if ( record.isGradationFilled() ){
-			// TODO 구현해야함.
+			offset += decodeGradationFill(record, data, offset);
+		}
+		if ( record.isImageFilled() ){
+			offset += decodeImageFill(record, data, offset);
 		}
 		Dword size = new Dword(data, offset);
 		record.setSizeInfo(size);
@@ -50,6 +56,8 @@ public class BorderFillRecordDecoder implements IDecoder<BorderFillRecord> {
 		
 		if ( size.getValue() == 1 ){
 			// 그라데인션 설정되어있어야 하고 추가로 1비트를 읽어서 번짐정도의 중심값으로 설정.
+			HwpByte centerBlur = new HwpByte(data, offset++);
+			record.getGradationRef().setGradationCenterBlur(centerBlur);
 		}
 		
 		/* dummy data 용도를 알 수 없는 1~2바이트. 일단 저장해둔다.*/
@@ -59,8 +67,61 @@ public class BorderFillRecordDecoder implements IDecoder<BorderFillRecord> {
 		return record;
 	}
 	
-	private int decodeColorFill(BorderFillRecord record, ByteBuffer data,
-			HwpContext context, int offset) {
+	private int decodeGradationFill(BorderFillRecord record,
+			ByteBuffer data,
+			final int offset ){
+		int nRead = 0;
+		Int8 grdntType = new Int8(data, offset + (nRead++));
+		Int32 grdntTilt = new Int32(data, offset + nRead);
+		Int32 grdntXPos = new Int32(data, offset + nRead + 4);
+		Int32 grdntYPos = new Int32(data, offset + nRead + 8);
+		Int32 grdntBlur = new Int32(data, offset + nRead + 12);
+		Int32 grdntColorCount = new Int32(data, offset + nRead + 16);
+		
+		nRead += 5 * grdntBlur.getLength(); 
+		ColorRef [] colors = new ColorRef[grdntColorCount.getValue()];
+		for (int i = 0; i < colors.length; i++) {
+			colors[i] = new ColorRef(data, offset + nRead );
+			nRead += colors[i].getLength();
+		}
+		record.setGradationRef(new GradationRef(
+				grdntType, 
+				grdntTilt, 
+				grdntXPos, 
+				grdntYPos, 
+				grdntBlur, 
+				colors));
+		return nRead;
+	}
+	/*
+	 * (표-27 그림 정보)
+	 */
+	private int decodeImageFill(BorderFillRecord record,
+			ByteBuffer data,
+			final int offset){
+		int nRead = 0;
+		HwpByte imageFillType = new HwpByte(data, offset);
+		record.setImageFillType (imageFillType);
+		nRead += imageFillType.getLength();
+		
+		Int8 brightness = new Int8(data, offset + (nRead++));
+		Int8 contrast = new Int8(data, offset+(nRead++));
+		HwpByte imageEffect = new HwpByte(data, offset+(nRead++));
+		UInt16 imageId = new UInt16(data, offset + nRead );
+		record.setBackgroundColorRef(new BackgroundImageRef(
+				brightness, 
+				contrast, 
+				imageEffect, 
+				imageId));
+		nRead += imageId.getLength();
+		return nRead;
+	}
+	/*
+	 * (표-23 배경색, 무늬색, 무늬색 종류)
+	 */
+	private int decodeColorFill(BorderFillRecord record,
+			ByteBuffer data,
+			final int offset) {
 		ColorRef bgColor = new ColorRef(data, offset);
 		ColorRef patternColor = new ColorRef(data, offset + 4);
 		Int32 patternType = new Int32(data, offset+ 8);
@@ -102,7 +163,7 @@ public class BorderFillRecordDecoder implements IDecoder<BorderFillRecord> {
 	@Override
 	public boolean isAvailable(String versionString) {
 		// TEST created and not tested method stub
-		return true;
+		return "5.0.3.0".equals(versionString);
 	}
 
 }
