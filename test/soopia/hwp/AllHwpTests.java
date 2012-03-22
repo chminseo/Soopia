@@ -8,6 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 	soopia.hwp.codec.AllCodecTests.class
 	,soopia.hwp.type.AllStructureTestSuit.class
+	
 })
 public class AllHwpTests {
 
