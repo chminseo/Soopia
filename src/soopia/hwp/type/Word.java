@@ -14,9 +14,11 @@ import soopia.hwp.util.Converter;
  */
 public class Word extends PrimitiveType<Integer> {
 
+	public Word (ByteBuffer src){
+		this(src, src.position());
+	}
 	public Word (ByteBuffer src, int offset){
 		super(offset, 2, src);
-		
 	}
 	@Override
 	protected void checkValid() {

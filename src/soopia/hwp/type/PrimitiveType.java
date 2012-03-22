@@ -12,6 +12,9 @@ public abstract class PrimitiveType<T> implements IDataType {
 	
 	protected int offset ;
 	protected ByteBuffer src ;
+	protected PrimitiveType(ByteBuffer src, int length){
+		this(src.position(), length, src);
+	}
 	protected PrimitiveType(int offset, int length, ByteBuffer src){
 		this.offset = offset;
 		this.src = cloneBuffer(src, offset, length);

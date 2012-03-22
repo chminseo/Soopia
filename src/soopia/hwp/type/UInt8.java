@@ -17,6 +17,9 @@ import soopia.hwp.util.Converter;
  */
 public class UInt8 extends PrimitiveType<Integer> {
 
+	public UInt8(ByteBuffer src){
+		this(src, src.position());
+	}
 	public UInt8(ByteBuffer src, int offset) {
 		super(offset, 1, src);
 		checkValid();

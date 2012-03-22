@@ -14,6 +14,9 @@ import soopia.hwp.util.Converter;
  */
 public class Int32 extends PrimitiveType<Integer> {
 
+	public Int32(ByteBuffer src){
+		this(src, src.position());
+	}
 	public Int32(ByteBuffer src, int offset) {
 		super(offset, 4, src);
 	}

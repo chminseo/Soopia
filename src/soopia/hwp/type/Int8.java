@@ -6,6 +6,9 @@ import soopia.hwp.Constant;
 
 public class Int8 extends PrimitiveType<Byte> {
 
+	public Int8(ByteBuffer src){
+		this(src, src.position());
+	}
 	public Int8(ByteBuffer src, int offset) {
 		super(offset, 1, src);
 	}
