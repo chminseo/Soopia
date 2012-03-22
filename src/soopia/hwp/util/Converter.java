@@ -19,6 +19,7 @@ public class Converter {
 	static int SZ_DWORD = 4;
 	static int SZ_UINT32 = 4;
 	static int SZ_INT32 = 4;
+	static int SZ_HWPUNIT = 4;
 	/*
 	 *  0 <= offset <= nRead <= capacity
 	 *  
@@ -69,6 +70,11 @@ public class Converter {
 	}
 	public static Dword getDword(ByteBuffer buffer, int offset) {
 		return new Dword(buffer, offset);
+	}
+	public static Long getHwpUnit(byte[] data, int offset) {
+		// TEST created and not tested method stub
+		byte [] b = checkBytes(data, offset, SZ_HWPUNIT, 8);
+		return LittleEndian.getLong(b, (b == data)? offset : 0);
 	}
 	/**
 	 * 밀리미터(mm)를 HWPUNIT 으로 변환한다.
