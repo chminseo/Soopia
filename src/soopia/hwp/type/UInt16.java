@@ -50,6 +50,15 @@ public class UInt16 extends PrimitiveType<Integer> {
 	
 	@Override
 	public String toString(){
-		return "UINT16[" + this.getValue() + "]";
+		StringBuilder sb = new StringBuilder();
+		sb.append("Int16 [" + getValue());
+		sb.append(", bytes [");
+		byte [] b = getBytes();
+		for (int i = 0; i < b.length; i++) {
+			sb.append(Integer.toHexString(0xFF&b[i]) + ", ");
+		}
+		sb.delete(sb.length()-2, sb.length());
+		sb.append("]]");
+		return sb.toString();
 	}
 }

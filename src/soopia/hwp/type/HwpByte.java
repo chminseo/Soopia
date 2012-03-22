@@ -39,5 +39,14 @@ public class HwpByte extends PrimitiveType<Integer> {
 	public Integer getValue() {
 		return (int) this.getBytes()[0];
 	}
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("HwpByte [" + getValue());
+		sb.append(", bytes [");
+		sb.append(Integer.toHexString(0xFF&getBytes()[0]));
+		sb.append("]]");
+		return sb.toString();
+	}
 	
 }

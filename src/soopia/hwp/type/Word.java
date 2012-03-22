@@ -38,6 +38,15 @@ public class Word extends PrimitiveType<Integer> {
 	
 	@Override
 	public String toString(){
-		return "WORD[val=" + this.getValue() + "]";
+		StringBuilder sb = new StringBuilder();
+		sb.append("WORD [" + getValue());
+		sb.append(", bytes [");
+		byte [] b = getBytes();
+		for (int i = 0; i < b.length; i++) {
+			sb.append(Integer.toHexString(0xFF&b[i]) + ", ");
+		}
+		sb.delete(sb.length()-2, sb.length());
+		sb.append("]]");
+		return sb.toString();
 	}
 }

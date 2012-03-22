@@ -41,5 +41,18 @@ public class UInt8 extends PrimitiveType<Integer> {
 		// TEST created and not tested method stub
 		return Converter.getUInt8(this.getBytes(), 0);
 	}
+	@Override
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("Int8 [" + getValue());
+		sb.append(", bytes [");
+		byte [] b = getBytes();
+		for (int i = 0; i < b.length; i++) {
+			sb.append(Integer.toHexString(0xFF&b[i]) + ", ");
+		}
+		sb.delete(sb.length()-2, sb.length());
+		sb.append("]]");
+		return sb.toString();
+	}
 
 }

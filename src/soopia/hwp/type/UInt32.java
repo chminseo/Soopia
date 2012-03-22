@@ -51,7 +51,16 @@ public class UInt32 extends PrimitiveType<Long> {
 	
 	@Override
 	public String toString(){
-		return "UINT32[" + this.getValue() + "]";
+		StringBuilder sb = new StringBuilder();
+		sb.append("UInt32 [" + getValue());
+		sb.append(", bytes [");
+		byte [] b = getBytes();
+		for (int i = 0; i < b.length; i++) {
+			sb.append(Integer.toHexString(0xFF&b[i]) + ", ");
+		}
+		sb.delete(sb.length()-2, sb.length());
+		sb.append("]]");
+		return sb.toString();
 	}
 	
 
