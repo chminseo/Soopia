@@ -45,8 +45,21 @@ public class HwpUnit extends PrimitiveType<Long> {
 	 */
 	@Override
 	public Long getValue() {
-		// TEST created and not tested method stub
 		return Converter.getHwpUnit(this.getBytes(), 0);
+	}
+	
+	@Override
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("HwpUnit [" + getValue());
+		sb.append(", bytes [");
+		byte [] b = getBytes();
+		for (int i = 0; i < b.length; i++) {
+			sb.append(Integer.toHexString(0xFF&b[i]) + ", ");
+		}
+		sb.delete(sb.length()-2, sb.length());
+		sb.append("]]");
+		return sb.toString();
 	}
 
 }

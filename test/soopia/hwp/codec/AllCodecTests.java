@@ -9,6 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	,TestIdMappingRecordDecoder.class
 	,TestFontFaceNameDecoder.class
 	,TestBorderFillRecordDecoder.class
+	,TestCharShapeRecordDecoder.class
 	/*,TestParaTextDecoder.class*/ }
 )
 /**

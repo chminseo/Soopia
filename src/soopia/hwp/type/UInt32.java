@@ -14,6 +14,9 @@ import soopia.hwp.util.Converter;
  */
 public class UInt32 extends PrimitiveType<Long> {
 
+	public UInt32(ByteBuffer src){
+		this(src, src.position());
+	}
 	public UInt32(ByteBuffer src, int offset) {
 		super(offset, 4, src);
 		checkValid();
