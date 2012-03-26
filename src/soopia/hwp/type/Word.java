@@ -14,17 +14,17 @@ import soopia.hwp.util.Converter;
  */
 public class Word extends PrimitiveType<Integer> {
 
-	public Word (ByteBuffer src){
-		this(src, src.position());
-	}
-	public Word (ByteBuffer src, int offset){
-		super(offset, 2, src);
+	public Word(byte [] data ){
+		super( data);
 	}
 	@Override
 	protected void checkValid() {
 		int val = this.getValue();
 		if ( val < 0 || val > 0xffff  ){
 			throw new IllegalArgumentException(" value should be between 0 and 65535, but " + val);
+		}
+		if ( this.data.length != 2 ){
+			throw new IllegalArgumentException("Word should be 2 bytes-length, but " + this.data.length );
 		}
 	}
 
