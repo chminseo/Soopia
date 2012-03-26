@@ -6,12 +6,18 @@ import soopia.hwp.Constant;
 
 public class Int8 extends PrimitiveType<Byte> {
 
-	public Int8(ByteBuffer src){
-		this(src, src.position());
+	public Int8(byte b){
+		super(new byte[]{b});
 	}
-	public Int8(ByteBuffer src, int offset) {
-		super(offset, 1, src);
+	public Int8(byte [] data){
+		super(data);
 	}
+//	public Int8(ByteBuffer src){
+//		this(src, src.position());
+//	}
+//	public Int8(ByteBuffer src, int offset) {
+//		super(offset, 1, src);
+//	}
 
 	@Override
 	public String getStrucureName() {
