@@ -25,8 +25,8 @@ public class FaceNameRecord extends AbstractRecord {
 	private String fontName ;
 	private byte [] fontTypeInfo ;
 	private String defaultFontName;
-	public FaceNameRecord(RecordHeader header, IStreamStruct ds, int offset) {
-		super(header, ds, offset);
+	public FaceNameRecord(RecordHeader header, IStreamStruct ds) {
+		super(header, ds);
 	}
 	/**
 	 * 대체 글꼴 존재 여부

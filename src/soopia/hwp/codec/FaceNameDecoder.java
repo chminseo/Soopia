@@ -1,13 +1,13 @@
 package soopia.hwp.codec;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 
 import soopia.hwp.type.HwpByte;
 import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.Word;
 import soopia.hwp.type.record.FaceNameRecord;
 import soopia.hwp.util.Converter;
+import soopia.hwp.util.IByteSource;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -18,18 +18,19 @@ import soopia.hwp.util.Converter;
 public class FaceNameDecoder implements IDecoder<FaceNameRecord> {
 
 	@Override
-	public FaceNameRecord decode(FaceNameRecord fNameRecord, ByteBuffer data,
+	public FaceNameRecord decode(FaceNameRecord fNameRecord, IByteSource data,
 			HwpContext context) throws DecodingException {
 		int offset = fNameRecord.getHeaderLength();
-		HwpByte bit = new HwpByte(data, offset );
+		data.skip(offset);
+		HwpByte bit = new HwpByte(data.consume(1));
 		offset += bit.getLength();
 		fNameRecord.setFaceProperty(bit);
 		
 		try {
-			Word length = new Word(data, offset);
+			Word length = new Word(data.consume(2));
 			offset += length.getLength();
 			
-			String fontName = Converter.getString(data, offset , length.getValue()*2);
+			String fontName = Converter.getString(data, length.getValue()*2);
 			fNameRecord.setFontName(fontName);
 			offset += 2* length.getValue();
 			
@@ -40,17 +41,17 @@ public class FaceNameDecoder implements IDecoder<FaceNameRecord> {
 			}
 			if ( fNameRecord.hasFaceTypeInfo() ){
 				// TEST 각각의 유형 정보가 의미하는 바를 현재는 알지 못하고 있음.
-				byte [] typeInfo = new byte [ 10];
-				data.position(offset);
-				data.get(typeInfo);
+				byte [] typeInfo = data.consume(10);//new byte [ 10];
+//				data.position(offset);
+//				data.get(typeInfo);
 				fNameRecord.setFontTypeInfo(typeInfo);
 				offset += typeInfo.length;
 			}
 			
 			if ( fNameRecord.hasDefaultFont()){
-				length = new Word(data, offset);
+				length = new Word(data.consume(2));
 				offset += length.getLength();
-				fontName = Converter.getString(data, offset, 2* length.getValue() );
+				fontName = Converter.getString(data, 2* length.getValue() );
 				fNameRecord.setDefaultFontName(fontName);
 			}
 		} catch (UnsupportedEncodingException e) {
