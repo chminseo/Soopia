@@ -3,7 +3,6 @@ package soopia.hwp.codec;
 import static org.junit.Assert.*;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -11,9 +10,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import soopia.hwp.TestUtils;
-import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.record.BinDataRecord;
+import soopia.hwp.util.ByteArraySource;
 import soopia.hwp.util.Converter;
+import soopia.hwp.util.IByteSource;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -26,7 +26,6 @@ public class TestBinDataRecordDecoder {
 	
 	static BinDataRecordDecoder decoder ;
 	static BinDataRecord record;
-	static ByteBuffer data ;
 	static MockDocInfo docInfo;
 	
 	static String LINK_DATA_FILEPATH ;
@@ -38,12 +37,13 @@ public class TestBinDataRecordDecoder {
 		System.arraycopy(relPathData, 0, BIN_DATA, oleData.length + linkData.length, relPathData.length);
 		
 		decoder = new BinDataRecordDecoder();
-		data = ByteBuffer.wrap(BIN_DATA);
-		docInfo = TestUtils.newMockDocInfo(data);
-		LINK_DATA_FILEPATH = Converter.getString(data, 24, 24 );
+		IByteSource data = new ByteArraySource(BIN_DATA);
+		docInfo = TestUtils.newMockDocInfo(BIN_DATA);
+		LINK_DATA_FILEPATH = Converter.getString(data.skip(24), 24 );
 	}
 	@Before
 	public void setUp() throws Exception {
+//		data.jump(0);
 	}
 
 	@After
@@ -52,8 +52,11 @@ public class TestBinDataRecordDecoder {
 
 	@Test
 	public void test_OLE_data() throws DecodingException {
-		BinDataRecord oleRecord = new BinDataRecord(TestUtils.newRecordHeader(data, 0), docInfo, 0);
-		decoder.decode(oleRecord, data, docInfo.getHwpContext());
+		ByteArraySource ole = new ByteArraySource(oleData);
+		BinDataRecord oleRecord = new BinDataRecord(
+				TestUtils.newRecordHeader(ole.mark()), docInfo);
+		ole.rollback();
+		decoder.decode(oleRecord, ole, docInfo.getHwpContext());
 		
 		assertEquals (BinDataRecord.TYPE_STORAGE, oleRecord.getDataType());
 		assertEquals ("0001", oleRecord.getBinDataId());
@@ -62,9 +65,13 @@ public class TestBinDataRecordDecoder {
 	
 	@Test
 	public void test_LINK_data() throws DecodingException {
-		int offset = oleData.length;
-		BinDataRecord linkRecord = new BinDataRecord(TestUtils.newRecordHeader(data, offset), docInfo, offset);
-		decoder.decode(linkRecord, data, docInfo.getHwpContext());
+		ByteArraySource link = new ByteArraySource(linkData);
+		link.mark();
+		BinDataRecord linkRecord = new BinDataRecord(
+				TestUtils.newRecordHeader(link),
+				docInfo);
+		link.rollback();
+		decoder.decode(linkRecord, link, docInfo.getHwpContext());
 		
 		assertEquals (BinDataRecord.COMPRESS_DEFAULT, linkRecord.getCompressPolicy());
 		assertEquals (BinDataRecord.ACCESS_NONE, linkRecord.getAccessState());
@@ -75,12 +82,16 @@ public class TestBinDataRecordDecoder {
 	
 	@Test
 	public void test_relative_path_data() throws DecodingException, UnsupportedEncodingException {
-		int offset =  oleData.length + linkData.length;
-		String absPath = Converter.getString(data, offset + 6 + 2, 2 * 0x49);
-		String relPath = Converter.getString(data, offset + 6 + 2+2*0x49 + 2, 2 * 0x1C);
-		BinDataRecord relPathRecord = new BinDataRecord(TestUtils.newRecordHeader(data,offset ),
-				docInfo, offset);
-		decoder.decode(relPathRecord, data, docInfo.getHwpContext());
+		ByteArraySource src = new ByteArraySource(relPathData);
+		src.mark();
+		String absPath = Converter.getString(src.skip(8), 2 * 0x49);
+		String relPath = Converter.getString(src.skip(2), 2 * 0x1C);
+		BinDataRecord relPathRecord = new BinDataRecord(
+				TestUtils.newRecordHeader(src.rollback() ),
+				docInfo);
+		
+		src.rollback();
+		decoder.decode(relPathRecord, src, docInfo.getHwpContext());
 		assertEquals (BinDataRecord.TYPE_LINK, relPathRecord.getDataType());
 		assertEquals (absPath, relPathRecord.getAbsolutePath());
 		assertEquals (relPath, relPathRecord.getRelativePath());
