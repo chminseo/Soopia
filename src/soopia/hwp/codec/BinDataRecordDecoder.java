@@ -1,12 +1,12 @@
 package soopia.hwp.codec;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 
 import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.UInt16;
 import soopia.hwp.type.record.BinDataRecord;
 import soopia.hwp.util.Converter;
+import soopia.hwp.util.IByteSource;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -17,12 +17,13 @@ import soopia.hwp.util.Converter;
 public class BinDataRecordDecoder implements IDecoder<BinDataRecord> {
 
 	@Override
-	public BinDataRecord decode(BinDataRecord record, ByteBuffer data,
+	public BinDataRecord decode(BinDataRecord record, IByteSource data,
 			HwpContext context) throws DecodingException {
 		
-		data = record.getBuffer();
+//		data = record.getBuffer();
 		int offset = record.getHeaderLength();
-		UInt16 property = new UInt16(data, offset);
+		data.skip(offset);
+		UInt16 property = new UInt16(data.consume(2));
 		/* 0~3 bits */
 		int bitType = Converter.getBits(property.getValue().intValue(), 0, 4);
 		/* 4~5 bits */
@@ -35,21 +36,21 @@ public class BinDataRecordDecoder implements IDecoder<BinDataRecord> {
 		
 		try {
 			if ( bitType == BinDataRecord.TYPE_STORAGE){
-				UInt16 binId = new UInt16(data, offset+2);
+				UInt16 binId = new UInt16(data.consume(2));
 				String binDataId = decimalString(binId.getValue().intValue());
 				record.setBinDataId(binDataId);
 				
-				UInt16 len3 = new UInt16(data, offset+4);
-				String extension = Converter.getString(data, offset+6, len3.getValue() * 2 );
+				UInt16 len3 = new UInt16(data.consume(2));
+				String extension = Converter.getString(data, len3.getValue() * 2 );
 				record.setExtension(extension);
 			} else if ( bitType == BinDataRecord.TYPE_LINK) {
-				UInt16 absLen2 = new UInt16(data, offset+2);
-				String absPath = Converter.getString(data, offset+4, absLen2.getValue() * 2);
+				UInt16 absLen2 = new UInt16(data.consume(2));
+				String absPath = Converter.getString(data, absLen2.getValue() * 2);
 				record.setAbsolutePath(absPath);
 				offset += 4 + absLen2.getValue() * 2;
 				
-				UInt16 relLen2 = new UInt16(data, offset);
-				String relPath = Converter.getString(data, offset+2, relLen2.getValue() * 2);
+				UInt16 relLen2 = new UInt16(data.consume(2));
+				String relPath = Converter.getString(data, relLen2.getValue() * 2);
 				record.setRelativePath(relPath);
 			}
 		} catch (UnsupportedEncodingException e) {

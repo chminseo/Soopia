@@ -68,8 +68,8 @@ public class BinDataRecord extends AbstractRecord {
 	
 	private int accessState ;
 	
-	public BinDataRecord(RecordHeader header, IStreamStruct ds, int offset) {
-		super(header, ds, offset);
+	public BinDataRecord(RecordHeader header, IStreamStruct ds) {
+		super(header, ds);
 	}
 	
 	public int getDataType() {
