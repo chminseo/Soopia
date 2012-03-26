@@ -14,11 +14,8 @@ import soopia.hwp.util.Converter;
  */
 public class Int32 extends PrimitiveType<Integer> {
 
-	public Int32(ByteBuffer src){
-		this(src, src.position());
-	}
-	public Int32(ByteBuffer src, int offset) {
-		super(offset, 4, src);
+	public Int32(byte [] data){
+		super(data);
 	}
 
 	@Override
@@ -34,6 +31,9 @@ public class Int32 extends PrimitiveType<Integer> {
 					" INT32 should be between " 
 						+ Integer.MIN_VALUE + " and " + Integer.MAX_VALUE + " ,but " + val
 			);
+		}
+		if ( this.data.length != 4 ){
+			throw new IllegalArgumentException("Int32 should be 2 bytes-length, but " + this.data.length );
 		}
 	}
 
