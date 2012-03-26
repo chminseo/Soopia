@@ -89,7 +89,7 @@ public class TestParaTextDecoder {
 	public void test_decoding_paratext() {
 		ParaTextDecoder decoder = new ParaTextDecoder();
 		IRecordStructure irs = new ByteRecordStructure(textData);
-		decoder.decode(irs);
+//		decoder.decode(irs);
 	}
 	
 	@Test
@@ -101,11 +101,6 @@ public class TestParaTextDecoder {
 		public ByteRecordStructure (byte [] paraTextBytes){
 			super ( paraTextBytes);
 			this.data = paraTextBytes;
-		}
-		
-		@Override
-		public ByteBuffer getBuffer() {
-			return buf;
 		}
 		
 		@Override

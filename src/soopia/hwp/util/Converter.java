@@ -68,9 +68,9 @@ public class Converter {
 		byte [] b = checkBytes(data, offset, SZ_UINT32, 8);
 		return LittleEndian.getLong(b, (b == data)? offset : 0);
 	}
-	public static Dword getDword(ByteBuffer buffer, int offset) {
-		return new Dword(buffer, offset);
-	}
+//	public static Dword getDword(ByteBuffer buffer, int offset) {
+//		return new Dword(buffer, offset);
+//	}
 	public static Long getHwpUnit(byte[] data, int offset) {
 		// TEST created and not tested method stub
 		byte [] b = checkBytes(data, offset, SZ_HWPUNIT, 8);
@@ -135,5 +135,9 @@ public class Converter {
 		data.position(offset);
 		data.get(b);
 		return new String(b, "UTF-16LE");
+	}
+	public static String getString(IByteSource data, int length)
+			throws UnsupportedEncodingException{
+		return new String(data.consume(length), "UTF-16LE");
 	}
 }

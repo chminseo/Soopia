@@ -30,11 +30,6 @@ public abstract class PrimitiveType<T> implements IDataType {
 	public int getOffset() {
 		throw new RuntimeException("없어질 메소드");
 	}
-
-	@Override
-	public ByteBuffer getBuffer() {
-		throw new RuntimeException("없어질 메소드");
-	}
 	
 	@Override
 	public byte[] getBytes() {

@@ -16,29 +16,29 @@ import soopia.hwp.util.Converter;
  */
 public class ParaTextDecoder {
 	
-	public void decode(IRecordStructure irs) throws IllegalArgumentException{
-		if ( ! irs.getStrucureName().equals(Constant.PARA_TEXT) ) {
-			throw new IllegalArgumentException("ParaTextDecoder requires " 
-					+ Constant.PARA_TEXT + " structure, but " 
-					+ irs.getStrucureName());
-		}
-		ByteBuffer data = irs.getBuffer();
-		data.clear();
-		
-		int header = data.getInt();
-		byte [] sectionCtrl = new byte[16], colCtrl = new byte[16];
-		data.get(sectionCtrl).get(colCtrl);
-		
-		byte [] b = new byte[2];
-		char [] chs = new char[data.capacity()/2];
-		int i = 0;
-		while ( data.hasRemaining() ){
-			data.get(b);
-			chs[i++] = Converter.getWChar(b);
-//			System.out.println("[" + Converter.getWChar(b) + "]");
-		}
-		System.out.println(new String(chs));
-	}
+//	public void decode(IRecordStructure irs) throws IllegalArgumentException{
+//		if ( ! irs.getStrucureName().equals(Constant.PARA_TEXT) ) {
+//			throw new IllegalArgumentException("ParaTextDecoder requires " 
+//					+ Constant.PARA_TEXT + " structure, but " 
+//					+ irs.getStrucureName());
+//		}
+//		ByteBuffer data = irs.getBuffer();
+//		data.clear();
+//		
+//		int header = data.getInt();
+//		byte [] sectionCtrl = new byte[16], colCtrl = new byte[16];
+//		data.get(sectionCtrl).get(colCtrl);
+//		
+//		byte [] b = new byte[2];
+//		char [] chs = new char[data.capacity()/2];
+//		int i = 0;
+//		while ( data.hasRemaining() ){
+//			data.get(b);
+//			chs[i++] = Converter.getWChar(b);
+////			System.out.println("[" + Converter.getWChar(b) + "]");
+//		}
+//		System.out.println(new String(chs));
+//	}
 
 	private boolean isInineControl(char ch) {
 		int [] inline = new int []{4, 5,6,7,8,9, 19, 20};

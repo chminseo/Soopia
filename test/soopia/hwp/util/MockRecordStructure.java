@@ -2,7 +2,6 @@ package soopia.hwp.util;
 
 import java.nio.ByteBuffer;
 
-import soopia.hwp.Constant;
 import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.IRecordStructure;
 import soopia.hwp.type.IStreamStruct;
@@ -44,12 +43,6 @@ public class MockRecordStructure implements IRecordStructure {
 	}
 
 	@Override
-	public ByteBuffer getBuffer() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public byte[] getBytes() {
 		// TODO Auto-generated method stub
 		return null;
@@ -57,12 +50,6 @@ public class MockRecordStructure implements IRecordStructure {
 
 	@Override
 	public Integer getHeaderLength() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ByteBuffer getHeaderBuffer() {
 		// TODO Auto-generated method stub
 		return null;
 	}

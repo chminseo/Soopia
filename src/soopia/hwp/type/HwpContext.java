@@ -103,7 +103,7 @@ public class HwpContext {
 	}	
 	
 	public IRecordStructure createRecordStructure(RecordHeader header,
-			IStreamStruct stream, int pos) throws StructCreationException {
+			IStreamStruct stream) throws StructCreationException {
 		int tagID = header.getTagID();
 		Repository rep = Repository.getInstance();
 		Class<? extends IRecordStructure> cls = rep.getRecordStructClass(tagID);
@@ -112,9 +112,8 @@ public class HwpContext {
 		try {
 			Constructor<?> construct = cls.getConstructor(
 					RecordHeader.class,
-					IStreamStruct.class,
-					int.class);
-			rs = (IRecordStructure) construct.newInstance(header, stream, pos);
+					IStreamStruct.class);
+			rs = (IRecordStructure) construct.newInstance(header, stream);
 			return rs;
 		} catch ( NoSuchMethodException nsmE){
 			throw new StructCreationException("no such method", nsmE);

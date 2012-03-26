@@ -24,6 +24,8 @@ import soopia.hwp.type.stream.LinkDocInfo;
 import soopia.hwp.type.stream.PreviewImageInfo;
 import soopia.hwp.type.stream.PreviewTextInfo;
 import soopia.hwp.type.stream.SummaryInfo;
+import soopia.hwp.util.ByteArraySource;
+import soopia.hwp.util.IByteSource;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -58,9 +60,10 @@ public class StreamStructureFactory {
 		}
 	}
 	
-	private void initHwpContext(HwpContext ctx, HashMap<String, ByteBuffer> map){
+	private void initHwpContext(HwpContext ctx, HashMap<String, IByteSource> map){
 		String name = "FileHeader";
-		ByteBuffer buf = null ;
+//		ByteBuffer buf = null ;
+		IByteSource buf = null;
 		
 		try {
 			/* FileHeader부터 먼저 처리한다. */
@@ -73,20 +76,20 @@ public class StreamStructureFactory {
 				if ( name.toLowerCase().startsWith("section")){
 					ctx.addSection(new SectionInfoDecoder().decode(null, buf, ctx));
 				} else if ( name.toLowerCase().startsWith("bin")){
-					ctx.addBinaryData(new BinaryData(ctx, name, buf));
+					ctx.addBinaryData(new BinaryData(ctx, name, buf.consumeAll()));
 				} else if ( name.toLowerCase().equals("docinfo") ){
 					// FIXME 디코더 안에서 stream 인스턴스를 생성하고 context에 등록시키면 코드가 간결해진다.
 					ctx.setDocInfo(new DocInfoDecoder().decode(null, buf, ctx));
 				} else if ( name.toLowerCase().endsWith("summaryinformation") ){
-					ctx.setSummary(new SummaryInfo(ctx, name, buf));
+					ctx.setSummary(new SummaryInfo(ctx, name, buf.consumeAll()));
 				} else if ( name.toLowerCase().equals("prvimage")){
-					ctx.setPreviewImage(new PreviewImageInfo(ctx, name, buf));
+					ctx.setPreviewImage(new PreviewImageInfo(ctx, name, buf.consumeAll()));
 				} else if ( name.toLowerCase().endsWith("linkdoc")) {
-					ctx.addDocOption(new LinkDocInfo(ctx, name, buf));
+					ctx.addDocOption(new LinkDocInfo(ctx, name, buf.consumeAll()));
 				} else if ( name.toLowerCase().endsWith("drmlicense") ){
 					;
 				} else if ( name.toLowerCase().endsWith("prvtext")){
-					ctx.setPreviewText(new PreviewTextInfo(ctx, name, buf));
+					ctx.setPreviewText(new PreviewTextInfo(ctx, name, buf.consumeAll()));
 				}
 			}
 		} catch (DecodingException e) {
@@ -97,7 +100,7 @@ public class StreamStructureFactory {
 	private static class ContextHandler implements POIFSReaderListener {
 		InputStream is;
 		HwpContext ctx;
-		HashMap<String, ByteBuffer> bufferMap = new HashMap<>();
+		HashMap<String, IByteSource> bufferMap = new HashMap<>();
 		public ContextHandler(InputStream is, HwpContext ctx){
 			this.is = is;
 			this.ctx = ctx;
@@ -105,7 +108,7 @@ public class StreamStructureFactory {
 		@Override
 		public void processPOIFSReaderEvent(POIFSReaderEvent event) {
 			DocumentInputStream dis = event.getStream();
-			ByteBuffer buf = null;
+			ByteArraySource buf = null;
 			String name = event.getName(); /* stream name */
 			
 			try {
@@ -116,7 +119,7 @@ public class StreamStructureFactory {
 				 * 
 				 * 일단 스트림 이름으로 바이트 스트림을 저장한 후 FileHeader부터 처리해야 한다.
 				 */
-				buf = ByteBuffer.wrap(IOUtils.toByteArray(dis));
+				buf = new ByteArraySource(IOUtils.toByteArray(dis));
 				bufferMap.put(name, buf);
 			} catch (IOException e) {
 				e.printStackTrace();

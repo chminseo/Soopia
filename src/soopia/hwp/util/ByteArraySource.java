@@ -14,6 +14,12 @@ public class ByteArraySource implements IByteSource {
 		this.pointer = 0;
 		this.data = data;
 	}
+	
+	@Override
+	public byte[] consumeAll() {
+		return consume(remaining());
+	}
+	
 	/* (non-Javadoc)
 	 * @see soopia.hwp.util.IByteSource#consume(int)
 	 */
@@ -40,7 +46,6 @@ public class ByteArraySource implements IByteSource {
 	 */
 	@Override
 	public byte [] peep(int size){
-		// TEST
 		if ( size < 0){
 			throw new NegativeArraySizeException("peep(" + 
 					size + "), negative array index");
@@ -73,49 +78,48 @@ public class ByteArraySource implements IByteSource {
 	 * @see soopia.hwp.util.IByteSource#mark()
 	 */
 	@Override
-	public int mark() {
-		// TEST
+	public IByteSource mark() {
 		mark = pointer;
-		return mark;
+		return this;
 	}
 	/* (non-Javadoc)
 	 * @see soopia.hwp.util.IByteSource#rollback()
 	 */
 	@Override
-	public int rollback(){
+	public IByteSource rollback(){
 		// TEST
 		if ( mark < 0 ){
 			throw new IllegalStateException("mark net set. mark = " + mark);
 		}
 		pointer = mark;
-		return pointer;
+		return this;
 	}
 	
 	/* (non-Javadoc)
 	 * @see soopia.hwp.util.IByteSource#back(int)
 	 */
 	@Override
-	public int back(int count){
+	public IByteSource back(int count){
 		// TEST
 		if ( count < 0 ){
 			throw new IllegalArgumentException("back(" + count + 
 					"), negative back count use skip(int)" );
 		}
-		if ( count == 0) return pointer;
-		return movePointerRelative(count * -1);
+		if ( count > 0 ) movePointerRelative(count * -1);
+		return this;
 	}
 	
 	/* (non-Javadoc)
 	 * @see soopia.hwp.util.IByteSource#skip()
 	 */
 	@Override
-	public int skip(){
-		return movePointerRelative(1);
+	public IByteSource skip(){
+		movePointerRelative(1);
+		return this;
 	}
-	protected int movePointerRelative(int size){
+	protected void movePointerRelative(int size){
 		checkPointerRange(0, data.length, pointer + size);
 		pointer += size;
-		return pointer;
 	}
 	/*
 	 * start <= p <= end
@@ -131,21 +135,21 @@ public class ByteArraySource implements IByteSource {
 	 * @see soopia.hwp.util.IByteSource#skip(int)
 	 */
 	@Override
-	public int skip(int count){
-		// TEST
+	public IByteSource skip(int count){
 		if ( count < 0 ){
 			throw new IllegalArgumentException("skip(" + count + "), negative skip count. use back(int)" );
 		}
-		if ( count == 0) return pointer;
-		return movePointerRelative(count);
+		if ( count > 0) movePointerRelative(count);
+		return this;
 	}
 	/* (non-Javadoc)
 	 * @see soopia.hwp.util.IByteSource#jump(int)
 	 */
 	@Override
-	public void jump(int loc) {
+	public IByteSource jump(int loc) {
 		checkPointerRange(0, data.length, loc);
 		pointer = loc;
+		return this;
 	}
 	/* (non-Javadoc)
 	 * @see soopia.hwp.util.IByteSource#capacity()

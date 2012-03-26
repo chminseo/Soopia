@@ -24,7 +24,7 @@ public class FileHeaderInfo extends AbstactStream {
 	private boolean distribution ;
 	private boolean scriptEmbedded;
 	
-	public FileHeaderInfo(HwpContext context, ByteBuffer data) {
+	public FileHeaderInfo(HwpContext context, byte [] data) {
 		super(context, "FileHeader", data);
 	}
 

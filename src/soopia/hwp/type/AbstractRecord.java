@@ -26,24 +26,13 @@ import soopia.hwp.util.Converter;
 public abstract class AbstractRecord implements IRecordStructure {
 
 	protected IStreamStruct baseStruct ;
-	protected int offset ;
 	
 	protected RecordHeader header ;
-	protected ByteBuffer src;
-	protected AbstractRecord(RecordHeader header, IStreamStruct ds, int offset){
+	protected AbstractRecord(RecordHeader header, IStreamStruct ds){
 		this.baseStruct = ds;
-		this.offset = offset;
 		this.header = header;
-		this.src = cloneBuffer(ds.getBuffer());
 	}
-	
-	private ByteBuffer cloneBuffer( ByteBuffer buf ){
-		byte [] b = new byte [(int)header.getDataSize()];
-		buf.position(this.offset + header.getHeaderSize());
-		buf.get(b);
-		return ByteBuffer.wrap(b);
-	}
-		
+			
 	@Override
 	public String getStrucureName() {
 		return this.getTagName();
@@ -58,38 +47,21 @@ public abstract class AbstractRecord implements IRecordStructure {
 
 	@Override
 	public int getOffset() {
-		return this.offset;
+		throw new RuntimeException("없어질 메소드");
 	}
 
-	/**
-	 * 현재의 레코드 데이터를 나타내는 바이트값을 ByteBuffer로 감싸서 반환한다. 
-	 */
-	@Override
-	public ByteBuffer getBuffer() {
-		byte [] b = new byte [header.getHeaderSize() + this.src.capacity()];
-		int pos = header.get(b);
-		this.src.clear();
-		this.src.get(b, pos, b.length - pos);
-		return ByteBuffer.wrap(b);
-	}
 	@Override
 	public byte[] getBytes() {
-		byte [] data = new byte[(int)getLength()];
-		int offset = header.get(data);
-		this.src.clear();
-		this.src.get(data, offset, data.length-offset);
-		
-		return data;
+		// TODO header하고 content 같이 복제
+		byte [] b = new byte[(int)getLength()];
+		int offset = header.get(b);
+//		System.arraycopy(data, 0, b, offset, data.length);
+		return b;
 	}
 	/*----------- IRecordStructure ----------- */
 	@Override
 	public Integer getHeaderLength() {
 		return (int) header.getHeaderSize(); // 4 or 8 bytes
-	}
-	@Override
-	public ByteBuffer getHeaderBuffer() {
-//		// TODO Auto-generated method stub
-		throw new RuntimeException("not implemented");
 	}
 
 	@Override

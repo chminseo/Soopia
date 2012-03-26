@@ -13,11 +13,11 @@ import soopia.hwp.type.IRecordStructure;
  */
 public class SectionStream extends AbstactStream {
 
-	public SectionStream(HwpContext context, String structureName, ByteBuffer data) {
+	public SectionStream(HwpContext context, String structureName, byte [] data) {
 		super(context, structureName, data);
 	}
 
-	public SectionStream(HwpContext context, ByteBuffer data) {
+	public SectionStream(HwpContext context, byte [] data) {
 		super( context, "Section", data);
 	}
 

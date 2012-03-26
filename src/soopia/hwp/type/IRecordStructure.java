@@ -19,7 +19,6 @@ public interface IRecordStructure extends IDataType {
 	 * @return
 	 */
 	public Integer getHeaderLength();
-	public ByteBuffer getHeaderBuffer();
 	public byte [] getHeaderBytes();
 	/**
 	 * 데이터 레코드에서 DATA 길이

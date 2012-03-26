@@ -2,6 +2,7 @@ package soopia.hwp.type;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 /**
@@ -20,12 +21,13 @@ public abstract class AbstactStream implements IStreamStruct {
 	private String structureName;
 	
 	private int offset ;
-	private ByteBuffer data;
+//	private ByteBuffer data;
 	
+	private byte [] data ;
 	private HwpContext context ;
 
 	protected ArrayList<IRecordStructure> records;
-	protected AbstactStream(HwpContext context, String structureName, ByteBuffer data ){
+	protected AbstactStream(HwpContext context, String structureName, byte [] data /*ByteBuffer data*/ ){
 		this.context = context;
 		this.structureName = structureName;
 		this.offset = 0;
@@ -44,32 +46,29 @@ public abstract class AbstactStream implements IStreamStruct {
 	
 	@Override
 	public long getLength() {
-		return data.capacity();
-	}
-
-	@Override
-	public ByteBuffer getBuffer() {
-		return this.data;
+		return data.length;
 	}
 	
 	@Override
 	public byte[] getBytes() {
-		byte [] b = new byte[data.capacity()];
-		this.data.clear();
-		this.data.get(b);
+		byte [] b = new byte[data.length];
+		System.arraycopy(data, 0, b, 0, b.length);
 		return b;
 	}
+	
 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		result = prime * result + Arrays.hashCode(data);
 		result = prime * result + offset;
+		result = prime * result + ((records == null) ? 0 : records.hashCode());
 		result = prime * result
 				+ ((structureName == null) ? 0 : structureName.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -79,12 +78,14 @@ public abstract class AbstactStream implements IStreamStruct {
 		if (getClass() != obj.getClass())
 			return false;
 		AbstactStream other = (AbstactStream) obj;
-		if (data == null) {
-			if (other.data != null)
-				return false;
-		} else if (!data.equals(other.data))
+		if (!Arrays.equals(data, other.data))
 			return false;
 		if (offset != other.offset)
+			return false;
+		if (records == null) {
+			if (other.records != null)
+				return false;
+		} else if (!records.equals(other.records))
 			return false;
 		if (structureName == null) {
 			if (other.structureName != null)
@@ -93,10 +94,11 @@ public abstract class AbstactStream implements IStreamStruct {
 			return false;
 		return true;
 	}
+
 	@Override
 	public String toString() {
 		return "DefaultStructrue [ structureName="
-				+ structureName + ", offset=" + offset + ", data-size=" + data.capacity() + "]";
+				+ structureName + ", offset=" + offset + ", data-size=" + data.length + "]";
 	}
 
 	@Override

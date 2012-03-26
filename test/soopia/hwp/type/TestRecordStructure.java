@@ -46,13 +46,13 @@ public class TestRecordStructure {
 				0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x01, 0x00, 
 				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x0E, 0x00, 0x00, 0x00, 0x00, 0x00, 
 				0x00, 0x00};
-		ByteBuffer data = ByteBuffer.allocate(buf.length).put(buf);
-		return new MockStreamStructue(data);
+//		ByteBuffer data = ByteBuffer.allocate(buf.length).put(buf);
+		return new MockStreamStructue(buf);
 	}
 	
 	static class MockStreamStructue extends AbstactStream{
 
-		public MockStreamStructue(ByteBuffer data) {
+		public MockStreamStructue(byte [] data) {
 			super(null, "Mock Structue", data);
 			// TODO Auto-generated constructor stub
 		}

@@ -1,6 +1,5 @@
 package soopia.hwp.codec;
 
-import java.nio.ByteBuffer;
 
 import soopia.hwp.Constant;
 import soopia.hwp.type.Dword;
@@ -9,6 +8,8 @@ import soopia.hwp.type.IRecordStructure;
 import soopia.hwp.type.StructCreationException;
 import soopia.hwp.type.stream.DocInfoStream;
 import soopia.hwp.type.stream.RecordHeader;
+import soopia.hwp.util.ByteArraySource;
+import soopia.hwp.util.IByteSource;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -23,13 +24,14 @@ public class DocInfoDecoder implements IDecoder<DocInfoStream> {
 	};
 	
 	@Override
-	public DocInfoStream decode(DocInfoStream stream, ByteBuffer data, HwpContext context)
+	public DocInfoStream decode(DocInfoStream stream, IByteSource data, HwpContext context)
 			throws DecodingException {
 
-		int pos = 0;
+//		int pos = 0;
 		RecordHeader header;
 		if ( stream == null){
-			stream = new DocInfoStream(context, data);
+			stream = new DocInfoStream(context, data.jump(0).consume(data.capacity()));
+			data.jump(0);
 		}
 		
 		IRecordStructure record = null;
@@ -38,26 +40,25 @@ public class DocInfoDecoder implements IDecoder<DocInfoStream> {
 		do {
 			
 			header = new RecordHeader();
-			header.baseHeader = new Dword(data, pos);
+			header.baseHeader = new Dword(data.mark().consume(4));// new Dword(data, pos);
 			if ( header.getDataSize() >= 0xfff){/* 4095 바이트 초과 */
-				header.extHeader = new Dword(data, pos + header.getHeaderSize());
+				header.extHeader = new Dword(data.consume(4));//new Dword(data, pos + header.getHeaderSize());
 			}
-			
+			data.rollback();
 			try {
-				record = context.createRecordStructure(header, stream, pos);
+				record = context.createRecordStructure(header, stream);
 				decoder = (IDecoder<IRecordStructure>) context.getDecoder(record.getClass());
-				
-//				byte [] dataBuf = new byte[(int)header.getDataSize()];
-//				data.get(dataBuf);
-				record = decoder.decode(record, record.getBuffer(), context);				
+				byte [] recordBuf = data.consume((int)record.getLength());
+				ByteArraySource bas = new ByteArraySource(recordBuf);
+				record = decoder.decode(record, bas, context);
 				stream.addRecord(record);
-				pos += record.getLength();
+//				pos += record.getLength();
 			} catch (StructCreationException e1) {
 				e1.printStackTrace();
 			} catch (NullPointerException npE) {
 				System.out.println("not implemented RecordStructure : " + Constant.TAGNAMES[header.getTagID()-0x10]);
 			}
-		} while ( pos < stream.getLength() );
+		} while ( data.remaining() > 0 );
 		return stream;
 	}
 	

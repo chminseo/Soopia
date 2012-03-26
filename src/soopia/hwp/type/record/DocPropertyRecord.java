@@ -63,8 +63,8 @@ public class DocPropertyRecord extends AbstractRecord {
 	 * @param ds
 	 * @param offset
 	 */
-	public DocPropertyRecord(RecordHeader header, IStreamStruct ds, int offset) {
-		super(header, ds, offset);
+	public DocPropertyRecord(RecordHeader header, IStreamStruct ds) {
+		super(header, ds);
 	}
 
 

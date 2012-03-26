@@ -12,7 +12,7 @@ import soopia.hwp.type.HwpContext;
  */
 public class SummaryInfo extends AbstactStream {
 
-	public SummaryInfo(HwpContext context, String structureName, ByteBuffer data) {
+	public SummaryInfo(HwpContext context, String structureName, byte [] data) {
 		super(context, structureName, data);
 		// TODO Auto-generated constructor stub
 	}

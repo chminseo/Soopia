@@ -58,7 +58,7 @@ public interface IByteSource {
 	 * @see #rollback(int)
 	 * @return
 	 */
-	public int mark();
+	public IByteSource mark();
 
 	/**
 	 * 포인터를 mark 된 위치로 강제 이동시킴
@@ -67,7 +67,7 @@ public interface IByteSource {
 	 * @return 롤백 후  포인터의 위치
 	 * @exception ByteSourceException 표시된 mark가 없을 경우 예외 발생
 	 */
-	public int rollback();
+	public IByteSource rollback();
 
 	/**
 	 * 포인터를 현재 위치에서 주어진 숫자만큼 뒤로 이동시킴
@@ -75,14 +75,14 @@ public interface IByteSource {
 	 * @param count
 	 * @return 이동 후 포인터의 위치를 반환
 	 */
-	public int back(int count);
+	public IByteSource back(int count);
 
 	/**
 	 * 포인터를 현재의 위치에서 1만큼 앞으로 이동시킴
 	 * 1바이트를 건너뛴다.
 	 * @return 건너뛴 후 포인터의 위치
 	 */
-	public int skip();
+	public IByteSource skip();
 
 	/**
 	 * 포인터를 현재 위치에서 주어진 숫자만큼 앞으로 이동시킴
@@ -91,14 +91,14 @@ public interface IByteSource {
 	 * @param count 건너뛸 숫자
 	 * @return 건너뛴 후 포인터의 위치
 	 */
-	public int skip(int count);
+	public IByteSource skip(int count);
 
 	/**
 	 * 포인터를 주어진 위치로 이동시킨다.
 	 * 
 	 * @param loc 포인터가 이동할 새로운 위치
 	 */
-	public void jump(int loc);
+	public IByteSource jump(int loc);
 
 	/**
 	 * 전체 바이트 배열의 크기를 반환
@@ -106,5 +106,7 @@ public interface IByteSource {
 	 * @return 전체 바이트 배열의 크기
 	 */
 	public int capacity();
+
+	public byte[] consumeAll();
 
 }

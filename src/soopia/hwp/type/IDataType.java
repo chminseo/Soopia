@@ -20,7 +20,7 @@ public interface IDataType {
 	
 	public int getOffset();
 	
-	public ByteBuffer getBuffer();
+//	public ByteBuffer getBuffer();
 	
 	public byte [] getBytes();
 	

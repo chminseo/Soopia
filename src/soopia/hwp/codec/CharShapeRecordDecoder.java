@@ -34,7 +34,7 @@ public class CharShapeRecordDecoder implements IDecoder<CharShapeRecord> {
 			HwpContext context) throws DecodingException {
 		// TEST created and not tested method stub
 		int offset = record.getHeaderLength();
-//		data.position(offset);
+
 		data.skip(offset);
 		Word [] fontIds = decodeFontIds(data, 7);
 		offset += fontIds.length * fontIds[0].getLength();
@@ -43,7 +43,7 @@ public class CharShapeRecordDecoder implements IDecoder<CharShapeRecord> {
 		UInt8 [] charSizeRatio = readUInt8s(data, 7); // 상대적인 글자 크기(10% ~ 250%)
 		Int8 [] charPosRatio = readInt8s(data, 7); // 글자 위치 (-100%~ 100%)
 		
-		HwpUnit baseCharSize = new HwpUnit(data.consume(1));
+		HwpUnit baseCharSize = new HwpUnit(data.consume(4));
 		UInt32 fontProperty = new UInt32(data.consume(4));
 		Int8 shadowPosXRatio = new Int8(data.consume(1));
 		Int8 shadowPosYRatio = new Int8(data.consume(1));
