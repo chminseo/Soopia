@@ -13,9 +13,8 @@ import soopia.hwp.util.Converter;
  */
 public class UInt16 extends PrimitiveType<Integer> {
 
-	public UInt16(ByteBuffer src, int offset) {
-		super(offset, 2, src);
-		checkValid();
+	public UInt16(byte [] data){
+		super(data);
 	}
 
 	@Override
@@ -28,6 +27,9 @@ public class UInt16 extends PrimitiveType<Integer> {
 		Integer val = this.getValue();
 		if ( val < 0 || val > 65535 ){
 			throw new IllegalArgumentException(" UINT16 should be between 0 and 65535, but " + val);
+		}
+		if ( this.data.length != 2 ){
+			throw new IllegalArgumentException("UInt16 should be 2 bytes-length, but " + this.data.length );
 		}
 	}
 

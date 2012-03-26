@@ -3,7 +3,6 @@ package soopia.hwp.type;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import soopia.hwp.util.IByteSource;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -13,30 +12,12 @@ import soopia.hwp.util.IByteSource;
  */
 public abstract class PrimitiveType<T> implements IDataType {
 	
-//	protected int offset ;
-//	protected ByteBuffer src ;
-	
 	protected byte [] data ;
 	protected PrimitiveType(byte [] data){
 		this.data = data;
+		checkValid();
 	}
-//	protected PrimitiveType(ByteBuffer src, int length){
-//		this(src.position(), length, src);
-//	}
-//	protected PrimitiveType(int offset, int length, ByteBuffer src){
-////		this.offset = offset;
-////		this.src = cloneBuffer(src, offset, length);
-////		this.src.clear();
-//		this.checkValid();
-//	}
-	
-	private ByteBuffer cloneBuffer(ByteBuffer src, int offset, int length){
-		byte [] b = new byte [length];
-		src.position(offset);
-		src.get(b);
-		return ByteBuffer.wrap(b);
-	}
-	
+		
 	abstract protected void checkValid ( );
 	abstract public T getValue();
 	

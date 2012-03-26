@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import soopia.hwp.type.UInt16;
 import soopia.hwp.type.UInt32;
+import soopia.hwp.util.ByteArraySource;
+import soopia.hwp.util.IByteSource;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -19,11 +21,11 @@ import soopia.hwp.type.UInt32;
  */
 public class TestUInt16 {
 
-	ByteBuffer src  ;
+	IByteSource src  ;
 	@Before
 	public void setUp() throws Exception {
-		src = ByteBuffer.allocate(9);
-		src.put(new byte[]{0x10, (byte)0xc0, 0x21, 0x00, (byte)0xab, 0x10, (byte)0xc0, 0x0, 0x0});
+		src = new ByteArraySource(
+				new byte[]{0x10, (byte)0xc0, 0x21, 0x00, (byte)0xab, 0x10, (byte)0xc0, 0x0, 0x0});
 	}
 
 	@After
@@ -32,20 +34,13 @@ public class TestUInt16 {
 
 	@Test
 	public void test_load() {
-		UInt16 int16 = new UInt16(src, 2);
+		UInt16 int16 = new UInt16(src.skip(2).consume(2));
 		assertArrayEquals (new byte[]{0x21, 0x00}, int16.getBytes());
-		assertEquals (2, int16.getLength());
-		assertEquals (2, int16.getOffset());
-		assertEquals (
-				ByteBuffer.allocate(2).put(new byte[]{0x21, 0x00}),
-				int16.getBuffer());
 		assertEquals (new Integer(0x21), int16.getValue());
 	}
 	@Test
 	public void test_equals(){
-		UInt16 int16a = new UInt16(src,  0);
-		assertEquals(int16a, new UInt16(src, 5));
-		assertFalse(int16a.equals(new UInt32(src, 5)));
-		assertFalse(new UInt32(src, 5).equals(int16a));
+		UInt16 int16a = new UInt16(src.consume(2));//new UInt16(src,  0);
+		assertEquals(int16a, new UInt16(src.skip(3).consume(2))); // new UInt16(src, 5)
 	}
 }
