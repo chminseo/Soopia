@@ -13,6 +13,8 @@ import soopia.hwp.TestUtils;
 import soopia.hwp.type.record.BorderFillRecord;
 import soopia.hwp.type.record.BorderFillRecord.BackgroundColorRef;
 import soopia.hwp.type.record.BorderFillRecord.GradationRef;
+import soopia.hwp.util.ByteArraySource;
+import soopia.hwp.util.IByteSource;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -183,7 +185,7 @@ public class TestBorderFillRecordDecoder {
 		data.put(BORDER_GRDTN);
 		data.put(GRDTN);
 		
-		docInfo = TestUtils.newMockDocInfo(data);
+		docInfo = TestUtils.newMockDocInfo(data.array());
 		decoder = new BorderFillRecordDecoder();
 	}
 
@@ -197,11 +199,11 @@ public class TestBorderFillRecordDecoder {
 
 	@Test
 	public void test_create_border_record() throws DecodingException {
+		IByteSource src = new ByteArraySource(BORDER);
 		BorderFillRecord record = new BorderFillRecord(
-				TestUtils.newRecordHeader(data, 6), 
-				docInfo, 6
-		);
-		decoder.decode(record, record.getBuffer(), docInfo.getHwpContext());
+				TestUtils.newRecordHeader(src.mark()), 
+				docInfo);
+		decoder.decode(record, src.rollback(), docInfo.getHwpContext());
 		assertEquals (0, record.getBorderFillPropety().getValue().intValue());
 		
 		// LRTB
@@ -217,11 +219,11 @@ public class TestBorderFillRecordDecoder {
 	}
 	@Test
 	public void test_boder_and_color_fill() throws DecodingException {
+		IByteSource src = new ByteArraySource(BORDER_COLOR);
 		BorderFillRecord record = new BorderFillRecord(
-				TestUtils.newRecordHeader(data, 6+BORDER.length), 
-				docInfo, 6+BORDER.length
-		);
-		decoder.decode(record, record.getBuffer(), docInfo.getHwpContext());
+				TestUtils.newRecordHeader(src.mark()), 
+				docInfo);
+		decoder.decode(record, src.rollback(), docInfo.getHwpContext());
 		BackgroundColorRef bg = record.getBackgroundColorRef();
 		
 		// (byte)0xEF, (byte)0xCC, (byte)0xFC, 0x00,
@@ -236,11 +238,10 @@ public class TestBorderFillRecordDecoder {
 	}
 	@Test
 	public void test_border_color_image () throws DecodingException {
-		int offset = 6 + BORDER.length + BORDER_COLOR.length;
+		IByteSource src = new ByteArraySource(BORDER_COLOR_BGIMG);
 		BorderFillRecord record = new BorderFillRecord(
-				TestUtils.newRecordHeader(data, offset) ,
-				docInfo, offset);
-		decoder.decode(record, record.getBuffer(), docInfo.getHwpContext());
+				TestUtils.newRecordHeader(src.mark()) ,	docInfo);
+		decoder.decode(record, src.rollback(), docInfo.getHwpContext());
 		
 		//	0x00, imageFillType 
 		//	0x20, 0x0A, 0x00, 0x01, 0x00, (표-27 그림정보)
@@ -252,11 +253,10 @@ public class TestBorderFillRecordDecoder {
 	}
 	@Test
 	public void test_border_gradation_image() throws DecodingException{
-		int offset = 6 + BORDER.length + BORDER_COLOR.length + BORDER_COLOR_BGIMG.length;
+		IByteSource src = new ByteArraySource(BORDER_GRDTN_BGIMG);
 		BorderFillRecord record = new BorderFillRecord(
-				TestUtils.newRecordHeader(data, offset) ,
-				docInfo, offset);
-		decoder.decode(record, record.getBuffer(), docInfo.getHwpContext());
+				TestUtils.newRecordHeader(src.mark()) ,docInfo);
+		decoder.decode(record, src.rollback(), docInfo.getHwpContext());
 		
 		/* 그라데이션 정보 */
 //		0x04, // 그라데이션 유형 (표 25)
