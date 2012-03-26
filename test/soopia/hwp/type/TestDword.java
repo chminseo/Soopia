@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import soopia.hwp.type.Dword;
+import soopia.hwp.util.ByteArraySource;
+import soopia.hwp.util.IByteSource;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -16,11 +18,10 @@ import soopia.hwp.type.Dword;
  *
  */
 public class TestDword {
-	ByteBuffer src;
+	IByteSource src;
 	@Before
 	public void setUp() throws Exception {
-		src = ByteBuffer.allocate(7);
-		src.put(new byte[]{0x9, 0x32, (byte)0xa0, 0x10, (byte)0xbc, 0x21, 0x10});
+		src = new ByteArraySource(new byte[]{0x9, 0x32, (byte)0xa0, 0x10, (byte)0xbc, 0x21, 0x10});
 	}
 
 	@After
@@ -29,8 +30,8 @@ public class TestDword {
 
 	@Test
 	public void test() {
-		src.clear();
-		Dword dw = new Dword(src, 1);
+		
+		Dword dw = new Dword(src.skip().consume(4));
 		assertEquals(4, dw.getLength());
 		assertEquals(new Long(3155206194L), dw.getValue());
 		assertArrayEquals(new byte[]{0x32, (byte)0xa0, 0x10, (byte)0xbc}, dw.getBytes() );

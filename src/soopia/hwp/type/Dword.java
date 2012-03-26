@@ -13,9 +13,9 @@ import soopia.hwp.util.Converter;
  *
  */
 public class Dword extends PrimitiveType<Long> {
-
-	public Dword(ByteBuffer src, int offset) {
-		super(offset, 4, src);
+	
+	public Dword(byte [] data){
+		super(data);
 	}
 
 	@Override
@@ -28,6 +28,9 @@ public class Dword extends PrimitiveType<Long> {
 		Long val = this.getValue();
 		if ( val < 0 || val > 4294967295L ){
 			throw new IllegalArgumentException(" value should be between 0 and 4294967295, but " + val);
+		}
+		if ( this.data.length != 4 ){
+			throw new IllegalArgumentException("Dword should be 2 bytes-length, but " + this.data.length );
 		}
 	}
 
