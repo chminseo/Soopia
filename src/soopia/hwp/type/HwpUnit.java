@@ -14,17 +14,8 @@ import soopia.hwp.util.Converter;
  */
 public class HwpUnit extends PrimitiveType<Long> {
 
-	public HwpUnit(ByteBuffer src){
-		this(src, src.position());
-	}
-	
-	/**
-	 * @param offset
-	 * @param length
-	 * @param src
-	 */
-	public HwpUnit(ByteBuffer src, int offset) {
-		super(offset, 4, src);
+	public HwpUnit(byte [] data){
+		super(data);
 	}
 	
 	@Override
@@ -37,6 +28,9 @@ public class HwpUnit extends PrimitiveType<Long> {
 		long val = this.getValue();
 		if ( val < 0 || val > 4294967295L ){
 			throw new IllegalArgumentException("HwpUnit should be between 0 and 4294967295L, but " + val);
+		}
+		if ( data.length != 4 ){
+			throw new IllegalArgumentException("HwpUnit should be 4 bytes length, but " + data.length );
 		}
 	}
 

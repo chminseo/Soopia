@@ -17,12 +17,8 @@ import soopia.hwp.util.Converter;
  */
 public class UInt8 extends PrimitiveType<Integer> {
 
-	public UInt8(ByteBuffer src){
-		this(src, src.position());
-	}
-	public UInt8(ByteBuffer src, int offset) {
-		super(offset, 1, src);
-		checkValid();
+	public UInt8(byte [] data){
+		super(data);
 	}
 
 	@Override
@@ -32,8 +28,7 @@ public class UInt8 extends PrimitiveType<Integer> {
 
 	@Override
 	protected void checkValid() {
-		// TEST created and not tested method stub
-		Integer val = this.getValue();
+		int val = getValue();
 		if ( val < 0 || val > 255 )
 			throw new IllegalArgumentException("UINT8 should be between 0 and 255, but " + val );
 
@@ -41,7 +36,6 @@ public class UInt8 extends PrimitiveType<Integer> {
 
 	@Override
 	public Integer getValue() {
-		// TEST created and not tested method stub
 		return Converter.getUInt8(this.getBytes(), 0);
 	}
 	@Override
