@@ -33,8 +33,8 @@ public class IDMappingsRecord extends AbstractRecord {
 	private UInt32 f14_numOfStyle;		/* 스타일     */
 	private UInt32 f15_numOfMemoShape;	/* 메모 모양 */
 	
-	public IDMappingsRecord(RecordHeader header, IStreamStruct ds, int offset) {
-		super(header, ds, offset);
+	public IDMappingsRecord(RecordHeader header, IStreamStruct ds) {
+		super(header, ds);
 	}
 
 	public UInt32 getNumOfBinData() {

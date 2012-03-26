@@ -12,6 +12,8 @@ import soopia.hwp.TestUtils;
 import soopia.hwp.codec.DecodingException;
 import soopia.hwp.codec.IdMappingRecordDecoder;
 import soopia.hwp.type.record.IDMappingsRecord;
+import soopia.hwp.util.ByteArraySource;
+import soopia.hwp.util.IByteSource;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -22,12 +24,12 @@ public class TestIdMappingRecordDecoder {
 	IDMappingsRecord record;
 	IdMappingRecordDecoder decoder ;
 	MockDocInfo ds;
-	ByteBuffer buf ;
+	IByteSource buf ;
 	@Before
 	public void setUp() throws Exception {
-		buf = ByteBuffer.wrap(data);
-		ds = TestUtils.newMockDocInfo(buf);
-		record = new IDMappingsRecord(TestUtils.newRecordHeader(buf, 0), ds, 0);
+		buf = new ByteArraySource(data);
+		ds = TestUtils.newMockDocInfo(data);
+		record = new IDMappingsRecord(TestUtils.newRecordHeader(buf.mark()), ds);
 		decoder = new IdMappingRecordDecoder();
 	}
 
@@ -37,7 +39,7 @@ public class TestIdMappingRecordDecoder {
 
 	@Test
 	public void test_decoding_IdMappingRecord() throws DecodingException {
-		record = decoder.decode(record, buf, null);
+		record = decoder.decode(record, buf.rollback(), null);
 		assertEquals(13, record.getNumOfParaShape().getValue().intValue());
 		assertEquals(14, record.getNumOfStyle().getValue().intValue());
 		
