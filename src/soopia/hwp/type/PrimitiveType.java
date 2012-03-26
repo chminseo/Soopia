@@ -23,20 +23,17 @@ public abstract class PrimitiveType<T> implements IDataType {
 	
 	@Override
 	public long getLength() {
-//		return this.src.capacity();
 		return data.length;
 	}
 
 	@Override
 	public int getOffset() {
 		throw new RuntimeException("없어질 메소드");
-//		return this.offset;
 	}
 
 	@Override
 	public ByteBuffer getBuffer() {
 		throw new RuntimeException("없어질 메소드");
-//		return this.src.asReadOnlyBuffer();
 	}
 	
 	@Override
@@ -57,19 +54,5 @@ public abstract class PrimitiveType<T> implements IDataType {
 		result = prime * result + Arrays.hashCode(data);
 		return result;
 	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		PrimitiveType<T> other = (PrimitiveType<T>) obj;
-		if (!Arrays.equals(data, other.data))
-			return false;
-		return true;
-	}
-
 	
 }

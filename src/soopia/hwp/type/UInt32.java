@@ -14,12 +14,8 @@ import soopia.hwp.util.Converter;
  */
 public class UInt32 extends PrimitiveType<Long> {
 
-	public UInt32(ByteBuffer src){
-		this(src, src.position());
-	}
-	public UInt32(ByteBuffer src, int offset) {
-		super(offset, 4, src);
-		checkValid();
+	public UInt32(byte [] data ){
+		super(data);
 	}
 
 	@Override
@@ -32,6 +28,9 @@ public class UInt32 extends PrimitiveType<Long> {
 		long val = this.getValue();
 		if ( val < 0 || val > 4294967295L ){
 			throw new IllegalArgumentException(" UINT32 should be between 0 and 4294967295L, but " + val);
+		}
+		if ( this.data.length != 4 ){
+			throw new IllegalArgumentException("Int32 should be 2 bytes-length, but " + this.data.length );
 		}
 	}
 
