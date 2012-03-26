@@ -14,6 +14,8 @@ import org.junit.Test;
 
 import soopia.hwp.TestUtils;
 import soopia.hwp.type.record.CharShapeRecord;
+import soopia.hwp.util.ByteArraySource;
+import soopia.hwp.util.IByteSource;
 
 public class TestCharShapeRecordDecoder {
 
@@ -39,8 +41,7 @@ public class TestCharShapeRecordDecoder {
 	private static CharShapeRecordDecoder decoder;
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		ByteBuffer buf = ByteBuffer.wrap(data);
-		docInfo = TestUtils.newMockDocInfo(buf);
+		docInfo = TestUtils.newMockDocInfo(data);
 		decoder = new CharShapeRecordDecoder();
 	}
 
@@ -54,10 +55,10 @@ public class TestCharShapeRecordDecoder {
 
 	@Test
 	public void test_decoding_CharShapeRecord() throws DecodingException {
+		IByteSource buf = new ByteArraySource(data);
 		CharShapeRecord record = new CharShapeRecord(
-				TestUtils.newRecordHeader(docInfo.getBuffer(), 0)
-				, docInfo, 0);
-		record = decoder.decode(record, record.getBuffer(), docInfo.getHwpContext());
+				TestUtils.newRecordHeader(buf.mark())	, docInfo);
+		record = decoder.decode(record, buf.rollback(), docInfo.getHwpContext());
 		
 	}
 

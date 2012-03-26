@@ -18,8 +18,8 @@ public class CharShapeRecord extends AbstractRecord {
 	 * @param ds
 	 * @param offset
 	 */
-	public CharShapeRecord(RecordHeader header, IStreamStruct ds, int offset) {
-		super(header, ds, offset);
+	public CharShapeRecord(RecordHeader header, IStreamStruct ds) {
+		super(header, ds);
 		// TODO Auto-generated constructor stub
 	}
 

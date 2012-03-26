@@ -14,6 +14,7 @@ import soopia.hwp.type.UInt32;
 import soopia.hwp.type.UInt8;
 import soopia.hwp.type.Word;
 import soopia.hwp.type.record.CharShapeRecord;
+import soopia.hwp.util.IByteSource;
 
 /**
  * @author chmin
@@ -29,11 +30,12 @@ public class CharShapeRecordDecoder implements IDecoder<CharShapeRecord> {
 	}
 
 	@Override
-	public CharShapeRecord decode(CharShapeRecord record, ByteBuffer data,
+	public CharShapeRecord decode(CharShapeRecord record, IByteSource data,
 			HwpContext context) throws DecodingException {
 		// TEST created and not tested method stub
 		int offset = record.getHeaderLength();
-		data.position(offset);
+//		data.position(offset);
+		data.skip(offset);
 		Word [] fontIds = decodeFontIds(data, 7);
 		offset += fontIds.length * fontIds[0].getLength();
 		UInt8 [] charWidthRatio = readUInt8s(data, 7); // 장평 ( 50% ~ 200% )
@@ -41,36 +43,36 @@ public class CharShapeRecordDecoder implements IDecoder<CharShapeRecord> {
 		UInt8 [] charSizeRatio = readUInt8s(data, 7); // 상대적인 글자 크기(10% ~ 250%)
 		Int8 [] charPosRatio = readInt8s(data, 7); // 글자 위치 (-100%~ 100%)
 		
-		HwpUnit baseCharSize = new HwpUnit(data);
-		UInt32 fontProperty = new UInt32(data);
-		Int8 shadowPosXRatio = new Int8(data);
-		Int8 shadowPosYRatio = new Int8(data);
+		HwpUnit baseCharSize = new HwpUnit(data.consume(1));
+		UInt32 fontProperty = new UInt32(data.consume(4));
+		Int8 shadowPosXRatio = new Int8(data.consume(1));
+		Int8 shadowPosYRatio = new Int8(data.consume(1));
 		
-		ColorRef fontColor = new ColorRef(data);
-		ColorRef underlineColor = new ColorRef(data);
+		ColorRef fontColor = new ColorRef(data.consume(4));
+		ColorRef underlineColor = new ColorRef(data.consume(4));
 //		ColorRef 
 		return record;
 	}
 	
-	private Int8 [] readInt8s(ByteBuffer data, final int size){
+	private Int8 [] readInt8s(IByteSource data, final int size){
 		Int8 [] is = new Int8[size];
 		for (int i = 0; i < is.length; i++) {
-			is[i] = new Int8(data);
+			is[i] = new Int8(data.consume(1));
 		}
 		return is;
 	}
-	private UInt8 [] readUInt8s(ByteBuffer data, final int size){
+	private UInt8 [] readUInt8s(IByteSource data, final int size){
 		UInt8 [] is = new UInt8[size];
 		for (int i = 0; i < is.length; i++) {
-			is[i] = new UInt8(data);
+			is[i] = new UInt8(data.consume(1));
 		}
 		return is;
 		
 	}
-	private Word [] decodeFontIds(ByteBuffer data, final int size){
+	private Word [] decodeFontIds(IByteSource data, final int size){
 		Word [] words = new Word[size];
 		for( int i = 0 ;i < size ; i++){
-			words[i] = new Word(data, data.position());
+			words[i] = new Word(data.consume(2));
 		}
 		return words;
 	}
