@@ -158,4 +158,21 @@ public class ByteArraySource implements IByteSource {
 	public int capacity(){
 		return data.length;
 	}
+	
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("ByteArraySource[mark=" + mark + 
+		", position=" + pointer + ", length=" + data.length + "]\n[ 0- p : ");
+		for( int i = 0 ; i < pointer ; i++){
+			sb.append(Converter.toHexString(data[i]) + " ");
+		}
+		sb.append("]\n[p-end : ");
+		for (int i = pointer; i < data.length ; i++) {
+			sb.append(Converter.toHexString(data[i]) + " ");
+		}
+		sb.append("]\n");
+		return sb.toString();
+	}
 }

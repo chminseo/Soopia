@@ -62,6 +62,7 @@ public class TestByteSource {
 		} catch (NegativeArraySizeException e){}
 		
 		bs.consume(10, 5);
+		System.out.println(bs);
 		assertEquals(5, bs.position());
 		assertEquals(15, bs.remaining());
 	}
