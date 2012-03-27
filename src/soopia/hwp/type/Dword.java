@@ -1,7 +1,5 @@
 package soopia.hwp.type;
 
-import java.nio.ByteBuffer;
-
 import soopia.hwp.Constant;
 import soopia.hwp.util.Converter;
 
@@ -42,7 +40,7 @@ public class Dword extends PrimitiveType<Long> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Dword [getValue()=" + getValue());
+		sb.append("Dword [value=" + getValue());
 		sb.append(", bytes [");
 		byte [] b = getBytes();
 		for (int i = 0; i < b.length; i++) {

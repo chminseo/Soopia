@@ -1,6 +1,5 @@
 package soopia.hwp.type;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**

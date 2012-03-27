@@ -1,7 +1,5 @@
 package soopia.hwp.type;
 
-import java.nio.ByteBuffer;
-
 import soopia.hwp.Constant;
 
 public class Int8 extends PrimitiveType<Byte> {
