@@ -49,4 +49,12 @@ public class RecordHeader {
 		}
 		return this.getHeaderSize();
 	}
+	
+	@Override
+	public String toString(){
+		return "RecordHeader[header-size : " + getHeaderSize() +
+				",base=" + baseHeader +
+				",ext="  + extHeader +
+				"]";
+	}
 }
