@@ -15,11 +15,13 @@ import soopia.hwp.util.IByteSource;
  * @author chmin
  *
  */
-public class FaceNameDecoder implements IDecoder<FaceNameRecord> {
+public class FaceNameDecoder extends AbstractRecordDecoder<FaceNameRecord> {
 
 	@Override
 	public FaceNameRecord decode(FaceNameRecord fNameRecord, IByteSource data,
 			HwpContext context) throws DecodingException {
+		super.decode(fNameRecord, data, context); // 바이트 배열 복사 저장
+		
 		int offset = fNameRecord.getHeaderLength();
 		data.skip(offset);
 		HwpByte bit = new HwpByte(data.consume(1));

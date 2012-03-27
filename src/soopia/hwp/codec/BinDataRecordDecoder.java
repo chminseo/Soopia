@@ -14,13 +14,13 @@ import soopia.hwp.util.IByteSource;
  * @author chmin
  *
  */
-public class BinDataRecordDecoder implements IDecoder<BinDataRecord> {
-
+public class BinDataRecordDecoder extends AbstractRecordDecoder<BinDataRecord> {
+	
 	@Override
 	public BinDataRecord decode(BinDataRecord record, IByteSource data,
 			HwpContext context) throws DecodingException {
+		super.decode(record, data, context); // 바이트 배열 복사 저장
 		
-//		data = record.getBuffer();
 		int offset = record.getHeaderLength();
 		data.skip(offset);
 		UInt16 property = new UInt16(data.consume(2));

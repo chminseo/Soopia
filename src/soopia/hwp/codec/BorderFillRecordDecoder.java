@@ -1,7 +1,5 @@
 package soopia.hwp.codec;
 
-import java.nio.ByteBuffer;
-
 import soopia.hwp.type.ColorRef;
 import soopia.hwp.type.Dword;
 import soopia.hwp.type.HwpByte;
@@ -25,12 +23,13 @@ import soopia.hwp.util.IByteSource;
  * @author chmin
  * @page p.18 (표-18)
  */
-public class BorderFillRecordDecoder implements IDecoder<BorderFillRecord> {
+public class BorderFillRecordDecoder extends AbstractRecordDecoder<BorderFillRecord> {
 
 	@Override
 	public BorderFillRecord decode(BorderFillRecord record, IByteSource data,
 			HwpContext context) throws DecodingException {
 		// TEST created and not tested method stub
+		super.decode(record, data, context); // 바이트 배열 복사 저장
 		
 		int offset = record.getHeaderLength();
 		data.skip(offset);

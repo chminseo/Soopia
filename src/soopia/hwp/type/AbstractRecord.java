@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 
 import soopia.hwp.Constant;
 import soopia.hwp.type.stream.RecordHeader;
-import soopia.hwp.util.Converter;
 
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
@@ -28,6 +27,7 @@ public abstract class AbstractRecord implements IRecordStructure {
 	protected IStreamStruct baseStruct ;
 	
 	protected RecordHeader header ;
+	protected byte [] data ;
 	protected AbstractRecord(RecordHeader header, IStreamStruct ds){
 		this.baseStruct = ds;
 		this.header = header;
@@ -52,11 +52,13 @@ public abstract class AbstractRecord implements IRecordStructure {
 
 	@Override
 	public byte[] getBytes() {
-		// TODO header하고 content 같이 복제
-		byte [] b = new byte[(int)getLength()];
-		int offset = header.get(b);
-//		System.arraycopy(data, 0, b, offset, data.length);
-		return b;
+//		byte [] header = getHeaderBytes();
+//		byte [] body = getDataBytes();
+//		byte [] b = new byte[header.length + body.length];
+//		System.arraycopy(header, 0, b, 0, header.length);
+//		System.arraycopy(body, 0, b, header.length, body.length);
+//		return b;
+		return data;
 	}
 	/*----------- IRecordStructure ----------- */
 	@Override
@@ -66,8 +68,9 @@ public abstract class AbstractRecord implements IRecordStructure {
 
 	@Override
 	public byte[] getHeaderBytes() {
-		// TODO Auto-generated method stub
-		throw new RuntimeException("not implemented");
+		byte [] b = new byte[getHeaderLength()];
+		header.get(b);
+		return b;
 	}
 
 	@Override
@@ -76,13 +79,13 @@ public abstract class AbstractRecord implements IRecordStructure {
 	}
 	@Override
 	public ByteBuffer getDataBuffer() {
-		// TODO Auto-generated method stub
+		// FIXME encoder를 이용해서 할 일
 		throw new RuntimeException("not implemented");
 	}
 
 	@Override
 	public byte[] getDataBytes() {
-		// TODO Auto-generated method stub
+		// FIXME encoder가 할 일. 
 		throw new RuntimeException("not implemented");
 	}
 	
@@ -106,7 +109,6 @@ public abstract class AbstractRecord implements IRecordStructure {
 	@Override
 	public Integer getTagValue() {
 		return header.getTagValue();
-//		return IRecordStructure.BIT_MASK_10 & header.getValue().intValue();
 	}
 
 	@Override
@@ -116,5 +118,24 @@ public abstract class AbstractRecord implements IRecordStructure {
 	@Override
 	public IStreamStruct getParentStream() {
 		return this.baseStruct;
+	}
+
+	/**
+	 * 레코드 데이터를 나타내는 바이트 배열을 저장한다.
+	 * @param data
+	 */
+	public void setBytes(byte[] data) {
+		/* TODO 
+		 * 현재 읽기 전용으로 개발 중이기 때문에 encoder를 작성하는 대신 전체 배열을 저장하고 있음.
+		 * 향후 편집 기능이 추가되면 이 메소드를 없애고 encoder로 바이트배열을 생성, 반환하도록 함.
+		 */
+		this.data = data;
+	}
+	
+	@Override
+	public String toString(){
+		return getStrucureName() + "[tagID=" + getTagValue() +
+				", level=" + getLevel() +
+				", length=" + getLength() + "]";
 	}
 }

@@ -27,7 +27,6 @@ public class DocInfoDecoder implements IDecoder<DocInfoStream> {
 	public DocInfoStream decode(DocInfoStream stream, IByteSource data, HwpContext context)
 			throws DecodingException {
 
-//		int pos = 0;
 		RecordHeader header;
 		if ( stream == null){
 			stream = new DocInfoStream(context, data.jump(0).consume(data.capacity()));
@@ -40,9 +39,9 @@ public class DocInfoDecoder implements IDecoder<DocInfoStream> {
 		do {
 			
 			header = new RecordHeader();
-			header.baseHeader = new Dword(data.mark().consume(4));// new Dword(data, pos);
+			header.baseHeader = new Dword(data.mark().consume(4));
 			if ( header.getDataSize() >= 0xfff){/* 4095 바이트 초과 */
-				header.extHeader = new Dword(data.consume(4));//new Dword(data, pos + header.getHeaderSize());
+				header.extHeader = new Dword(data.consume(4));
 			}
 			data.rollback();
 			try {
@@ -52,7 +51,6 @@ public class DocInfoDecoder implements IDecoder<DocInfoStream> {
 				ByteArraySource bas = new ByteArraySource(recordBuf);
 				record = decoder.decode(record, bas, context);
 				stream.addRecord(record);
-//				pos += record.getLength();
 			} catch (StructCreationException e1) {
 				e1.printStackTrace();
 			} catch (NullPointerException npE) {
@@ -61,10 +59,4 @@ public class DocInfoDecoder implements IDecoder<DocInfoStream> {
 		} while ( data.remaining() > 0 );
 		return stream;
 	}
-	
-	private int asTagID(Dword header){
-		return header.getValue().intValue() & IRecordStructure.BIT_MASK_10;
-	}
-	
-
 }

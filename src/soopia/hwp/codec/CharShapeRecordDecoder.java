@@ -3,12 +3,9 @@
  */
 package soopia.hwp.codec;
 
-import java.nio.ByteBuffer;
-
 import soopia.hwp.type.ColorRef;
 import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.HwpUnit;
-import soopia.hwp.type.Int32;
 import soopia.hwp.type.Int8;
 import soopia.hwp.type.UInt32;
 import soopia.hwp.type.UInt8;
@@ -20,7 +17,7 @@ import soopia.hwp.util.IByteSource;
  * @author chmin
  *
  */
-public class CharShapeRecordDecoder implements IDecoder<CharShapeRecord> {
+public class CharShapeRecordDecoder extends AbstractRecordDecoder<CharShapeRecord> {
 
 	/**
 	 * 
@@ -33,6 +30,8 @@ public class CharShapeRecordDecoder implements IDecoder<CharShapeRecord> {
 	public CharShapeRecord decode(CharShapeRecord record, IByteSource data,
 			HwpContext context) throws DecodingException {
 		// TEST created and not tested method stub
+		super.decode(record, data, context); // 바이트 배열 복사 저장
+		
 		int offset = record.getHeaderLength();
 
 		data.skip(offset);

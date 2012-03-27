@@ -6,7 +6,6 @@ import soopia.hwp.type.Dword;
 import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.IRecordStructure;
 import soopia.hwp.type.StructCreationException;
-import soopia.hwp.type.stream.DocInfoStream;
 import soopia.hwp.type.stream.RecordHeader;
 import soopia.hwp.type.stream.SectionStream;
 import soopia.hwp.util.ByteArraySource;
@@ -22,7 +21,6 @@ public class SectionInfoDecoder implements IDecoder<SectionStream> {
 	@Override
 	public SectionStream decode(SectionStream stream, IByteSource data,
 			HwpContext context) throws DecodingException {
-		int pos = 0;
 		RecordHeader header;
 		if ( stream == null){
 			stream = new SectionStream(context, data.mark().consumeAll());
@@ -48,13 +46,12 @@ public class SectionInfoDecoder implements IDecoder<SectionStream> {
 				ByteArraySource bas = new ByteArraySource(recordBuf);
 				record = decoder.decode(record, bas, context);
 				stream.addRecord(record);
-				pos += record.getLength();
 			} catch (StructCreationException e1) {
 				e1.printStackTrace();
 			} catch (NullPointerException npE) {
 				System.out.println("not implemented RecordStructure : " + Constant.TAGNAMES[header.getTagID()-0x10]);
 			}
-		} while ( pos < stream.getLength() );
+		} while (data.remaining() > 0 );
 		return stream;
 	}
 

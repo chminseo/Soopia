@@ -11,11 +11,12 @@ import soopia.hwp.util.IByteSource;
  * @author chmin
  *
  */
-public class IdMappingRecordDecoder implements IDecoder<IDMappingsRecord> {
+public class IdMappingRecordDecoder extends AbstractRecordDecoder<IDMappingsRecord> {
 
 	@Override
 	public IDMappingsRecord decode(IDMappingsRecord record, IByteSource data,
 			HwpContext context) throws DecodingException {
+		super.decode(record, data, context); // 바이트 배열 복사 저장
 		
 //		data = record.getBuffer();
 		int offset = record.getHeaderLength();

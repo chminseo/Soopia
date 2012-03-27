@@ -1,13 +1,9 @@
 package soopia.hwp.codec;
 
-import java.nio.ByteBuffer;
-
 import soopia.hwp.type.HwpContext;
-import soopia.hwp.type.IRecordStructure;
 import soopia.hwp.type.UInt16;
 import soopia.hwp.type.UInt32;
 import soopia.hwp.type.record.DocPropertyRecord;
-import soopia.hwp.util.Converter;
 import soopia.hwp.util.IByteSource;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
@@ -15,7 +11,7 @@ import soopia.hwp.util.IByteSource;
  * @author chmin
  *
  */
-public class DocPropRecordDecoder implements IDecoder<DocPropertyRecord> {
+public class DocPropRecordDecoder extends AbstractRecordDecoder<DocPropertyRecord> {
 
 	@Override 
 	public boolean isAvailable(String versionString) {
@@ -25,6 +21,7 @@ public class DocPropRecordDecoder implements IDecoder<DocPropertyRecord> {
 	@Override
 	public DocPropertyRecord decode(DocPropertyRecord target, IByteSource data,
 			HwpContext context) throws DecodingException {
+		super.decode(target, data, context); // 바이트 배열 복사 저장
 		
 		int pos = target.getHeaderLength(); // skip header
 		data.skip(pos);

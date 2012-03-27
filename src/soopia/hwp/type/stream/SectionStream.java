@@ -1,7 +1,5 @@
 package soopia.hwp.type.stream;
 
-import java.nio.ByteBuffer;
-
 import soopia.hwp.type.AbstactStream;
 import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.IRecordStructure;
