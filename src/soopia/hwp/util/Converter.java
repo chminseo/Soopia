@@ -5,8 +5,6 @@ import java.nio.ByteBuffer;
 
 import org.apache.poi.util.LittleEndian;
 
-import soopia.hwp.type.Dword;
-import soopia.hwp.type.UInt16;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -89,10 +87,10 @@ public class Converter {
 		// TODO 구현해야함.
 		return 0;
 	}
-	public static char getChar(ByteBuffer data) {
-		byte [] b = new byte[2];
-		return 'c';
-	}
+//	public static char getChar(ByteBuffer data) {
+//		byte [] b = new byte[2];
+//		return 'c';
+//	}
 	public static char getWChar(byte[] b) {
 		int val = LittleEndian.getShort(b);
 		return (char) val;
@@ -139,5 +137,8 @@ public class Converter {
 	public static String getString(IByteSource data, int length)
 			throws UnsupportedEncodingException{
 		return new String(data.consume(length), "UTF-16LE");
+	}
+	public static String toHexString(byte b){
+		return (b < 0x10 ? "0" : "" ) + Integer.toHexString(0x0ff & b).toUpperCase();
 	}
 }
