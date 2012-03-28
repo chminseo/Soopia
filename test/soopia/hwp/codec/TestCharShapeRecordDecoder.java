@@ -65,8 +65,8 @@ public class TestCharShapeRecordDecoder {
 		/* 속성정보 */
 		assertEquals (true, record.isItalic());
 		assertEquals(true, record.isBold());
-		assertEquals(1, record.getUnderlineType());
-		assertEquals(2, record.getUnderLineStyle());
+		assertEquals(1, record.getCharLinePos());
+		assertEquals(2, record.getCharLineStyle());
 		
 		assertEquals(1, record.isStrokeLineEnabled()); // 취소선 여부
 		assertEquals(2, record.getDiacriticalMark());
