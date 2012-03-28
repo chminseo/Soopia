@@ -7,6 +7,7 @@ import soopia.hwp.type.ColorRef;
 import soopia.hwp.type.HwpContext;
 import soopia.hwp.type.HwpUnit;
 import soopia.hwp.type.Int8;
+import soopia.hwp.type.UInt16;
 import soopia.hwp.type.UInt32;
 import soopia.hwp.type.UInt8;
 import soopia.hwp.type.Word;
@@ -35,21 +36,24 @@ public class CharShapeRecordDecoder extends AbstractRecordDecoder<CharShapeRecor
 		int offset = record.getHeaderLength();
 
 		data.skip(offset);
-		Word [] fontIds = decodeFontIds(data, 7);
-		offset += fontIds.length * fontIds[0].getLength();
-		UInt8 [] charWidthRatio = readUInt8s(data, 7); // 장평 ( 50% ~ 200% )
-		Int8 [] charGapRatio = readInt8s(data, 7); // 자간 (-50% ~ 50% )
-		UInt8 [] charSizeRatio = readUInt8s(data, 7); // 상대적인 글자 크기(10% ~ 250%)
-		Int8 [] charPosRatio = readInt8s(data, 7); // 글자 위치 (-100%~ 100%)
+		record.setFontIds(decodeFontIds(data, 7));
+
+		record.setCharWidthRatio(readUInt8s(data, 7)); // 장평 ( 50% ~ 200% )
+		record.setCharGapRatio( readInt8s(data, 7) ); // 자간 (-50% ~ 50% )
+		record.setCharSizeRatio(readUInt8s(data, 7) ); // 상대적인 글자 크기(10% ~ 250%)
+		record.setCharPosRatio(readInt8s(data, 7)); // 글자 위치 (-100%~ 100%)
 		
-		HwpUnit baseCharSize = new HwpUnit(data.consume(4));
-		UInt32 fontProperty = new UInt32(data.consume(4));
-		Int8 shadowPosXRatio = new Int8(data.consume(1));
-		Int8 shadowPosYRatio = new Int8(data.consume(1));
+		record.setBaseCharSize(new HwpUnit(data.consume(4)));// 기준 글자 크기
+		record.setFontProperty(new UInt32(data.consume(4)));// 속성
+		record.setShadowPosXRatio(new Int8(data.consume(1)));
+		record.setShadowPosYRation(new Int8(data.consume(1)));
 		
-		ColorRef fontColor = new ColorRef(data.consume(4));
-		ColorRef underlineColor = new ColorRef(data.consume(4));
-//		ColorRef 
+		record.setFontColor( new ColorRef(data.consume(4)));
+		record.setUnderlineColor( new ColorRef(data.consume(4)));
+		record.setBackgroundColor( new ColorRef(data.consume(4)));
+		record.setShadowColor(new ColorRef(data.consume(4)));
+		record.setBorderFillId(new UInt16(data.consume(2)));
+		record.setStrokeColor( new ColorRef(data.consume(4)));
 		return record;
 	}
 	

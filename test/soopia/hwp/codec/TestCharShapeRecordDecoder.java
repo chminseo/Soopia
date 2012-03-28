@@ -19,7 +19,7 @@ import soopia.hwp.util.IByteSource;
 
 public class TestCharShapeRecordDecoder {
 
-	static byte [] data = new byte[]{
+	static byte [] FONT_SHAPE = new byte[]{
 		0x15, 0x04, (byte)0xA0, 0x04, //header
 		/*글        꼴*/0x02, 0x00, 0x02, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 
 		/*장        평*/0x64, (byte)0xC8, 0x64, 0x64, 0x64, 0x64, 0x64, 
@@ -27,8 +27,8 @@ public class TestCharShapeRecordDecoder {
 		/*상대크기*/(byte)0x96, (byte)0x96, (byte)0x96, (byte)0x96, (byte)0x96, (byte)0x96, (byte)0x96, 
 		/*글자위치*/0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, // 16%
 		
-		(byte)0xE8, 0x03, 0x00, 0x00,// 기준크기( HwpUnit ) 
-		0x00, 0x08, 0x00, 0x00,  // 속성(표-30 참조)
+		(byte)0xE8, 0x03, 0x00, 0x00,// 기준크기 1000 HwpUnit 
+		0x27, 0x00, 0x44, 0x00,  // 속성(표-30 참조)
 		0x10, 0x0A, // 그림자 X, Y 간격
 		0x00, 0x00, 0x00, 0x00, // 글자색
 		0x00, 0x00, 0x00, 0x00, // 밑줄색
@@ -41,7 +41,7 @@ public class TestCharShapeRecordDecoder {
 	private static CharShapeRecordDecoder decoder;
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		docInfo = TestUtils.newMockDocInfo(data);
+		docInfo = TestUtils.newMockDocInfo(FONT_SHAPE);
 		decoder = new CharShapeRecordDecoder();
 	}
 
@@ -55,11 +55,23 @@ public class TestCharShapeRecordDecoder {
 
 	@Test
 	public void test_decoding_CharShapeRecord() throws DecodingException {
-		IByteSource buf = new ByteArraySource(data);
+		IByteSource buf = new ByteArraySource(FONT_SHAPE);
 		CharShapeRecord record = new CharShapeRecord(
 				TestUtils.newRecordHeader(buf.mark())	, docInfo);
 		record = decoder.decode(record, buf.rollback(), docInfo.getHwpContext());
 		
+		assertEquals(1000, record.getBaseCharSize().getValue().intValue());
+		
+		/* 속성정보 */
+		assertEquals (true, record.isItalic());
+		assertEquals(true, record.isBold());
+		assertEquals(1, record.getUnderlineType());
+		assertEquals(2, record.getUnderLineStyle());
+		
+		assertEquals(1, record.isStrokeLineEnabled()); // 취소선 여부
+		assertEquals(2, record.getDiacriticalMark());
+		assertEquals(false, record.isSuitableBlankUse());
+		assertEquals(0, record.getStrokeLineStyle());
 	}
 
 }
