@@ -43,7 +43,7 @@ public class HwpUnit extends PrimitiveType<Long> {
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
-		sb.append("HwpUnit [" + getValue());
+		sb.append("HwpUnit [" + getValue() + "HU");
 		sb.append(", bytes [");
 		byte [] b = getBytes();
 		for (int i = 0; i < b.length; i++) {
