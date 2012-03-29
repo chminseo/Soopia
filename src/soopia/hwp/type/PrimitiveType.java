@@ -48,5 +48,24 @@ public abstract class PrimitiveType<T> implements IDataType {
 		result = prime * result + Arrays.hashCode(data);
 		return result;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		@SuppressWarnings("rawtypes")
+		PrimitiveType other = (PrimitiveType) obj;
+		if (!Arrays.equals(data, other.data))
+			return false;
+		if (!getStrucureName().equals(other.getStrucureName()))
+			return false;
+		return true;
+	}
+	
+	
 	
 }
