@@ -128,7 +128,6 @@
 			<fileset dir="${junit.output.dir}/report">
 				<include name="TESTS-*.xml"/>
 			</fileset>
-			<report format="frames" todir="${junit.output.dir}/report"/>
 		</junitreport>
     </target>
     <target name="junitreport">
