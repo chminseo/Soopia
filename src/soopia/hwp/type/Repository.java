@@ -10,12 +10,14 @@ import soopia.hwp.codec.DocPropRecordDecoder;
 import soopia.hwp.codec.FaceNameDecoder;
 import soopia.hwp.codec.IDecoder;
 import soopia.hwp.codec.IdMappingRecordDecoder;
+import soopia.hwp.codec.TabRecordDecoder;
 import soopia.hwp.type.record.BinDataRecord;
 import soopia.hwp.type.record.BorderFillRecord;
 import soopia.hwp.type.record.CharShapeRecord;
 import soopia.hwp.type.record.DocPropertyRecord;
 import soopia.hwp.type.record.FaceNameRecord;
 import soopia.hwp.type.record.IDMappingsRecord;
+import soopia.hwp.type.record.TabRecord;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -67,6 +69,7 @@ public class Repository {
 		decoderMap.put(FaceNameRecord.class, new FaceNameDecoder());
 		decoderMap.put(BorderFillRecord.class, new BorderFillRecordDecoder());
 		decoderMap.put(CharShapeRecord.class, new CharShapeRecordDecoder());
+		decoderMap.put(TabRecord.class, new TabRecordDecoder());
 	}
 	public void installDefault(){
 		String [] tagNames = Constant.TAGNAMES;
@@ -77,6 +80,7 @@ public class Repository {
 		recordStructMap.put(Constant.HWPTAG_BEGIN + (++idx), FaceNameRecord.class);
 		recordStructMap.put(Constant.HWPTAG_BEGIN + (++idx), BorderFillRecord.class);
 		recordStructMap.put(Constant.HWPTAG_BEGIN + (++idx), CharShapeRecord.class);
+		recordStructMap.put(Constant.HWPTAG_BEGIN + (++idx), TabRecord.class);
 		
 		
 		installDecoder();
