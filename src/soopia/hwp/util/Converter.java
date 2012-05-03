@@ -12,16 +12,27 @@ import org.apache.poi.util.LittleEndian;
  *
  */
 public class Converter {
-	static int SZ_UINT16 = 2;
-	static int SZ_WORD = 2;
-	static int SZ_DWORD = 4;
-	static int SZ_UINT32 = 4;
-	static int SZ_INT32 = 4;
-	static int SZ_HWPUNIT = 4;
-	/*
-	 *  0 <= offset <= nRead <= capacity
+	final static int SZ_UINT16 = 2;
+	final static int SZ_WORD = 2;
+	final static int SZ_DWORD = 4;
+	final static int SZ_UINT32 = 4;
+	final static int SZ_INT32 = 4;
+	final static int SZ_HWPUNIT16 = 2;
+	final static int SZ_HWPUNIT = 4;
+	/**
+	 *  0 <= offset <= (offset + nRead) <= capacity
 	 *  
-	 *  읽어올 바이트 배열 data[offset..nRead]
+	 *  읽어올 바이트 배열 data[offset.. (offset +nRead) ] : offset부터 nRead 개를 읽어서 반환한다.
+	 *  
+	 *  If offset + nRead < capacity, 반환할 배열의 크기를 capacity로 초기화한 후 [offset.. (offset +nRead) ] 배열을 복사한다.
+	 *  
+	 *  If offset + nRead == capacity, data를 단순히 반환.
+	 *   
+	 * @param data
+	 * @param offset data 배열에서 읽기를 시작할 위치
+	 * @param nRead offset 부터 읽어들일 바이트의 개수
+	 * @param capacity 반환될 byte의 length 
+	 * @return length가 capacity인 바이트 배열
 	 */
 	static byte [] checkBytes(byte [] data, int offset, int nRead, int capacity){
 		byte [] target = data;
@@ -69,10 +80,27 @@ public class Converter {
 //	public static Dword getDword(ByteBuffer buffer, int offset) {
 //		return new Dword(buffer, offset);
 //	}
+	/**
+	 * data 배열에서 8 바이트를 읽어서 64-bit Long을 반환.
+	 * @param data
+	 * @param offset
+	 * @return
+	 */
 	public static Long getHwpUnit(byte[] data, int offset) {
-		// TEST created and not tested method stub
 		byte [] b = checkBytes(data, offset, SZ_HWPUNIT, 8);
 		return LittleEndian.getLong(b, (b == data)? offset : 0);
+	}
+	/**
+	 * data 배열에서 4바이트를 읽어서 32bit-Integer 를 반환.
+	 *  
+	 * @param data
+	 * @param offset
+	 * @return
+	 */
+	public static Integer getHwpUnit16(byte [] data, int offset) {
+		// TEST
+		byte [] b = checkBytes(data, offset, SZ_HWPUNIT16, 4);
+		return LittleEndian.getInt(b, (b == data)? offset : 0);
 	}
 	/**
 	 * 밀리미터(mm)를 HWPUNIT 으로 변환한다.
@@ -84,7 +112,7 @@ public class Converter {
 	 * @return
 	 */
 	public static int mm2HU (int mm){
-		// TODO 구현해야함.
+		// TEST 구현해야함.
 		return 0;
 	}
 //	public static char getChar(ByteBuffer data) {
@@ -102,7 +130,7 @@ public class Converter {
 		return LittleEndian.getInt(b);
 	}
 	/**
-	 * retieves integer from partial bits indicated by [from, from + length]
+	 * retieves integer from partial bits indicated by [from, from + length] inclusive
 	 * <pre>
 	 *    from = 3, length = 6
 	 *     
@@ -112,7 +140,7 @@ public class Converter {
 	 * </pre>
 	 * @param val
 	 * @param from
-	 * @param end
+	 * @param length
 	 * @return
 	 */
 	public static int getBits(int val, int from, int length){
