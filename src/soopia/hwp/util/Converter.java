@@ -48,31 +48,72 @@ public class Converter {
 		}
 		return target;
 	}
+	/**
+	 * data 배열에서 2바이트를 읽어서 UInt16을 나타내는 0보다 큰  4바이트 Integer를 반환
+	 * @param data
+	 * @param offset
+	 * @return
+	 */
 	public static int getUInt16 ( byte [] data, int offset){
 		return LittleEndian.getUShort(data, offset); 
 	}
+	/**
+	 * data 배열에서 2바이트를 읽어서 Word를 나타내는 0보다 큰 4바이트 Integer 반환
+	 * @param data
+	 * @param offset
+	 * @return
+	 */
 	public static int getWord(byte [] data, int offset ){
 		return  LittleEndian.getUShort(data, offset);
 	}
-	
+	/**
+	 * data 배열에서 4바이트를 읽어서 Dword를 나타내는 0보다 큰 8바이트 Long 반환
+	 * @param data
+	 * @param offset
+	 * @return
+	 */
 	public static long getDword (byte [] data, int offset){
 		int val = LittleEndian.getInt(data, offset);
 		return 0x00FFFFFFFFL & val ;
 		// getUInt() 버그 있음
 		// return LittleEndian.getUInt(data, offset);
 	}
-
+	/**
+	 * data 배열에서 1바이트를 읽어서 0보다 큰 Integer 반환.
+	 * @param data
+	 * @param offset
+	 * @return
+	 */
 	public static Integer getHwpByte(byte[] data, int offset) {
+		// TEST 반환값을 HwpByte로 할 것인지, Integer로 할 것인지..
 		return LittleEndian.getUnsignedByte(data, offset);
 	}
+	/**
+	 * data 배열에서 1바이트를 읽어서 UInt8을 나타내는 0보다 큰 Integer 로 반환 
+	 * @param data
+	 * @param offset
+	 * @return
+	 */
 	public static Integer getUInt8(byte[] data, int offset) {
 		// TEST created and not tested method stub
 		return LittleEndian.getUnsignedByte(data, offset);
 	}
+	/**
+	 * data 배열에서 4바이트를 읽어서 Int32를 나타내는 4바이트 Integer 반환
+	 * @param data
+	 * @param offset
+	 * @return
+	 */
 	public static int getInt32 (byte [] data, int offset ){
 		byte [] b = checkBytes(data, offset, SZ_INT32, 4);
 		return LittleEndian.getInt(b, offset);
 	}
+	/**
+	 * data 배열에서 4바이트를 읽어서 UInt32를 나타내는 0보다 큰 8바이트 Long 반환.
+	 * @param data
+	 * @param offset
+	 * @return
+	 */
 	public static long getUInt32(byte[] data, int offset) {
 		byte [] b = checkBytes(data, offset, SZ_UINT32, 8);
 		return LittleEndian.getLong(b, (b == data)? offset : 0);
@@ -81,7 +122,7 @@ public class Converter {
 //		return new Dword(buffer, offset);
 //	}
 	/**
-	 * data 배열에서 8 바이트를 읽어서 64-bit Long을 반환.
+	 * data 배열에서 4 바이트를 읽어서 8바이트 Long을 반환.
 	 * @param data
 	 * @param offset
 	 * @return
@@ -91,7 +132,7 @@ public class Converter {
 		return LittleEndian.getLong(b, (b == data)? offset : 0);
 	}
 	/**
-	 * data 배열에서 4바이트를 읽어서 32bit-Integer 를 반환.
+	 * data 배열에서 2바이트를 읽어서  4바이트 Integer 를 반환.
 	 *  
 	 * @param data
 	 * @param offset
@@ -115,10 +156,6 @@ public class Converter {
 		// TEST 구현해야함.
 		return 0;
 	}
-//	public static char getChar(ByteBuffer data) {
-//		byte [] b = new byte[2];
-//		return 'c';
-//	}
 	public static char getWChar(byte[] b) {
 		int val = LittleEndian.getShort(b);
 		return (char) val;
@@ -157,6 +194,7 @@ public class Converter {
 	 * @throws UnsupportedEncodingException 
 	 */
 	public static String getString(ByteBuffer data, int offset, int length) throws UnsupportedEncodingException {
+		// TEST 쓰이지 않고 있음.
 		byte [] b = new byte[length];
 		data.position(offset);
 		data.get(b);
