@@ -32,7 +32,7 @@ public class Constant {
 	public final static String TAB_DEF = "HWPTAG_TAB_DEF";
 	public final static String NUMBERING = "HWPTAG_NUMBERING";
 	public final static String BULLET = "HWPTAG_BULLET";
-	public final static String PARASHAPE = "HWPTAG_PARASHAPE";
+	public final static String PARASHAPE = "HWPTAG_PARA_SHAPE";
 	public final static String STYLE = "HWPTAG_STYLE";
 	public final static String DOC_DATA = "HWPTAG_DOC_DATA";
 	public final static String DISTRIBUTE_DOC_DATA = "HWPTAG_DISTRIBUTE_DOC_DATA";
