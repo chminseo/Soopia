@@ -12,14 +12,12 @@ public class ParaShapeRecordDecoder extends AbstractRecordDecoder<ParaShapeRecor
 
 	@Override
 	public boolean isAvailable(String versionString) {
-		// TEST created and not tested method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public ParaShapeRecord decode(ParaShapeRecord record, IByteSource data,
 			HwpContext context) throws DecodingException {
-		// TEST created and not tested method stub
 		super.decode(record, data, context);
 		
 		int offset = record.getHeaderLength();
@@ -46,7 +44,6 @@ public class ParaShapeRecordDecoder extends AbstractRecordDecoder<ParaShapeRecor
 		record.setProperty2(new UInt32(data.consume(4)));
 		record.setPropertyForLineHeigh(new UInt32(data.consume(4)));
 		
-		/* implement here */
 		return record;
 	}
 }

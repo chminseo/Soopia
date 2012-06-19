@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import soopia.hwp.TestUtils;
+import soopia.hwp.type.record.NumberingRecord;
 import soopia.hwp.type.record.ParaShapeRecord;
 import soopia.hwp.type.record.ParaShapeRecord.PropertyHandler;
 import soopia.hwp.type.stream.RecordHeader;
@@ -118,5 +119,23 @@ public class TestParaShapeRecordDecorder {
 		PropertyHandler ph = record.getPropertyHandler();
 		assertEquals(0, ph.getLineHeightType());
 		assertEquals(0, ph.getHorizontalAlignment());
+		assertEquals(0, ph.getLineWrapPolicyEn());
+		assertEquals(1, ph.getLineWrapPolicyKr());
+		
+		//MEMO 사용하지 않음인데 1로 설정되어있음. 다른 테스트 케이스로 확인 필요
+		assertFalse ( ph.isLatticeVisible()); 
+		assertEquals(20, ph.getMinSpaceWidth()); // 공백 최소값 20%
+		assertEquals(false, ph.isSingleLineWrapAllowed());
+		assertEquals(false, ph.isNextParaAttached());
+		assertEquals(false, ph.isAtomicParagraph());
+		assertEquals(false, ph.isStartInNewPage());
+
+		assertEquals(0, ph.getVerticalAlignment());
+		assertEquals(false, ph.isAutoLineHeight());
+		assertEquals(0, ph.getParagraphType());
+		assertEquals(NumberingRecord.LEVEL_1, ph.getLevel());
+		assertEquals(false, ph.isBorderCoupled());
+		assertEquals(false, ph.isParaMarginIgnored());
+		assertEquals(0, ph.getParaTailType());
 	}
 }

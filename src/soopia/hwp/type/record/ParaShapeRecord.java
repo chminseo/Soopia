@@ -411,13 +411,11 @@ public class ParaShapeRecord extends AbstractRecord {
 		private UInt32 prop1, prop2, prop3;
 		
 		public PropertyHandler(UInt32 p1, UInt32 p2, UInt32 p3) {
-			// TODO Auto-generated constructor stub
 			prop1 = p1;
 			prop2 = p2;
 			prop3 = p3;
 		}
 		public int getLineHeightType() {
-			// TEST
 			return Converter.getBits(prop1.getValue().intValue(), 0, 2);
 		}
 		/**
@@ -425,7 +423,6 @@ public class ParaShapeRecord extends AbstractRecord {
 		 * @return
 		 */
 		public int getHorizontalAlignment() {
-			// TEST
 			return Converter.getBits(prop1.getValue().intValue(), 3, 3);
 		}
 		/**
@@ -433,45 +430,40 @@ public class ParaShapeRecord extends AbstractRecord {
 		 * @return
 		 */
 		public int getLineWrapPolicyEn() {
-			// TEST
-			return 0;
+			return Converter.getBits(prop1.getValue().intValue(), 5, 2);
 		}
 		/**
 		 * 줄나눔 기준 - 한글
 		 * @return
 		 */
 		public int getLineWrapPolicyKr() {
-			// TEST
-			return 0;
+			return Converter.getBits(prop1.getValue().intValue(), 7, 1);
 		}
 		/**
 		 * 편집 용지의 줄 격자 사용 여부
 		 */
 		public boolean isLatticeVisible() {
-			//TEST
-			return false;
+			return Converter.getBits(prop1.getValue().intValue(), 8, 1) == 0;
 		}
 		/**
 		 * 공백 최소값(%)
 		 * @return
 		 */
 		public int getMinSpaceWidth () {
-			return 0;
+			return Converter.getBits(prop1.getValue().intValue(), 9, 7);
 		}
 		/**
 		 * 외톨이줄 보호 여부
 		 */
 		public boolean isSingleLineWrapAllowed() {
-			//
-			return false;
+			return Converter.getBits(prop1.getValue().intValue(), 16, 1) == 1 ;
 		}
 		/**
 		 * 다음 문단과 함께 여부 
 		 * - 현재 문단과 다음에 나오는 문단이 항상 같은 페이지 내에서 보여지는지 설정함. 
 		 */
 		public boolean isNextParaAttached() {
-			// TEST
-			return false;
+			return Converter.getBits(prop1.getValue().intValue(), 17, 1) == 1 ;
 		}
 		/**
 		 * 문단 보호 여부
@@ -479,67 +471,67 @@ public class ParaShapeRecord extends AbstractRecord {
 		 * @return
 		 */
 		public boolean isAtomicParagraph() {
-			// TEST
 			// MEMO 문단 보호를 설정했어도 하나의 문단 길이가 페이지를 넘어가는 경우 
 			//      맨 처음 한 번만 문단 보호가 실행되고 그 이후부터는 페이지를 넘어가더라도 
 			//      문단은 여러 페이지에 걸쳐 나뉘게 된다.
-			return false;
+			return Converter.getBits(prop1.getValue().intValue(), 18, 1) == 1;
 		}
 		/**
 		 * 문단 앞에서 항상 쪽나눔 여부
 		 * @return
 		 */
 		public boolean isStartInNewPage () {
-			// TEST
-			return false;
+			return Converter.getBits(prop1.getValue().intValue(), 19, 1) == 1;
 		}
 		/**
 		 * 세로 정렬 방식
 		 * @return
 		 */
 		public int getVerticalAlignment() {
-			// TEST
-			return 0;
+			return Converter.getBits(prop1.getValue().intValue(), 20, 2);
+		}
+		/**
+		 * 글꼴에 어울리는 줄 높이 사용 여부
+		 * @return
+		 */
+		public boolean isAutoLineHeight() {
+			return Converter.getBits(prop1.getValue().intValue(), 22, 1) == 1;
 		}
 		/**
 		 * 문단 머리 종류 - 없음, 개요, 번호, 글머리표
 		 * @return
 		 */
 		public int getParagraphType() {
-			// TEST
-			return 0;
+			return Converter.getBits(prop1.getValue().intValue(), 23, 2);
 		}
 		/**
 		 * 문단 수준 (1~ 7 수준)
 		 * @return
 		 */
 		public int getLevel() {
-			// TEST
-			return 0;
+			return Converter.getBits(prop1.getValue().intValue(), 25, 3);
 		}
 		/**
-		 * 문단 연결 여부
+		 * 문단 테두리 연결 여부
 		 * @return
 		 */
 		public boolean isBorderCoupled() {
-			// TEST
-			return false;
+			return Converter.getBits(prop1.getValue().intValue(), 28, 1) == 1;
 		}
 		/**
 		 * 문단 여백 무시 ( 테두리 그릴 때)
 		 * @return
 		 */
 		public boolean isParaMarginIgnored() {
-			// TEST
-			return false;
+			return Converter.getBits(prop1.getValue().intValue(), 29, 1) == 1;
 		}
 		/**
 		 * 문단 꼬리 모양 (무엇인지 알 수 없음)
 		 * @return
 		 */
 		public int getParaTailType() {
-			// TEST
-			return 0;
+			// TEST 현재로서는 의미하는 바를 알지 못함
+			return Converter.getBits(prop1.getValue().intValue(), 30, 1);
 		}
 	}
 
