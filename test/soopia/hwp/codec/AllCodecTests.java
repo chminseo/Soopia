@@ -10,6 +10,9 @@ import org.junit.runners.Suite.SuiteClasses;
 	,TestFontFaceNameDecoder.class
 	,TestBorderFillRecordDecoder.class
 	,TestCharShapeRecordDecoder.class
+	,TestTabRecordDecoder.class
+	,TestNumberingRecordDecoder.class
+	,TestParaShapeRecordDecorder.class
 	/*,TestParaTextDecoder.class*/ }
 )
 /**
