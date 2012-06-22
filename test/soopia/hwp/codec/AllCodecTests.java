@@ -13,6 +13,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	,TestTabRecordDecoder.class
 	,TestNumberingRecordDecoder.class
 	,TestParaShapeRecordDecorder.class
+	,TestStyleRecordDecoder.class
 	/*,TestParaTextDecoder.class*/ }
 )
 /**
