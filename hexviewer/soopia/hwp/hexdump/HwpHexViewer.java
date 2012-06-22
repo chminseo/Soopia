@@ -58,6 +58,7 @@ public class HwpHexViewer extends JFrame {
 	JDesktopPane desktopPane ; 
 	FileModel fileModel;
 	private FileModelHandle fileHandler;
+	private File currentDir;
 	
 	public HwpHexViewer(){
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -125,6 +126,14 @@ public class HwpHexViewer extends JFrame {
 		this.fileHandler = new FileModelHandle();
 		this.fileModel.addFileModelListener(this.fileHandler);
 		this.tree.setModel(this.fileHandler);
+	}
+	
+	private void initCurrentDir(String [] args ) {
+		if ( args == null || args.length == 0 ) {
+			currentDir = new File(System.getProperty("user.dir"));
+		} else {
+			currentDir = new File( args[0] );
+		}
 	}
 	
 	/*
@@ -286,12 +295,13 @@ public class HwpHexViewer extends JFrame {
 			}
 		});
 		
+		fChooser.setCurrentDirectory(currentDir);
 		int retOption = fChooser.showOpenDialog(this);
 		
 		return ( retOption == JFileChooser.APPROVE_OPTION ) ? fChooser.getSelectedFile() : null ;
 	}
 	
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
@@ -310,7 +320,7 @@ public class HwpHexViewer extends JFrame {
 				hv.setSize(new Dimension(dim.width-300, dim.height-300));
 				hv.setLocationRelativeTo(null);
 				hv.setVisible(true);
-				
+				hv.initCurrentDir(args);
 			}
 		});
 	}

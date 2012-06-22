@@ -24,6 +24,7 @@ import soopia.hwp.type.stream.PreviewImageInfo;
 import soopia.hwp.type.stream.PreviewTextInfo;
 import soopia.hwp.type.stream.SummaryInfo;
 import soopia.hwp.util.ByteArraySource;
+import soopia.hwp.util.Converter;
 import soopia.hwp.util.IByteSource;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
@@ -94,6 +95,23 @@ public class StreamStructureFactory {
 		} catch (DecodingException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static void printBytes(String name, IByteSource data) {
+		data.mark();
+		StringBuilder sb = new StringBuilder();
+		
+		System.out.println("[" + name + "]");
+		while ( data.remaining() > 0 ) {
+			for( int c = 0 ; c < 16 ; c ++ ) {
+				if ( data.remaining() ==0 ) break;
+				sb.append(Converter.toHexString(data.consume(1)[0]) + " ");
+			}
+			sb.append(System.getProperty("line.separator"));
+		}
+		
+		System.out.println(sb.toString() + "\n");
+		data.rollback();
 	}
 	
 	private static class ContextHandler implements POIFSReaderListener {

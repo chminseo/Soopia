@@ -205,6 +205,6 @@ public class Converter {
 		return new String(data.consume(length), "UTF-16LE");
 	}
 	public static String toHexString(byte b){
-		return (b < 0x10 ? "0" : "" ) + Integer.toHexString(0x0ff & b).toUpperCase();
+		return (b >= 0 && b < 0x10 ? "0" : "" ) + Integer.toHexString(0x0ff & b).toUpperCase();
 	}
 }
