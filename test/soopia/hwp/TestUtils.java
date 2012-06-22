@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 import soopia.hwp.codec.MockDocInfo;
 import soopia.hwp.type.Dword;
 import soopia.hwp.type.HwpContext;
-import soopia.hwp.type.stream.DocInfoStream;
 import soopia.hwp.type.stream.RecordHeader;
 import soopia.hwp.util.IByteSource;
 /**
