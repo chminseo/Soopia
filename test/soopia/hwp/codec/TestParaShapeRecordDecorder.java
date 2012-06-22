@@ -117,10 +117,10 @@ public class TestParaShapeRecordDecorder {
 		// checking properties
 		
 		PropertyHandler ph = record.getPropertyHandler();
-		assertEquals(0, ph.getLineHeightType());
-		assertEquals(0, ph.getHorizontalAlignment());
-		assertEquals(0, ph.getLineWrapPolicyEn());
-		assertEquals(1, ph.getLineWrapPolicyKr());
+		assertEquals(ParaShapeRecord.PROP_LH_BY_FONTSIZE, ph.getLineHeightType());
+		assertEquals(ParaShapeRecord.PROP_ALIGN_H_BOTH, ph.getHorizontalAlignment());
+		assertEquals(ParaShapeRecord.PROP_LINEWRAP_BY_WORD, ph.getLineWrapPolicyEn());
+		assertEquals(ParaShapeRecord.PROP_LINEWRAP_BY_WORD, ph.getLineWrapPolicyKr());
 		
 		//MEMO 사용하지 않음인데 1로 설정되어있음. 다른 테스트 케이스로 확인 필요
 		assertFalse ( ph.isLatticeVisible()); 
@@ -130,12 +130,16 @@ public class TestParaShapeRecordDecorder {
 		assertEquals(false, ph.isAtomicParagraph());
 		assertEquals(false, ph.isStartInNewPage());
 
-		assertEquals(0, ph.getVerticalAlignment());
+		assertEquals(ParaShapeRecord.PROP_ALIGN_V_BY_FONT, ph.getVerticalAlignment());
 		assertEquals(false, ph.isAutoLineHeight());
-		assertEquals(0, ph.getParagraphType());
+		assertEquals(ParaShapeRecord.PROP_HEADER_NONE, ph.getParagraphType());
 		assertEquals(NumberingRecord.LEVEL_1, ph.getLevel());
 		assertEquals(false, ph.isBorderCoupled());
 		assertEquals(false, ph.isParaMarginIgnored());
 		assertEquals(0, ph.getParaTailType());
+		
+		assertFalse( ph.isOneLinePara());
+		assertFalse( ph.isAutoAdjustingEnKr());
+		assertFalse( ph.isAutoAdjustingKrNum());
 	}
 }

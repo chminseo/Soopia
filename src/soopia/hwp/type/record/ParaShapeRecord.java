@@ -61,6 +61,30 @@ public class ParaShapeRecord extends AbstractRecord {
 	final public static int PROP_ALIGN_H_DIV = 5;
 	
 	
+	final public static int PROP_ALIGN_V_BY_FONT = 0;
+	final public static int PROP_ALIGN_V_TOP = 1;
+	final public static int PROP_ALIGN_V_MIDDLE = 2;
+	final public static int PROP_ALIGN_V_BOTTOM = 3;
+	
+	/**
+	 * 줄 나눔 기준 - 단어, 어절
+	 */
+	final public static int PROP_LINEWRAP_BY_WORD = 0 ;
+	/**
+	 * 줄 나눔 기준 - 하이픈(영어만)
+	 */
+	final public static int PROP_LINEWRAP_BY_HYPEN = 1 ;
+	/**
+	 * 줄 나눔 기준 - 글자
+	 */
+	final public static int PROP_LINEWRAP_BY_CH = 2 ;
+	
+	
+	final public static int PROP_HEADER_NONE = 0;
+	final public static int PROP_HEADER_OUTLINE = 1;
+	final public static int PROP_HEADER_NUMBERING = 2;
+	final public static int PROP_HEADER_BULLET = 2;
+	
 	/*
 	 * 속성
 	 */
@@ -437,7 +461,8 @@ public class ParaShapeRecord extends AbstractRecord {
 		 * @return
 		 */
 		public int getLineWrapPolicyKr() {
-			return Converter.getBits(prop1.getValue().intValue(), 7, 1);
+			int val = Converter.getBits(prop1.getValue().intValue(), 7, 1); 
+			return val == 1 ? PROP_LINEWRAP_BY_WORD : PROP_LINEWRAP_BY_CH;
 		}
 		/**
 		 * 편집 용지의 줄 격자 사용 여부
@@ -532,6 +557,30 @@ public class ParaShapeRecord extends AbstractRecord {
 		public int getParaTailType() {
 			// TEST 현재로서는 의미하는 바를 알지 못함
 			return Converter.getBits(prop1.getValue().intValue(), 30, 1);
+		}
+		/**
+		 * 한 줄로 입력 여부
+		 * @return
+		 */
+		public boolean isOneLinePara() {
+			// TEST
+			return Converter.getBits(prop1.getValue().intValue(), 0, 2) == 1;
+		}
+		/**
+		 * 한글과 영어 간격 자동 조절 여부
+		 * @return
+		 */
+		public boolean isAutoAdjustingEnKr() {
+			// TEST
+			return Converter.getBits(prop1.getValue().intValue(), 4, 1) == 1;
+		}
+		/**
+		 * 한글과 숫자 간격 자동 조절 여부
+		 * @return
+		 */
+		public boolean isAutoAdjustingKrNum() {
+			// TEST
+			return Converter.getBits(prop1.getValue().intValue(), 5, 1) == 1;
 		}
 	}
 
