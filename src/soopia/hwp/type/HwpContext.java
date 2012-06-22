@@ -3,9 +3,12 @@ package soopia.hwp.type;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import soopia.hwp.Constant;
 import soopia.hwp.codec.IDecoder;
+import soopia.hwp.type.record.StyleRecord;
 import soopia.hwp.type.stream.DocInfoStream;
 import soopia.hwp.type.stream.FileHeaderInfo;
 import soopia.hwp.type.stream.PreviewImageInfo;
@@ -124,5 +127,20 @@ public class HwpContext {
 		} catch (InstantiationException istE){
 			throw new StructCreationException("fail to instantiate it", istE);
 		}
+	}
+	
+	public int getStyleSize() {
+		Iterator<IRecordStructure> it = docInfo.recordIterator();
+		int size = 0;
+		while ( it.hasNext() ) {
+			IRecordStructure record = it.next();
+			if ( record.getTagName().equals(Constant.STYLE) ) {
+				size ++;
+			}
+		}
+		return size;
+	}
+	public StyleRecord getStyleAt(int index) {
+		return docInfo.getStyleAt(index);
 	}
 }
