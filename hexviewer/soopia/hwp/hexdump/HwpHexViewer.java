@@ -162,7 +162,6 @@ public class HwpHexViewer extends JFrame {
 				streamNode = new DSTreeNode(ctx.getDocInfo(), true, DSTreeNode.TYPE_STREAM); 
 				treeModel.insertNodeInto(streamNode, ctxNode, 1);
 				List<? extends IRecordStructure> recordStruct = ((DocInfoStream)ctx.getDocInfo()).getRecord(null); 
-//						factory.createRecordStructures((IStreamStruct)ctx.getDocInfo()) ;
 				for(IRecordStructure rs : recordStruct ){
 					recordNode = new DSTreeNode(rs, false, DSTreeNode.TYPE_RECORD);
 					treeModel.insertNodeInto(recordNode, streamNode, treeModel.getChildCount(streamNode));
@@ -174,14 +173,28 @@ public class HwpHexViewer extends JFrame {
 				
 				/* bodyText (SectionX) */
 				List<IStreamStruct> sections = ctx.getSections();
-//				streamNode = new DSTreeNode(ctx.getSummary(), true, DSTreeNode.TYPE_STREAM); 
-				for( IDataType sct : sections ){
+				for( IStreamStruct sct : sections ){
+					DSTreeNode curParentNode = ctxNode;
 					streamNode = new DSTreeNode(sct, true, DSTreeNode.TYPE_RECORD);
-					treeModel.insertNodeInto(streamNode, ctxNode, treeModel.getChildCount(ctxNode));
+					treeModel.insertNodeInto(streamNode, curParentNode , treeModel.getChildCount(curParentNode));
+					DSTreeNode lastInsertedNode = null;
+					curParentNode = streamNode;
 					recordStruct = ((SectionStream)sct).getRecord(null);
 					for(IRecordStructure rs : recordStruct ){
-						recordNode = new DSTreeNode(rs, false, DSTreeNode.TYPE_RECORD);
-						treeModel.insertNodeInto(recordNode, streamNode, treeModel.getChildCount(streamNode));
+						recordNode = new DSTreeNode(rs, true, DSTreeNode.TYPE_RECORD);
+						if ( lastInsertedNode != null ) {
+							IRecordStructure formerRS = (IRecordStructure) lastInsertedNode.getUserObject();
+							if ( formerRS.getLevel() < rs.getLevel()) {
+								curParentNode = lastInsertedNode;
+							} else if ( formerRS.getLevel() > rs.getLevel()) {
+								int upCount = formerRS.getLevel() - rs.getLevel();
+								for( int i = 0 ; i < upCount ; i++ ) {
+									curParentNode = (DSTreeNode) curParentNode.getParent();
+								}
+							}
+						}
+						treeModel.insertNodeInto(recordNode, curParentNode, treeModel.getChildCount(curParentNode));
+						lastInsertedNode = recordNode;
 					}
 				}
 				/* prvImage, prvText */

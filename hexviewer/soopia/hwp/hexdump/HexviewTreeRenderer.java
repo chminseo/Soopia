@@ -7,6 +7,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 import soopia.hwp.hexdump.view.DSTreeNode;
 import soopia.hwp.type.IDataType;
+import soopia.hwp.type.IRecordStructure;
 /**
  * 본 제품은 한글과컴퓨터의 한글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
  * 
@@ -25,8 +26,10 @@ public class HexviewTreeRenderer extends DefaultTreeCellRenderer {
 		if ( node.getUserObject() instanceof IDataType){
 			IDataType ds = (IDataType) node.getUserObject();
 			this.setText(ds.getStrucureName());
+			if ( ds instanceof IRecordStructure) {
+				this.setText(getText() + " - L" + ((IRecordStructure)ds).getLevel() );  
+			}
 		}
-		
 		
 		return this;
 	}
